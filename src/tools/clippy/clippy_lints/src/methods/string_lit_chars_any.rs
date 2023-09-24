@@ -1,7 +1,7 @@
 use clippy_utils::diagnostics::span_lint_and_then;
 use clippy_utils::msrvs::{Msrv, MATCHES_MACRO};
 use clippy_utils::source::snippet_opt;
-use clippy_utils::{is_from_proc_macro, is_trait_method, path_to_local};
+use clippy_utils::{is_trait_method, path_to_local};
 use itertools::Itertools;
 use rustc_ast::LitKind;
 use rustc_errors::Applicability;
@@ -33,7 +33,7 @@ pub(super) fn check<'tcx>(
             (false, true) => lhs,
             _ => return,
         }
-        && !is_from_proc_macro(cx, expr)
+        && !cx.in_proc_macro
         && let Some(scrutinee_snip) = snippet_opt(cx, scrutinee.span)
     {
         // Normalize the char using `map` so `join` doesn't use `Display`, if we don't then

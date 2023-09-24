@@ -34,7 +34,6 @@
 #![feature(iter_intersperse)]
 #![feature(iter_order_by)]
 #![feature(let_chains)]
-#![feature(local_key_cell_methods)]
 #![feature(min_specialization)]
 #![feature(never_type)]
 #![feature(rustc_attrs)]

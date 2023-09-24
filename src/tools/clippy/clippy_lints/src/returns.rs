@@ -1,7 +1,7 @@
 use clippy_utils::diagnostics::{span_lint_and_sugg, span_lint_and_then, span_lint_hir_and_then};
 use clippy_utils::source::{snippet_opt, snippet_with_context};
 use clippy_utils::visitors::{for_each_expr_with_closures, Descend};
-use clippy_utils::{fn_def_id, is_from_proc_macro, path_to_local_id, span_find_starting_semi};
+use clippy_utils::{fn_def_id, path_to_local_id, span_find_starting_semi};
 use core::ops::ControlFlow;
 use if_chain::if_chain;
 use rustc_errors::Applicability;
@@ -172,7 +172,7 @@ impl<'tcx> LateLintPass<'tcx> for Return {
             && let ExprKind::Block(block, _) = block.kind
             && let [.., final_stmt] = block.stmts
             && final_stmt.hir_id != stmt.hir_id
-            && !is_from_proc_macro(cx, expr)
+            && !cx.in_proc_macro
         {
             span_lint_and_sugg(
                 cx,

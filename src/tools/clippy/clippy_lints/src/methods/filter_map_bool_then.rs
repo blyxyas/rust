@@ -3,7 +3,7 @@ use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::paths::BOOL_THEN;
 use clippy_utils::source::snippet_opt;
 use clippy_utils::ty::is_copy;
-use clippy_utils::{is_from_proc_macro, is_trait_method, match_def_path, peel_blocks};
+use clippy_utils::{is_trait_method, match_def_path, peel_blocks};
 use rustc_errors::Applicability;
 use rustc_hir::{Expr, ExprKind};
 use rustc_lint::{LateContext, LintContext};
@@ -35,7 +35,7 @@ pub(super) fn check<'tcx>(cx: &LateContext<'tcx>, expr: &'tcx Expr<'tcx>, arg: &
         && let then_body = peel_blocks(cx.tcx.hir().body(then_closure.body).value)
         && let Some(def_id) = cx.typeck_results().type_dependent_def_id(value.hir_id)
         && match_def_path(cx, def_id, &BOOL_THEN)
-        && !is_from_proc_macro(cx, expr)
+        && !cx.in_proc_macro
         && let Some(param_snippet) = snippet_opt(cx, param.span)
         && let Some(filter) = snippet_opt(cx, recv.span)
         && let Some(map) = snippet_opt(cx, then_body.span)

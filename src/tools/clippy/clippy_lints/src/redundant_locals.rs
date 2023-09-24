@@ -1,5 +1,4 @@
 use clippy_utils::diagnostics::span_lint_and_help;
-use clippy_utils::is_from_proc_macro;
 use clippy_utils::ty::needs_ordered_drop;
 use rustc_ast::Mutability;
 use rustc_hir::def::Res;
@@ -71,7 +70,7 @@ impl<'tcx> LateLintPass<'tcx> for RedundantLocals {
             if !affects_drop_behavior(cx, binding_id, local.hir_id, expr);
             // the local is user-controlled
             if !in_external_macro(cx.sess(), local.span);
-            if !is_from_proc_macro(cx, expr);
+            if !cx.in_proc_macro;
             // Async function parameters are lowered into the closure body, so we can't lint them.
             // see `lower_maybe_async_body` in `rust_ast_lowering`
             if !is_from_async_await(local.span);

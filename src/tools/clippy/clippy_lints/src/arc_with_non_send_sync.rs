@@ -1,6 +1,6 @@
 use clippy_utils::diagnostics::span_lint_and_then;
 use clippy_utils::ty::{implements_trait, is_type_diagnostic_item};
-use clippy_utils::{is_from_proc_macro, last_path_segment};
+use clippy_utils::{last_path_segment};
 use rustc_hir::{Expr, ExprKind};
 use rustc_lint::{LateContext, LateLintPass};
 use rustc_middle::ty;
@@ -55,7 +55,7 @@ impl<'tcx> LateLintPass<'tcx> for ArcWithNonSendSync {
             && let Some(sync) = cx.tcx.lang_items().sync_trait()
             && let [is_send, is_sync] = [send, sync].map(|id| implements_trait(cx, arg_ty, id, &[]))
             && !(is_send && is_sync)
-            && !is_from_proc_macro(cx, expr)
+            && !cx.in_proc_macro
         {
             span_lint_and_then(
                 cx,

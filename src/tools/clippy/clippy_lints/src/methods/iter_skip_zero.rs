@@ -1,6 +1,6 @@
 use clippy_utils::consts::{constant, Constant};
 use clippy_utils::diagnostics::span_lint_and_then;
-use clippy_utils::{is_from_proc_macro, is_trait_method};
+use clippy_utils::is_trait_method;
 use rustc_errors::Applicability;
 use rustc_hir::Expr;
 use rustc_lint::LateContext;
@@ -19,7 +19,7 @@ pub(super) fn check<'tcx>(cx: &LateContext<'tcx>, expr: &'tcx Expr<'tcx>, arg_ex
             }
         })
         && arg == 0
-        && !is_from_proc_macro(cx, expr)
+        && !cx.in_proc_macro
     {
         span_lint_and_then(cx, ITER_SKIP_ZERO, arg_expr.span, "usage of `.skip(0)`", |diag| {
             diag.span_suggestion(
