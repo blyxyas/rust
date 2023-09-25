@@ -328,6 +328,8 @@ fn main() {
     }
 
     set_var("CLIPPY_DISABLE_DOCS_LINKS", "true");
+    set_var("CLIPPY_ARGS", "");
+    set_var("PROFILE", "release");
     // The SPEEDTEST_* env variables can be used to check Clippy's performance on your PR. It runs the
     // affected test 1000 times and gets the average.
     if let Ok(speedtest) = std::env::var("SPEEDTEST") {

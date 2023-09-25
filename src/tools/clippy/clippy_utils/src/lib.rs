@@ -45,7 +45,6 @@ pub mod sym_helper;
 
 pub mod ast_utils;
 pub mod attrs;
-mod check_proc_macro;
 pub mod comparisons;
 pub mod consts;
 pub mod diagnostics;
@@ -67,7 +66,6 @@ pub mod usage;
 pub mod visitors;
 
 pub use self::attrs::*;
-pub use self::check_proc_macro::{is_from_proc_macro, is_span_if, is_span_match};
 pub use self::hir_utils::{
     both, count_eq, eq_expr_value, hash_expr, hash_stmt, is_bool, over, HirEqInterExpr, SpanlessEq, SpanlessHash,
 };
@@ -2885,4 +2883,15 @@ op_utils! {
     BitOr  BitOrAssign
     Shl    ShlAssign
     Shr    ShrAssign
+}
+
+use rustc_lint::check_proc_macro::{Pat as ProcPat, span_matches_pat};
+/// Checks if the span actually refers to a match expression
+pub fn is_span_match(cx: &impl LintContext, span: Span) -> bool {
+    span_matches_pat(cx.sess(), span, ProcPat::Str("match"), ProcPat::Str("}"))
+}
+
+/// Checks if the span actually refers to an if expression
+pub fn is_span_if(cx: &impl LintContext, span: Span) -> bool {
+    span_matches_pat(cx.sess(), span, ProcPat::Str("if"), ProcPat::Str("}"))
 }
