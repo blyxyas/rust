@@ -84,7 +84,7 @@ fn check_array<'tcx>(cx: &LateContext<'tcx>, expr: &'tcx Expr<'tcx>, elements: &
             _ => None,
         })
         && all_bindings_are_for_conv(cx, &[*ty], expr, elements, &locals, ToType::Array)
-        && !in_proc_macro
+        && !cx.in_proc_macro
     {
         span_lint_and_help(
             cx,
