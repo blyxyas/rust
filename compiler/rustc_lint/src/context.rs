@@ -509,6 +509,12 @@ pub struct LateContext<'tcx> {
 
     /// We are only looking at one module
     pub only_module: bool,
+
+    /// If we're in a procedural macro expansion
+    pub in_proc_macro: bool,
+
+    /// If the user executed `cargo clippy` (env. var. `CLIPPY_ARGS` is always defined)
+    pub(super) in_clippy: bool
 }
 
 /// Context for lint checking of the AST, after expansion, before lowering to HIR.
