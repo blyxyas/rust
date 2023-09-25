@@ -14,7 +14,8 @@
 //! upon. As the ast is traversed, this keeps track of the current lint level
 //! for all lint attributes.
 
-use crate::{passes::LateLintPassObject, LateContext, LateLintPass, LintStore};
+use crate::{passes::LateLintPassObject, LateContext, LateLintPass, LintStore, is_from_proc_macro};
+use hir::HirId;
 use rustc_ast as ast;
 use rustc_data_structures::stack::ensure_sufficient_stack;
 use rustc_data_structures::sync::join;
@@ -28,12 +29,64 @@ use rustc_span::Span;
 
 use std::any::Any;
 use std::cell::Cell;
+use std::env;
+
+thread_local! {
+    static MEOW: Cell<[HirId; 8]> = Cell::new([HirId::INVALID; 8]);
+}
 
 /// Extract the `LintStore` from the query context.
 /// This function exists because we've erased `LintStore` as `dyn Any` in the context.
 pub fn unerased_lint_store(tcx: TyCtxt<'_>) -> &LintStore {
     let store: &dyn Any = &*tcx.lint_store;
     store.downcast_ref().unwrap()
+}
+
+/// This macro checks if we're in Clippy, if that's the case,
+/// we'll check if the current token to be visited is in a proc macro.
+/// 
+/// This is useful for Clippy, so several lints that share the same token, can
+/// also share the `is_from_proc_macro` evaluation. We only evaluate if the two
+/// HirIds share parent and we're in a Clippy execution.
+/// 
+/// Each token is assigned a number, this number will be the index in the MEOW static
+/// `Cell`, so each token can evaluated separately (but still efficiently).
+/// 
+/// Indexes:
+/// 
+/// - Item: 0
+/// - Expr: 1
+/// - FieldDef: 2
+/// - Variant: 3
+/// - Type: 4
+/// - TraitItem: 5
+/// - ImplItem: 6
+/// - Attribute: 7
+/// 
+/// These indexes aren't in any particular order, they're
+/// better treated as separate variables packed in an array for
+/// the sake of optimization.
+macro_rules! clippy_in_proc_macro {
+    ($cx:expr, $it:expr, $id:expr, $meow:expr) => {
+        if $cx.context.in_clippy {
+            let parent_id = $cx.context.tcx.hir().parent_id($id);
+            let meow = MEOW.get();
+            if meow[$meow] != parent_id {
+                $cx.context.in_proc_macro = is_from_proc_macro(&$cx.context, $it);
+                let mut new_meow = meow;
+                new_meow[$meow] = parent_id;
+                MEOW.set(new_meow);
+            } else if rustc_index::Idx::index(parent_id.owner) == 0 {
+                $cx.context.in_proc_macro = is_from_proc_macro(&$cx.context, $it);
+            };
+        }
+    };
+
+    ($cx:expr, $it:expr, NO ID, $meow:expr) => {
+        if $cx.context.in_clippy {
+            $cx.context.in_proc_macro = is_from_proc_macro(&$cx.context, $it);
+        }
+    }
 }
 
 macro_rules! lint_callback { ($cx:expr, $f:ident, $($args:expr),*) => ({
@@ -133,6 +186,9 @@ impl<'tcx, T: LateLintPass<'tcx>> hir_visit::Visitor<'tcx> for LateContextAndPas
         self.context.generics = it.kind.generics();
         let old_cached_typeck_results = self.context.cached_typeck_results.take();
         let old_enclosing_body = self.context.enclosing_body.take();
+
+        clippy_in_proc_macro!(self, it, it.hir_id(), 0);
+
         self.with_lint_attrs(it.hir_id(), |cx| {
             cx.with_param_env(it.owner_id, |cx| {
                 lint_callback!(cx, check_item, it);
@@ -164,6 +220,7 @@ impl<'tcx, T: LateLintPass<'tcx>> hir_visit::Visitor<'tcx> for LateContextAndPas
     }
 
     fn visit_expr(&mut self, e: &'tcx hir::Expr<'tcx>) {
+        clippy_in_proc_macro!(self, e, e.hir_id, 1);
         ensure_sufficient_stack(|| {
             self.with_lint_attrs(e.hir_id, |cx| {
                 lint_callback!(cx, check_expr, e);
@@ -207,6 +264,7 @@ impl<'tcx, T: LateLintPass<'tcx>> hir_visit::Visitor<'tcx> for LateContextAndPas
     }
 
     fn visit_field_def(&mut self, s: &'tcx hir::FieldDef<'tcx>) {
+        clippy_in_proc_macro!(self, s, s.hir_id, 2);
         self.with_lint_attrs(s.hir_id, |cx| {
             lint_callback!(cx, check_field_def, s);
             hir_visit::walk_field_def(cx, s);
@@ -214,6 +272,7 @@ impl<'tcx, T: LateLintPass<'tcx>> hir_visit::Visitor<'tcx> for LateContextAndPas
     }
 
     fn visit_variant(&mut self, v: &'tcx hir::Variant<'tcx>) {
+        clippy_in_proc_macro!(self, v, v.hir_id, 3);
         self.with_lint_attrs(v.hir_id, |cx| {
             lint_callback!(cx, check_variant, v);
             hir_visit::walk_variant(cx, v);
@@ -221,6 +280,7 @@ impl<'tcx, T: LateLintPass<'tcx>> hir_visit::Visitor<'tcx> for LateContextAndPas
     }
 
     fn visit_ty(&mut self, t: &'tcx hir::Ty<'tcx>) {
+        clippy_in_proc_macro!(self, t, t.hir_id, 4);
         lint_callback!(self, check_ty, t);
         hir_visit::walk_ty(self, t);
     }
@@ -277,6 +337,7 @@ impl<'tcx, T: LateLintPass<'tcx>> hir_visit::Visitor<'tcx> for LateContextAndPas
     fn visit_trait_item(&mut self, trait_item: &'tcx hir::TraitItem<'tcx>) {
         let generics = self.context.generics.take();
         self.context.generics = Some(&trait_item.generics);
+        clippy_in_proc_macro!(self, trait_item, trait_item.hir_id(), 5);
         self.with_lint_attrs(trait_item.hir_id(), |cx| {
             cx.with_param_env(trait_item.owner_id, |cx| {
                 lint_callback!(cx, check_trait_item, trait_item);
@@ -289,6 +350,7 @@ impl<'tcx, T: LateLintPass<'tcx>> hir_visit::Visitor<'tcx> for LateContextAndPas
     fn visit_impl_item(&mut self, impl_item: &'tcx hir::ImplItem<'tcx>) {
         let generics = self.context.generics.take();
         self.context.generics = Some(&impl_item.generics);
+        clippy_in_proc_macro!(self, impl_item, impl_item.hir_id(), 6);
         self.with_lint_attrs(impl_item.hir_id(), |cx| {
             cx.with_param_env(impl_item.owner_id, |cx| {
                 lint_callback!(cx, check_impl_item, impl_item);
@@ -309,6 +371,12 @@ impl<'tcx, T: LateLintPass<'tcx>> hir_visit::Visitor<'tcx> for LateContextAndPas
     }
 
     fn visit_attribute(&mut self, attr: &'tcx ast::Attribute) {
+        clippy_in_proc_macro!(
+            self,
+            &attr,
+            NO ID, // Attributes don't have HirIds
+            7
+        );
         lint_callback!(self, check_attribute, attr);
     }
 }
@@ -357,6 +425,8 @@ pub fn late_lint_mod<'tcx, T: LateLintPass<'tcx> + 'tcx>(
         last_node_with_lint_attrs: tcx.hir().local_def_id_to_hir_id(module_def_id),
         generics: None,
         only_module: true,
+        in_proc_macro: false,
+        in_clippy: env::var("CLIPPY_ARGS").is_ok()
     };
 
     // Note: `passes` is often empty. In that case, it's faster to run
@@ -416,6 +486,8 @@ fn late_lint_crate<'tcx>(tcx: TyCtxt<'tcx>) {
         last_node_with_lint_attrs: hir::CRATE_HIR_ID,
         generics: None,
         only_module: false,
+        in_proc_macro: false,
+        in_clippy: env::var("CLIPPY_ARGS").is_ok()
     };
 
     let pass = RuntimeCombinedLateLintPass { passes: &mut passes[..] };

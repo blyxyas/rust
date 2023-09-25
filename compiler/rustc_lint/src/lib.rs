@@ -34,6 +34,7 @@
 #![feature(iter_intersperse)]
 #![feature(iter_order_by)]
 #![feature(let_chains)]
+#![feature(local_key_cell_methods)]
 #![feature(min_specialization)]
 #![feature(never_type)]
 #![feature(rustc_attrs)]
@@ -64,6 +65,7 @@ pub mod hidden_unicode_codepoints;
 mod internal;
 mod invalid_from_utf8;
 mod late;
+pub mod check_proc_macro;
 mod let_underscore;
 mod levels;
 mod lints;
@@ -135,6 +137,7 @@ pub use passes::{EarlyLintPass, LateLintPass};
 pub use rustc_session::lint::Level::{self, *};
 pub use rustc_session::lint::{BufferedEarlyLint, FutureIncompatibleInfo, Lint, LintId};
 pub use rustc_session::lint::{LintArray, LintPass};
+pub use check_proc_macro::is_from_proc_macro;
 
 fluent_messages! { "../messages.ftl" }
 
