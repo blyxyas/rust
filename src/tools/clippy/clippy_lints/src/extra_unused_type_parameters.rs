@@ -7,7 +7,7 @@ use rustc_hir::{
     BodyId, ExprKind, GenericBound, GenericParam, GenericParamKind, Generics, ImplItem, ImplItemKind, Item, ItemKind,
     PredicateOrigin, Ty, TyKind, WherePredicate,
 };
-use rustc_lint::{LateContext, LateLintPass, LintContext};
+use rustc_lint::{LateContext, LateLintPass, LintContext, is_from_proc_macro};
 use rustc_middle::hir::nested_filter;
 use rustc_middle::lint::in_external_macro;
 use rustc_session::{declare_tool_lint, impl_lint_pass};
@@ -261,9 +261,9 @@ impl<'cx, 'tcx> Visitor<'tcx> for TypeWalker<'cx, 'tcx> {
 
 impl<'tcx> LateLintPass<'tcx> for ExtraUnusedTypeParameters {
     fn check_item(&mut self, cx: &LateContext<'tcx>, item: &'tcx Item<'tcx>) {
-        if !cx.in_proc_macro
-            && let ItemKind::Fn(_, generics, body_id) = item.kind
+            if let ItemKind::Fn(_, generics, body_id) = item.kind
             && !self.is_empty_exported_or_macro(cx, item.span, item.owner_id.def_id, body_id)
+            && !is_from_proc_macro(cx, item)
         {
             let mut walker = TypeWalker::new(cx, generics);
             walk_item(&mut walker, item);
