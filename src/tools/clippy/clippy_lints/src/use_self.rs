@@ -95,6 +95,7 @@ impl<'tcx> LateLintPass<'tcx> for UseSelf {
         // avoid linting on nested items, we push `StackItem::NoCheck` on the stack to signal, that
         // we're in an `impl` or nested item, that we don't want to lint
         let stack_item = if_chain! {
+            if !cx.in_proc_macro;
             if let ItemKind::Impl(Impl { self_ty, generics,.. }) = item.kind;
             if let TyKind::Path(QPath::Resolved(_, item_path)) = self_ty.kind;
             let parameters = &item_path.segments.last().expect(SEGMENTS_MSG).args;
@@ -103,7 +104,6 @@ impl<'tcx> LateLintPass<'tcx> for UseSelf {
                     && !params.args.iter().any(|arg| matches!(arg, GenericArg::Lifetime(_)))
             });
             if !item.span.from_expansion();
-            if !cx.in_proc_macro;
             then {
                 // Self cannot be used inside const generic parameters
                 let types_to_skip = generics.params.iter().filter_map(|param| {

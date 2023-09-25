@@ -268,6 +268,7 @@ impl TraitBounds {
         let mut applicability = Applicability::MaybeIncorrect;
         for bound in gen.predicates {
             if_chain! {
+                if !cx.in_proc_macro;
                 if let WherePredicate::BoundPredicate(ref p) = bound;
                 if p.origin != PredicateOrigin::ImplTrait;
                 if p.bounds.len() as u64 <= self.max_trait_bounds;
@@ -275,7 +276,6 @@ impl TraitBounds {
                 let bounds = p.bounds.iter().filter(|b| !self.cannot_combine_maybe_bound(cx, b)).collect::<Vec<_>>();
                 if !bounds.is_empty();
                 if let Some(ref v) = map.insert(SpanlessTy { ty: p.bounded_ty, cx }, bounds);
-                if !cx.in_proc_macro;
                 then {
                     let trait_bounds = v
                         .iter()

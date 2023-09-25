@@ -20,7 +20,8 @@ pub(super) fn check<'tcx>(
     fold_span: Span,
     msrv: &Msrv,
 ) {
-    if !in_external_macro(cx.sess(), fold_span)
+    if !cx.in_proc_macro
+        && !in_external_macro(cx.sess(), fold_span)
         && msrv.meets(ITERATOR_TRY_FOLD)
         && let init_ty = cx.typeck_results().expr_ty(init)
         && let Some(try_trait) = cx.tcx.lang_items().try_trait()
@@ -29,7 +30,6 @@ pub(super) fn check<'tcx>(
         && let ExprKind::Path(qpath) = path.kind
         && let Res::Def(DefKind::Ctor(_, _), _) = cx.qpath_res(&qpath, path.hir_id)
         && let ExprKind::Closure(closure) = acc.kind
-        && !cx.in_proc_macro
         && let Some(args_snip) = closure.fn_arg_span.and_then(|fn_arg_span| snippet_opt(cx, fn_arg_span))
     {
         let init_snip = rest

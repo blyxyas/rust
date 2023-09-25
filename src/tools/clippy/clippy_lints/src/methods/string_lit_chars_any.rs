@@ -19,7 +19,8 @@ pub(super) fn check<'tcx>(
     body: &Expr<'_>,
     msrv: &Msrv,
 ) {
-    if msrv.meets(MATCHES_MACRO)
+    if !cx.in_proc_macro
+        && msrv.meets(MATCHES_MACRO)
         && is_trait_method(cx, expr, sym::Iterator)
         && let PatKind::Binding(_, arg, _, _) = param.pat.kind
         && let ExprKind::Lit(lit_kind) = recv.kind
@@ -33,7 +34,6 @@ pub(super) fn check<'tcx>(
             (false, true) => lhs,
             _ => return,
         }
-        && !cx.in_proc_macro
         && let Some(scrutinee_snip) = snippet_opt(cx, scrutinee.span)
     {
         // Normalize the char using `map` so `join` doesn't use `Display`, if we don't then

@@ -135,14 +135,19 @@ const SYNC_GUARD_PATHS: [&[&str]; 3] = [
     &paths::PARKING_LOT_MUTEX_GUARD,
     &paths::PARKING_LOT_RWLOCK_READ_GUARD,
     &paths::PARKING_LOT_RWLOCK_WRITE_GUARD,
-];
-
-impl<'tcx> LateLintPass<'tcx> for LetUnderscore {
-    fn check_local(&mut self, cx: &LateContext<'tcx>, local: &Local<'tcx>) {
-        if !in_external_macro(cx.tcx.sess, local.span)
+    ];
+    
+    impl<'tcx> LateLintPass<'tcx> for LetUnderscore {
+        fn check_local(&mut self, cx: &LateContext<'tcx>, local: &Local<'tcx>) {
+            // Ignore if it is from a procedural macro...
+            if cx.in_proc_macro {
+                return;
+            }
+            
+            if !in_external_macro(cx.tcx.sess, local.span)
             && let PatKind::Wild = local.pat.kind
             && let Some(init) = local.init
-        {
+            {
             let init_ty = cx.typeck_results().expr_ty(init);
             let contains_sync_guard = init_ty.walk().any(|inner| match inner.unpack() {
                 GenericArgKind::Type(inner_ty) => SYNC_GUARD_PATHS.iter().any(|path| match_type(cx, inner_ty, path)),
@@ -198,10 +203,6 @@ impl<'tcx> LateLintPass<'tcx> for LetUnderscore {
                     return;
                 }
 
-                // Ignore if it is from a procedural macro...
-                if cx.in_proc_macro {
-                    return;
-                }
 
 				span_lint_and_help(
                     cx,

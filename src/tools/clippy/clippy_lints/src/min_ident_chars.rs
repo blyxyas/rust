@@ -107,6 +107,10 @@ impl Visitor<'_> for IdentVisitor<'_, '_> {
 
         let str = ident.as_str();
         if conf.is_ident_too_short(cx, str, ident.span) {
+            if cx.in_proc_macro {
+                return;
+            }
+            
             if let Node::Item(item) = node && let ItemKind::Use(..) = item.kind {
                 return;
             }
@@ -147,10 +151,6 @@ impl Visitor<'_> for IdentVisitor<'_, '_> {
             if let Node::GenericParam(generic_param) = node
                 && let GenericParamKind::Const { .. } = generic_param.kind
             {
-                return;
-            }
-
-            if cx.in_proc_macro {
                 return;
             }
 

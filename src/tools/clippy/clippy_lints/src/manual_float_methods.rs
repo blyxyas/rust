@@ -82,7 +82,8 @@ impl Variant {
 
 impl<'tcx> LateLintPass<'tcx> for ManualFloatMethods {
     fn check_expr(&mut self, cx: &LateContext<'tcx>, expr: &'tcx Expr<'tcx>) {
-        if !in_external_macro(cx.sess(), expr.span)
+        if !cx.in_proc_macro
+            &&!in_external_macro(cx.sess(), expr.span)
             && (
                 matches!(cx.tcx.constness(cx.tcx.hir().enclosing_body_owner(expr.hir_id)), Constness::NotConst)
                     || cx.tcx.features().active(sym!(const_float_classify))
@@ -105,7 +106,6 @@ impl<'tcx> LateLintPass<'tcx> for ManualFloatMethods {
             // case somebody does that for some reason
             && (is_infinity(const_1) && is_neg_infinity(const_2)
                 || is_neg_infinity(const_1) && is_infinity(const_2))
-            && !cx.in_proc_macro
             && let Some(local_snippet) = snippet_opt(cx, first.span)
         {
             let variant = match (kind.node, lhs_kind.node, rhs_kind.node) {

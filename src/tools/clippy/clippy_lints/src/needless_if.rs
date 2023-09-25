@@ -38,13 +38,13 @@ declare_lint_pass!(NeedlessIf => [NEEDLESS_IF]);
 
 impl LateLintPass<'_> for NeedlessIf {
     fn check_stmt<'tcx>(&mut self, cx: &LateContext<'tcx>, stmt: &Stmt<'tcx>) {
-        if let StmtKind::Expr(expr) = stmt.kind
+        if !cx.in_proc_macro
+            && let StmtKind::Expr(expr) = stmt.kind
             && let Some(If {cond, then, r#else: None }) = If::hir(expr)
             && let ExprKind::Block(block, ..) = then.kind
             && block.stmts.is_empty()
             && block.expr.is_none()
             && !in_external_macro(cx.sess(), expr.span)
-            && !cx.in_proc_macro
             && let Some(then_snippet) = snippet_opt(cx, then.span)
             // Ignore
             // - empty macro expansions

@@ -641,7 +641,7 @@ fn check_clippy_lint_names(cx: &LateContext<'_>, name: Symbol, items: &[NestedMe
 
 fn check_lint_reason<'cx>(cx: &LateContext<'cx>, name: Symbol, items: &[NestedMetaItem], attr: &'cx Attribute) {
     // Check for the feature
-    if !cx.tcx.features().lint_reasons {
+    if !cx.tcx.features().lint_reasons || cx.in_proc_macro {
         return;
     }
 
@@ -654,7 +654,7 @@ fn check_lint_reason<'cx>(cx: &LateContext<'cx>, name: Symbol, items: &[NestedMe
     }
 
     // Check if the attribute is in an external macro and therefore out of the developer's control
-    if in_external_macro(cx.sess(), attr.span) || cx.in_proc_macro {
+    if in_external_macro(cx.sess(), attr.span) {
         return;
     }
 

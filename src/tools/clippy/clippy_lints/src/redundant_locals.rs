@@ -48,6 +48,7 @@ declare_lint_pass!(RedundantLocals => [REDUNDANT_LOCALS]);
 impl<'tcx> LateLintPass<'tcx> for RedundantLocals {
     fn check_local(&mut self, cx: &LateContext<'tcx>, local: &'tcx Local<'tcx>) {
         if_chain! {
+            if !cx.in_proc_macro;
             if !local.span.is_desugaring(DesugaringKind::Async);
             // the pattern is a single by-value binding
             if let PatKind::Binding(BindingAnnotation(ByRef::No, mutability), _, ident, None) = local.pat.kind;
@@ -70,7 +71,6 @@ impl<'tcx> LateLintPass<'tcx> for RedundantLocals {
             if !affects_drop_behavior(cx, binding_id, local.hir_id, expr);
             // the local is user-controlled
             if !in_external_macro(cx.sess(), local.span);
-            if !cx.in_proc_macro;
             // Async function parameters are lowered into the closure body, so we can't lint them.
             // see `lower_maybe_async_body` in `rust_ast_lowering`
             if !is_from_async_await(local.span);

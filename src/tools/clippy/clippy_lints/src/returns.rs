@@ -161,7 +161,8 @@ declare_lint_pass!(Return => [LET_AND_RETURN, NEEDLESS_RETURN, NEEDLESS_RETURN_W
 
 impl<'tcx> LateLintPass<'tcx> for Return {
     fn check_stmt(&mut self, cx: &LateContext<'tcx>, stmt: &'tcx Stmt<'_>) {
-        if !in_external_macro(cx.sess(), stmt.span)
+        if !cx.in_proc_macro
+            && !in_external_macro(cx.sess(), stmt.span)
             && let StmtKind::Semi(expr) = stmt.kind
             && let ExprKind::Ret(Some(ret)) = expr.kind
             && let ExprKind::Match(.., MatchSource::TryDesugar(_)) = ret.kind
@@ -172,7 +173,6 @@ impl<'tcx> LateLintPass<'tcx> for Return {
             && let ExprKind::Block(block, _) = block.kind
             && let [.., final_stmt] = block.stmts
             && final_stmt.hir_id != stmt.hir_id
-            && !cx.in_proc_macro
         {
             span_lint_and_sugg(
                 cx,

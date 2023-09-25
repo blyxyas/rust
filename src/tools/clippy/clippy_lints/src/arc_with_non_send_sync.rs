@@ -40,7 +40,8 @@ declare_lint_pass!(ArcWithNonSendSync => [ARC_WITH_NON_SEND_SYNC]);
 
 impl<'tcx> LateLintPass<'tcx> for ArcWithNonSendSync {
     fn check_expr(&mut self, cx: &LateContext<'tcx>, expr: &'tcx Expr<'tcx>) {
-        if !expr.span.from_expansion()
+        if !cx.in_proc_macro
+            && !expr.span.from_expansion()
             && let ty = cx.typeck_results().expr_ty(expr)
             && is_type_diagnostic_item(cx, ty, sym::Arc)
             && let ExprKind::Call(func, [arg]) = expr.kind
@@ -55,7 +56,6 @@ impl<'tcx> LateLintPass<'tcx> for ArcWithNonSendSync {
             && let Some(sync) = cx.tcx.lang_items().sync_trait()
             && let [is_send, is_sync] = [send, sync].map(|id| implements_trait(cx, arg_ty, id, &[]))
             && !(is_send && is_sync)
-            && !cx.in_proc_macro
         {
             span_lint_and_then(
                 cx,

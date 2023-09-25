@@ -12,8 +12,9 @@ use rustc_middle::ty::Binder;
 use rustc_span::{sym, Span};
 
 pub(super) fn check<'tcx>(cx: &LateContext<'tcx>, expr: &'tcx Expr<'tcx>, arg: &Expr<'_>, call_span: Span) {
-    if !in_external_macro(cx.sess(), expr.span)
-        && is_trait_method(cx, expr, sym::Iterator)
+    if !cx.in_proc_macro
+    && !in_external_macro(cx.sess(), expr.span)
+    && is_trait_method(cx, expr, sym::Iterator)
         && let ExprKind::Closure(closure) = arg.kind
         && let body = cx.tcx.hir().body(closure.body)
         && let value = peel_blocks(body.value)
@@ -35,7 +36,6 @@ pub(super) fn check<'tcx>(cx: &LateContext<'tcx>, expr: &'tcx Expr<'tcx>, arg: &
         && let then_body = peel_blocks(cx.tcx.hir().body(then_closure.body).value)
         && let Some(def_id) = cx.typeck_results().type_dependent_def_id(value.hir_id)
         && match_def_path(cx, def_id, &BOOL_THEN)
-        && !cx.in_proc_macro
         && let Some(param_snippet) = snippet_opt(cx, param.span)
         && let Some(filter) = snippet_opt(cx, recv.span)
         && let Some(map) = snippet_opt(cx, then_body.span)

@@ -64,6 +64,10 @@ impl LateLintPass<'_> for TupleArrayConversions {
 }
 
 fn check_array<'tcx>(cx: &LateContext<'tcx>, expr: &'tcx Expr<'tcx>, elements: &'tcx [Expr<'tcx>]) {
+    if cx.in_proc_macro {
+        return;
+    }
+
     let (ty::Array(ty, _) | ty::Slice(ty)) = cx.typeck_results().expr_ty(expr).kind() else {
         unreachable!("`expr` must be an array or slice due to `ExprKind::Array`");
     };
@@ -84,7 +88,6 @@ fn check_array<'tcx>(cx: &LateContext<'tcx>, expr: &'tcx Expr<'tcx>, elements: &
             _ => None,
         })
         && all_bindings_are_for_conv(cx, &[*ty], expr, elements, &locals, ToType::Array)
-        && !cx.in_proc_macro
     {
         span_lint_and_help(
             cx,

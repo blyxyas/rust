@@ -71,8 +71,8 @@ impl<'tcx> LateLintPass<'tcx> for SingleCallFn {
         def_id: LocalDefId,
     ) {
         if self.avoid_breaking_exported_api && cx.effective_visibilities.is_exported(def_id)
-            || in_external_macro(cx.sess(), span)
             || cx.in_proc_macro
+            || in_external_macro(cx.sess(), span)
             || is_in_test_function(cx.tcx, body.value.hir_id)
         {
             return;

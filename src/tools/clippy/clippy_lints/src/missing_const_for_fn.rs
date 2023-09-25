@@ -102,11 +102,16 @@ impl<'tcx> LateLintPass<'tcx> for MissingConstForFn {
         if in_external_macro(cx.tcx.sess, span) || is_entrypoint_fn(cx, def_id.to_def_id()) {
             return;
         }
+        
+        if cx.in_proc_macro {
+            return;
+        }
 
         // Building MIR for `fn`s with unsatisfiable preds results in ICE.
         if fn_has_unsatisfiable_preds(cx, def_id.to_def_id()) {
             return;
         }
+
 
         // Perform some preliminary checks that rule out constness on the Clippy side. This way we
         // can skip the actual const check and return early.
@@ -144,10 +149,6 @@ impl<'tcx> LateLintPass<'tcx> for MissingConstForFn {
                     }
                 }
             }
-        }
-
-        if cx.in_proc_macro {
-            return;
         }
 
         let mir = cx.tcx.optimized_mir(def_id);
