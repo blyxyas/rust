@@ -1,5 +1,5 @@
 use clippy_utils::diagnostics::span_lint_and_sugg;
-use clippy_utils::is_from_proc_macro;
+
 use clippy_utils::msrvs::{self, Msrv};
 use clippy_utils::ty::same_type_and_consts;
 use if_chain::if_chain;
@@ -99,11 +99,11 @@ impl<'tcx> LateLintPass<'tcx> for UseSelf {
             if let TyKind::Path(QPath::Resolved(_, item_path)) = self_ty.kind;
             let parameters = &item_path.segments.last().expect(SEGMENTS_MSG).args;
             if parameters.as_ref().map_or(true, |params| {
-                params.parenthesized  == GenericArgsParentheses::No
+                params.parenthesized == GenericArgsParentheses::No
                     && !params.args.iter().any(|arg| matches!(arg, GenericArg::Lifetime(_)))
             });
             if !item.span.from_expansion();
-            if !is_from_proc_macro(cx, item); // expensive, should be last check
+            if !cx.in_proc_macro;
             then {
                 // Self cannot be used inside const generic parameters
                 let types_to_skip = generics.params.iter().filter_map(|param| {

@@ -1,7 +1,7 @@
 use clippy_utils::consts::{constant, Constant};
 use clippy_utils::diagnostics::span_lint_and_then;
 use clippy_utils::source::snippet_opt;
-use clippy_utils::{is_from_proc_macro, path_to_local};
+use clippy_utils::{ path_to_local};
 use rustc_errors::Applicability;
 use rustc_hir::{BinOpKind, Constness, Expr, ExprKind};
 use rustc_lint::{LateContext, LateLintPass, Lint, LintContext};
@@ -105,7 +105,7 @@ impl<'tcx> LateLintPass<'tcx> for ManualFloatMethods {
             // case somebody does that for some reason
             && (is_infinity(const_1) && is_neg_infinity(const_2)
                 || is_neg_infinity(const_1) && is_infinity(const_2))
-            && !is_from_proc_macro(cx, expr)
+            && !cx.in_proc_macro
             && let Some(local_snippet) = snippet_opt(cx, first.span)
         {
             let variant = match (kind.node, lhs_kind.node, rhs_kind.node) {

@@ -1,6 +1,6 @@
 use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::higher::If;
-use clippy_utils::is_from_proc_macro;
+
 use clippy_utils::source::snippet_opt;
 use rustc_errors::Applicability;
 use rustc_hir::{ExprKind, Stmt, StmtKind};
@@ -44,7 +44,7 @@ impl LateLintPass<'_> for NeedlessIf {
             && block.stmts.is_empty()
             && block.expr.is_none()
             && !in_external_macro(cx.sess(), expr.span)
-            && !is_from_proc_macro(cx, expr)
+            && !cx.in_proc_macro
             && let Some(then_snippet) = snippet_opt(cx, then.span)
             // Ignore
             // - empty macro expansions

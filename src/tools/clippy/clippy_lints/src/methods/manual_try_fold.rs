@@ -1,5 +1,5 @@
 use clippy_utils::diagnostics::span_lint_and_sugg;
-use clippy_utils::is_from_proc_macro;
+
 use clippy_utils::msrvs::{Msrv, ITERATOR_TRY_FOLD};
 use clippy_utils::source::snippet_opt;
 use clippy_utils::ty::implements_trait;
@@ -14,7 +14,7 @@ use super::MANUAL_TRY_FOLD;
 
 pub(super) fn check<'tcx>(
     cx: &LateContext<'tcx>,
-    expr: &Expr<'tcx>,
+    _: &Expr<'tcx>,
     init: &Expr<'_>,
     acc: &Expr<'_>,
     fold_span: Span,
@@ -29,7 +29,7 @@ pub(super) fn check<'tcx>(
         && let ExprKind::Path(qpath) = path.kind
         && let Res::Def(DefKind::Ctor(_, _), _) = cx.qpath_res(&qpath, path.hir_id)
         && let ExprKind::Closure(closure) = acc.kind
-        && !is_from_proc_macro(cx, expr)
+        && !cx.in_proc_macro
         && let Some(args_snip) = closure.fn_arg_span.and_then(|fn_arg_span| snippet_opt(cx, fn_arg_span))
     {
         let init_snip = rest

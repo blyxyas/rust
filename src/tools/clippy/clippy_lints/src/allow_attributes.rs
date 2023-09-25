@@ -1,6 +1,6 @@
 use ast::{AttrStyle, Attribute};
 use clippy_utils::diagnostics::span_lint_and_sugg;
-use clippy_utils::is_from_proc_macro;
+
 use rustc_ast as ast;
 use rustc_errors::Applicability;
 use rustc_lint::{LateContext, LateLintPass, LintContext};
@@ -58,7 +58,7 @@ impl LateLintPass<'_> for AllowAttribute {
             if let AttrStyle::Outer = attr.style;
             if let Some(ident) = attr.ident();
             if ident.name == rustc_span::symbol::sym::allow;
-            if !is_from_proc_macro(cx, &attr);
+            if !cx.in_proc_macro;
             then {
                 span_lint_and_sugg(
                     cx,

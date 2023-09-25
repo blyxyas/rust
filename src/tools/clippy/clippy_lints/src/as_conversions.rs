@@ -1,5 +1,5 @@
 use clippy_utils::diagnostics::span_lint_and_help;
-use clippy_utils::is_from_proc_macro;
+
 use rustc_hir::{Expr, ExprKind};
 use rustc_lint::{LateContext, LateLintPass, LintContext};
 use rustc_middle::lint::in_external_macro;
@@ -48,7 +48,7 @@ declare_lint_pass!(AsConversions => [AS_CONVERSIONS]);
 
 impl<'tcx> LateLintPass<'tcx> for AsConversions {
     fn check_expr(&mut self, cx: &LateContext<'tcx>, expr: &Expr<'tcx>) {
-        if in_external_macro(cx.sess(), expr.span) || is_from_proc_macro(cx, expr) {
+        if in_external_macro(cx.sess(), expr.span) || cx.in_proc_macro {
             return;
         }
 

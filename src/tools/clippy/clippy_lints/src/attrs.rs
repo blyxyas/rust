@@ -1,7 +1,7 @@
 //! checks for attributes
 
 use clippy_utils::diagnostics::{span_lint, span_lint_and_help, span_lint_and_sugg, span_lint_and_then};
-use clippy_utils::is_from_proc_macro;
+
 use clippy_utils::macros::{is_panic, macro_backtrace};
 use clippy_utils::msrvs::{self, Msrv};
 use clippy_utils::source::{first_line_of_span, is_present_in_source, snippet_opt, without_block_comments};
@@ -654,7 +654,7 @@ fn check_lint_reason<'cx>(cx: &LateContext<'cx>, name: Symbol, items: &[NestedMe
     }
 
     // Check if the attribute is in an external macro and therefore out of the developer's control
-    if in_external_macro(cx.sess(), attr.span) || is_from_proc_macro(cx, &attr) {
+    if in_external_macro(cx.sess(), attr.span) || cx.in_proc_macro {
         return;
     }
 

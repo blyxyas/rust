@@ -1,5 +1,5 @@
 use clippy_utils::diagnostics::{span_lint_and_help, span_lint_and_then};
-use clippy_utils::{is_from_proc_macro, trait_ref_of_method};
+use clippy_utils::trait_ref_of_method;
 use rustc_data_structures::fx::{FxHashMap, FxHashSet};
 use rustc_errors::Applicability;
 use rustc_hir::intravisit::{walk_impl_item, walk_item, walk_param_bound, walk_ty, Visitor};
@@ -263,7 +263,7 @@ impl<'tcx> LateLintPass<'tcx> for ExtraUnusedTypeParameters {
     fn check_item(&mut self, cx: &LateContext<'tcx>, item: &'tcx Item<'tcx>) {
         if let ItemKind::Fn(_, generics, body_id) = item.kind
             && !self.is_empty_exported_or_macro(cx, item.span, item.owner_id.def_id, body_id)
-            && !is_from_proc_macro(cx, item)
+            && !cx.in_proc_macro
         {
             let mut walker = TypeWalker::new(cx, generics);
             walk_item(&mut walker, item);

@@ -1,5 +1,5 @@
 use clippy_utils::diagnostics::span_lint_and_help;
-use clippy_utils::{is_from_proc_macro, is_in_test_function};
+use clippy_utils::{ is_in_test_function};
 use rustc_data_structures::fx::FxHashMap;
 use rustc_hir::def_id::LocalDefId;
 use rustc_hir::intravisit::{walk_expr, FnKind, Visitor};
@@ -64,7 +64,7 @@ impl<'tcx> LateLintPass<'tcx> for SingleCallFn {
     fn check_fn(
         &mut self,
         cx: &LateContext<'tcx>,
-        kind: FnKind<'tcx>,
+        _: FnKind<'tcx>,
         _: &'tcx FnDecl<'_>,
         body: &'tcx Body<'_>,
         span: Span,
@@ -72,7 +72,7 @@ impl<'tcx> LateLintPass<'tcx> for SingleCallFn {
     ) {
         if self.avoid_breaking_exported_api && cx.effective_visibilities.is_exported(def_id)
             || in_external_macro(cx.sess(), span)
-            || is_from_proc_macro(cx, &(&kind, body, cx.tcx.local_def_id_to_hir_id(def_id), span))
+            || cx.in_proc_macro
             || is_in_test_function(cx.tcx, body.value.hir_id)
         {
             return;

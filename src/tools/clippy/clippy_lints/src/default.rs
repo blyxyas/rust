@@ -2,7 +2,7 @@ use clippy_utils::diagnostics::{span_lint_and_note, span_lint_and_sugg};
 use clippy_utils::source::snippet_with_context;
 use clippy_utils::ty::{has_drop, is_copy};
 use clippy_utils::{
-    any_parent_is_automatically_derived, contains_name, get_parent_expr, is_from_proc_macro, match_def_path, paths,
+    any_parent_is_automatically_derived, contains_name, get_parent_expr,  match_def_path, paths,
 };
 use if_chain::if_chain;
 use rustc_data_structures::fx::FxHashSet;
@@ -97,7 +97,7 @@ impl<'tcx> LateLintPass<'tcx> for Default {
             if let QPath::Resolved(None, _path) = qpath;
             let expr_ty = cx.typeck_results().expr_ty(expr);
             if let ty::Adt(def, ..) = expr_ty.kind();
-            if !is_from_proc_macro(cx, expr);
+            if !cx.in_proc_macro;
             then {
                 let replacement = with_forced_trimmed_paths!(format!("{}::default()", cx.tcx.def_path_str(def.did())));
                 span_lint_and_sugg(

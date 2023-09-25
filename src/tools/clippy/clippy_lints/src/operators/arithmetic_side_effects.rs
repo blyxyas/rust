@@ -2,7 +2,7 @@ use super::ARITHMETIC_SIDE_EFFECTS;
 use clippy_utils::consts::{constant, constant_simple, Constant};
 use clippy_utils::diagnostics::span_lint;
 use clippy_utils::ty::type_diagnostic_name;
-use clippy_utils::{expr_or_init, is_from_proc_macro, is_lint_allowed, peel_hir_expr_refs, peel_hir_expr_unary};
+use clippy_utils::{expr_or_init, is_lint_allowed, peel_hir_expr_refs, peel_hir_expr_unary};
 use rustc_data_structures::fx::{FxHashMap, FxHashSet};
 use rustc_lint::{LateContext, LateLintPass};
 use rustc_middle::ty::Ty;
@@ -285,7 +285,7 @@ impl ArithmeticSideEffects {
 
     fn should_skip_expr<'tcx>(&mut self, cx: &LateContext<'tcx>, expr: &hir::Expr<'tcx>) -> bool {
         is_lint_allowed(cx, ARITHMETIC_SIDE_EFFECTS, expr.hir_id)
-            || is_from_proc_macro(cx, expr)
+            || cx.in_proc_macro
             || self.expr_span.is_some()
             || self.const_span.map_or(false, |sp| sp.contains(expr.span))
     }

@@ -1,5 +1,5 @@
 use clippy_utils::diagnostics::span_lint_and_then;
-use clippy_utils::is_from_proc_macro;
+
 use clippy_utils::source::{indent_of, reindent_multiline, snippet_opt};
 use if_chain::if_chain;
 use rustc_errors::Applicability;
@@ -49,7 +49,7 @@ pub(super) fn check<'tcx>(cx: &LateContext<'tcx>, expr: &'tcx Expr<'tcx>) {
             }
         })
         .collect::<Vec<_>>();
-    if !args_to_recover.is_empty() && !is_from_proc_macro(cx, expr) {
+    if !args_to_recover.is_empty() && !cx.in_proc_macro {
         lint_unit_args(cx, expr, args_to_recover.as_slice());
     }
 }

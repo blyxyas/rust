@@ -2,7 +2,7 @@ use clippy_utils::diagnostics::span_lint;
 use clippy_utils::msrvs::{self, Msrv};
 use clippy_utils::qualify_min_const_fn::is_min_const_fn;
 use clippy_utils::ty::has_drop;
-use clippy_utils::{fn_has_unsatisfiable_preds, is_entrypoint_fn, is_from_proc_macro, trait_ref_of_method};
+use clippy_utils::{fn_has_unsatisfiable_preds, is_entrypoint_fn,  trait_ref_of_method};
 use rustc_hir as hir;
 use rustc_hir::def_id::CRATE_DEF_ID;
 use rustc_hir::intravisit::FnKind;
@@ -91,7 +91,7 @@ impl<'tcx> LateLintPass<'tcx> for MissingConstForFn {
         cx: &LateContext<'tcx>,
         kind: FnKind<'tcx>,
         _: &FnDecl<'_>,
-        body: &Body<'tcx>,
+        _: &Body<'tcx>,
         span: Span,
         def_id: LocalDefId,
     ) {
@@ -146,7 +146,7 @@ impl<'tcx> LateLintPass<'tcx> for MissingConstForFn {
             }
         }
 
-        if is_from_proc_macro(cx, &(&kind, body, hir_id, span)) {
+        if cx.in_proc_macro {
             return;
         }
 

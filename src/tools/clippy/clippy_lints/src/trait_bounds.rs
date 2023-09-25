@@ -1,7 +1,7 @@
 use clippy_utils::diagnostics::{span_lint_and_help, span_lint_and_sugg};
 use clippy_utils::msrvs::{self, Msrv};
 use clippy_utils::source::{snippet, snippet_opt, snippet_with_applicability};
-use clippy_utils::{is_from_proc_macro, SpanlessEq, SpanlessHash};
+use clippy_utils::{ SpanlessEq, SpanlessHash};
 use core::hash::{Hash, Hasher};
 use if_chain::if_chain;
 use itertools::Itertools;
@@ -275,7 +275,7 @@ impl TraitBounds {
                 let bounds = p.bounds.iter().filter(|b| !self.cannot_combine_maybe_bound(cx, b)).collect::<Vec<_>>();
                 if !bounds.is_empty();
                 if let Some(ref v) = map.insert(SpanlessTy { ty: p.bounded_ty, cx }, bounds);
-                if !is_from_proc_macro(cx, p.bounded_ty);
+                if !cx.in_proc_macro;
                 then {
                     let trait_bounds = v
                         .iter()
