@@ -1,7 +1,7 @@
 use super::needless_pass_by_value::requires_exact_signature;
 use clippy_utils::diagnostics::span_lint_hir_and_then;
 use clippy_utils::source::snippet;
-use clippy_utils::{get_parent_node, inherits_cfg, is_from_proc_macro, is_self};
+use clippy_utils::{get_parent_node, inherits_cfg, is_self};
 use rustc_data_structures::fx::{FxHashSet, FxIndexMap};
 use rustc_errors::Applicability;
 use rustc_hir::intravisit::{walk_qpath, FnKind, Visitor};
@@ -71,7 +71,6 @@ impl_lint_pass!(NeedlessPassByRefMut<'_> => [NEEDLESS_PASS_BY_REF_MUT]);
 
 fn should_skip<'tcx>(
     cx: &LateContext<'tcx>,
-    input: rustc_hir::Ty<'tcx>,
     ty: Ty<'_>,
     arg: &rustc_hir::Param<'_>,
 ) -> bool {
@@ -92,7 +91,7 @@ fn should_skip<'tcx>(
     }
 
     // All spans generated from a proc-macro invocation are the same...
-    is_from_proc_macro(cx, &input)
+    cx.in_proc_macro
 }
 
 impl<'tcx> LateLintPass<'tcx> for NeedlessPassByRefMut<'tcx> {
@@ -136,12 +135,31 @@ impl<'tcx> LateLintPass<'tcx> for NeedlessPassByRefMut<'tcx> {
         let fn_sig = cx.tcx.liberate_late_bound_regions(fn_def_id.to_def_id(), fn_sig);
 
         // If there are no `&mut` argument, no need to go any further.
+        if !decl
+            .inputs
+            .iter()
+            .zip(fn_sig.inputs())
+            .zip(body.params)
+            .any(|((_, &ty), arg)| !should_skip(cx, ty, arg))
+        {
+            return;
+        }
+
+        // Collect variables mutably used and spans which will need dereferencings from the
+        // function body.
+        let MutablyUsedVariablesCtxt { mutably_used_vars, .. } = {
+            let mut ctx = MutablyUsedVariablesCtxt::default();
+            let infcx = cx.tcx.infer_ctxt().build();
+            euv::ExprUseVisitor::new(&mut ctx, &infcx, fn_def_id, cx.param_env, cx.typeck_results()).consume_body(body);
+            ctx
+        };
+
         let mut it = decl
             .inputs
             .iter()
             .zip(fn_sig.inputs())
             .zip(body.params)
-            .filter(|((&input, &ty), arg)| !should_skip(cx, input, ty, arg))
+            .filter(|((_, &ty), arg)| !should_skip(cx, ty, arg))
             .peekable();
         if it.peek().is_none() {
             return;

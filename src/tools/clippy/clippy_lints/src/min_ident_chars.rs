@@ -1,5 +1,5 @@
 use clippy_utils::diagnostics::span_lint;
-use clippy_utils::is_from_proc_macro;
+
 use rustc_data_structures::fx::FxHashSet;
 use rustc_hir::def::{DefKind, Res};
 use rustc_hir::intravisit::{walk_item, Visitor};
@@ -121,6 +121,11 @@ impl Visitor<'_> for IdentVisitor<'_, '_> {
                     return;
                 }
             }
+
+            if let Node::Field(field_def) = node && field_def.is_positional() {
+                return;
+            }
+
             // `struct Awa<T>(T)`
             //             ^
             if let Node::GenericParam(generic_param) = node
@@ -137,7 +142,15 @@ impl Visitor<'_> for IdentVisitor<'_, '_> {
                 return;
             }
 
-            if is_from_proc_macro(cx, &ident) {
+            // `struct Array<T, const N: usize>([T; N])`
+            //                        ^
+            if let Node::GenericParam(generic_param) = node
+                && let GenericParamKind::Const { .. } = generic_param.kind
+            {
+                return;
+            }
+
+            if cx.in_proc_macro {
                 return;
             }
 
