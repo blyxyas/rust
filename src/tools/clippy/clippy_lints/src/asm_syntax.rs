@@ -2,7 +2,7 @@ use std::fmt;
 
 use clippy_utils::diagnostics::span_lint_and_help;
 use rustc_ast::ast::{Expr, ExprKind, InlineAsmOptions};
-use rustc_lint::{EarlyContext, EarlyLintPass, Lint};
+use rustc_lint::{EarlyContext, EarlyLintPass, Lint, LintPass};
 use rustc_session::{declare_lint_pass, declare_tool_lint};
 
 #[derive(Clone, Copy, PartialEq, Eq)]
@@ -89,7 +89,7 @@ declare_lint_pass!(InlineAsmX86IntelSyntax => [INLINE_ASM_X86_INTEL_SYNTAX]);
 
 impl EarlyLintPass for InlineAsmX86IntelSyntax {
     fn check_expr(&mut self, cx: &EarlyContext<'_>, expr: &Expr) {
-        check_expr_asm_syntax(Self::get_lints()[0], cx, expr, AsmStyle::Intel);
+        check_expr_asm_syntax(Self::default().get_lints()[0], cx, expr, AsmStyle::Intel);
     }
 }
 
@@ -130,6 +130,6 @@ declare_lint_pass!(InlineAsmX86AttSyntax => [INLINE_ASM_X86_ATT_SYNTAX]);
 
 impl EarlyLintPass for InlineAsmX86AttSyntax {
     fn check_expr(&mut self, cx: &EarlyContext<'_>, expr: &Expr) {
-        check_expr_asm_syntax(Self::get_lints()[0], cx, expr, AsmStyle::Att);
+        check_expr_asm_syntax(Self::default().get_lints()[0], cx, expr, AsmStyle::Att);
     }
 }

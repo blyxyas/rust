@@ -14,7 +14,8 @@
 //! upon. As the ast is traversed, this keeps track of the current lint level
 //! for all lint attributes.
 
-use crate::{passes::LateLintPassObject, LateContext, LateLintPass, LintStore};
+use crate::levels::lints_that_can_emit;
+use crate::{passes::LateLintPassObject, LateContext, LateLintPass, LintStore, Level};
 use rustc_ast as ast;
 use rustc_data_structures::stack::ensure_sufficient_stack;
 use rustc_data_structures::sync::join;
@@ -326,6 +327,9 @@ impl LintPass for RuntimeCombinedLateLintPass<'_, '_> {
     fn name(&self) -> &'static str {
         panic!()
     }
+    fn get_lints(&self) -> crate::LintVec {
+        panic!()
+    }
 }
 
 macro_rules! impl_late_lint_pass {
@@ -399,7 +403,7 @@ fn late_lint_mod_inner<'tcx, T: LateLintPass<'tcx>>(
 
 fn late_lint_crate<'tcx>(tcx: TyCtxt<'tcx>) {
     // Note: `passes` is often empty.
-    let mut passes: Vec<_> =
+    let passes: Vec<_> =
         unerased_lint_store(tcx).late_passes.iter().map(|mk_pass| (mk_pass)(tcx)).collect();
 
     if passes.is_empty() {
@@ -417,6 +421,18 @@ fn late_lint_crate<'tcx>(tcx: TyCtxt<'tcx>) {
         generics: None,
         only_module: false,
     };
+
+    let builder = lints_that_can_emit(tcx);
+
+    let mut passes: Vec<std::boxed::Box<dyn LateLintPass<'tcx>>> = passes
+    .into_iter()
+    .filter(|pass| 
+        LintPass::get_lints(pass)
+        .iter()
+        .any(|&lint| {
+            builder.lint_level(lint).0 > Level::Allow
+        })
+            ).collect();
 
     let pass = RuntimeCombinedLateLintPass { passes: &mut passes[..] };
     late_lint_crate_inner(tcx, context, pass);

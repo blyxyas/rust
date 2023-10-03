@@ -136,7 +136,7 @@ declare_lint! {
     "detects invalid floating point NaN comparisons"
 }
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 pub struct TypeLimits {
     /// Id of the last visited negated expression
     negated_expr_id: Option<hir::HirId>,

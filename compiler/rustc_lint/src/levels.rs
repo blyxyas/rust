@@ -150,6 +150,38 @@ fn lint_expectations(tcx: TyCtxt<'_>, (): ()) -> Vec<(LintExpectationId, LintExp
     builder.provider.expectations
 }
 
+/// Walk the whole crate collecting nodes where lint levels change
+/// (e.g. `#[allow]` attributes), and joins that list with the warn-by-default
+/// (and not allowed in the crate) and CLI lints. The final result is a builder
+/// that has information about just lints that can be emitted (leaving out
+/// globally-allowed lints) 
+pub(crate) fn lints_that_can_emit(tcx: TyCtxt<'_>) -> LintLevelsBuilder<'_, QueryMapExpectationsWrapper<'_>> {
+    let store = unerased_lint_store(tcx);
+
+    let mut builder = LintLevelsBuilder {
+        sess: tcx.sess,
+        features: tcx.features(),
+        provider: QueryMapExpectationsWrapper {
+            tcx,
+            cur: hir::CRATE_HIR_ID,
+            specs: ShallowLintLevelMap::default(),
+            expectations: Vec::new(),
+            unstable_to_stable_ids: FxHashMap::default(),
+            empty: FxHashMap::default(),
+        },
+        warn_about_weird_lints: false,
+        store,
+        registered_tools: &tcx.registered_tools(()),
+    };
+
+    builder.add_command_line();
+    builder.add_id(hir::CRATE_HIR_ID);
+    tcx.hir().walk_toplevel_module(&mut builder);
+
+    builder
+
+}
+
 #[instrument(level = "trace", skip(tcx), ret)]
 fn shallow_lint_levels_on(tcx: TyCtxt<'_>, owner: hir::OwnerId) -> ShallowLintLevelMap {
     let store = unerased_lint_store(tcx);
@@ -251,7 +283,7 @@ impl LintLevelsProvider for LintLevelQueryMap<'_> {
     }
 }
 
-struct QueryMapExpectationsWrapper<'tcx> {
+pub(crate) struct QueryMapExpectationsWrapper<'tcx> {
     tcx: TyCtxt<'tcx>,
     /// HirId of the currently investigated element.
     cur: HirId,

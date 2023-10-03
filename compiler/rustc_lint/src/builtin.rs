@@ -458,6 +458,7 @@ declare_lint! {
     report_in_external_macro
 }
 
+#[derive(Default)]
 pub struct MissingDoc;
 
 impl_lint_pass!(MissingDoc => [MISSING_DOCS]);
@@ -899,9 +900,9 @@ pub struct DeprecatedAttr {
 
 impl_lint_pass!(DeprecatedAttr => []);
 
-impl DeprecatedAttr {
-    pub fn new() -> DeprecatedAttr {
-        DeprecatedAttr { depr_attrs: deprecated_attributes() }
+impl std::default::Default for DeprecatedAttr {
+    fn default() -> Self {
+        DeprecatedAttr { depr_attrs: deprecated_attributes() }   
     }
 }
 
