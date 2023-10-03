@@ -154,8 +154,10 @@ fn lint_expectations(tcx: TyCtxt<'_>, (): ()) -> Vec<(LintExpectationId, LintExp
 /// (e.g. `#[allow]` attributes), and joins that list with the warn-by-default
 /// (and not allowed in the crate) and CLI lints. The final result is a builder
 /// that has information about just lints that can be emitted (leaving out
-/// globally-allowed lints) 
-pub(crate) fn lints_that_can_emit(tcx: TyCtxt<'_>) -> LintLevelsBuilder<'_, QueryMapExpectationsWrapper<'_>> {
+/// globally-allowed lints)
+pub(crate) fn lints_that_can_emit(
+    tcx: TyCtxt<'_>,
+) -> LintLevelsBuilder<'_, QueryMapExpectationsWrapper<'_>> {
     let store = unerased_lint_store(tcx);
 
     let mut builder = LintLevelsBuilder {
@@ -179,7 +181,6 @@ pub(crate) fn lints_that_can_emit(tcx: TyCtxt<'_>) -> LintLevelsBuilder<'_, Quer
     tcx.hir().walk_toplevel_module(&mut builder);
 
     builder
-
 }
 
 #[instrument(level = "trace", skip(tcx), ret)]

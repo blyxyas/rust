@@ -31,7 +31,8 @@ where
     allowed_lints.extend(lint_opts.iter().map(|(lint, _)| lint).cloned());
 
     let lints = || {
-        lint::builtin::HardwiredLints::default().get_lints()
+        lint::builtin::HardwiredLints::default()
+            .get_lints()
             .into_iter()
             .chain(rustc_lint::SoftLints::default().get_lints().into_iter())
     };

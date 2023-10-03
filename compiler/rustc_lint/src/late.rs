@@ -15,7 +15,7 @@
 //! for all lint attributes.
 
 use crate::levels::lints_that_can_emit;
-use crate::{passes::LateLintPassObject, LateContext, LateLintPass, LintStore, Level};
+use crate::{passes::LateLintPassObject, LateContext, LateLintPass, Level, LintStore};
 use rustc_ast as ast;
 use rustc_data_structures::stack::ensure_sufficient_stack;
 use rustc_data_structures::sync::join;
@@ -425,14 +425,11 @@ fn late_lint_crate<'tcx>(tcx: TyCtxt<'tcx>) {
     let builder = lints_that_can_emit(tcx);
 
     let mut passes: Vec<std::boxed::Box<dyn LateLintPass<'tcx>>> = passes
-    .into_iter()
-    .filter(|pass| 
-        LintPass::get_lints(pass)
-        .iter()
-        .any(|&lint| {
-            builder.lint_level(lint).0 > Level::Allow
+        .into_iter()
+        .filter(|pass| {
+            LintPass::get_lints(pass).iter().any(|&lint| builder.lint_level(lint).0 > Level::Allow)
         })
-            ).collect();
+        .collect();
 
     let pass = RuntimeCombinedLateLintPass { passes: &mut passes[..] };
     late_lint_crate_inner(tcx, context, pass);

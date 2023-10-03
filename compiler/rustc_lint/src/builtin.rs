@@ -902,7 +902,7 @@ impl_lint_pass!(DeprecatedAttr => []);
 
 impl std::default::Default for DeprecatedAttr {
     fn default() -> Self {
-        DeprecatedAttr { depr_attrs: deprecated_attributes() }   
+        DeprecatedAttr { depr_attrs: deprecated_attributes() }
     }
 }
 
