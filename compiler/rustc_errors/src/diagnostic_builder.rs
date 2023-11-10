@@ -43,6 +43,7 @@ where
 /// extending `DiagCtxtFlags`.
 #[must_use]
 #[derive(Clone)]
+#[cfg_attr(not(test), rustc_diagnostic_item = "DiagnosticBuilder")]
 pub struct DiagnosticBuilder<'a, G: EmissionGuarantee = ErrorGuaranteed> {
     state: DiagnosticBuilderState<'a>,
 

@@ -5,6 +5,7 @@
 #![feature(lint_reasons)]
 #![feature(never_type)]
 #![feature(rustc_private)]
+#![feature(rustc_attrs)]
 #![feature(assert_matches)]
 #![recursion_limit = "512"]
 #![cfg_attr(feature = "deny-warnings", deny(warnings))]
@@ -15,6 +16,7 @@
 #![warn(rust_2018_idioms, unused_lifetimes)]
 // warn on rustc internal lints
 #![warn(rustc::internal)]
+#![allow(internal_features)]
 
 // FIXME: switch to something more ergonomic here, once available.
 // (Currently there is no way to opt into sysroot crates without `extern crate`.)
@@ -409,6 +411,12 @@ pub fn match_qpath(path: &QPath<'_>, segments: &[&str]) -> bool {
 /// Please use `is_path_diagnostic_item` if the target is a diagnostic item.
 pub fn is_expr_path_def_path(cx: &LateContext<'_>, expr: &Expr<'_>, segments: &[&str]) -> bool {
     path_def_id(cx, expr).map_or(false, |id| match_def_path(cx, id, segments))
+}
+
+/// Alternative to [`is_expr_path_def_path`], using diagnostic item. As the
+/// [`paths`] module is deprecated, prefer this function to the other one.
+pub fn is_expr_path_diagnostic_item(cx: &LateContext<'_>, expr: &Expr<'_>, symbol: Symbol, associated: &str) -> bool {
+    path_def_id(cx, expr).map_or(false, |id| cx.tcx.is_associated_diagnostic_item(id, symbol, associated))
 }
 
 /// If `maybe_path` is a path node which resolves to an item, resolves it to a `DefId` and checks if

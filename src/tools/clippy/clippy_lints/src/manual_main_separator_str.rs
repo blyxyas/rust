@@ -1,6 +1,6 @@
 use clippy_config::msrvs::{self, Msrv};
 use clippy_utils::diagnostics::span_lint_and_sugg;
-use clippy_utils::{is_trait_method, match_def_path, paths, peel_hir_expr_refs};
+use clippy_utils::{is_trait_method, peel_hir_expr_refs};
 use rustc_errors::Applicability;
 use rustc_hir::def::{DefKind, Res};
 use rustc_hir::{Expr, ExprKind, Mutability, QPath};
@@ -54,7 +54,7 @@ impl LateLintPass<'_> for ManualMainSeparatorStr {
             && path.ident.name == sym::to_string
             && let ExprKind::Path(QPath::Resolved(None, path)) = receiver.kind
             && let Res::Def(DefKind::Const, receiver_def_id) = path.res
-            && match_def_path(cx, receiver_def_id, &paths::PATH_MAIN_SEPARATOR)
+            && cx.tcx.is_diagnostic_item(sym::MAIN_SEPARATOR, receiver_def_id)
             && let ty::Ref(_, ty, Mutability::Not) = cx.typeck_results().expr_ty_adjusted(expr).kind()
             && ty.is_str()
         {

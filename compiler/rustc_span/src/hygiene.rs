@@ -43,6 +43,7 @@ use std::hash::Hash;
 
 /// A `SyntaxContext` represents a chain of pairs `(ExpnId, Transparency)` named "marks".
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(not(test), rustc_diagnostic_item = "SyntaxContext")]
 pub struct SyntaxContext(u32);
 
 #[derive(Debug, Encodable, Decodable, Clone)]

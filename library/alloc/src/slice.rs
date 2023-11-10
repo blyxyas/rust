@@ -77,6 +77,7 @@ pub use core::slice::{SplitInclusive, SplitInclusiveMut};
 // HACK(japaric) needed for the implementation of `vec!` macro during testing
 // N.B., see the `hack` module in this file for more details.
 #[cfg(test)]
+#[rustc_diagnostic_item = "slice_into_vec"]
 pub use hack::into_vec;
 
 // HACK(japaric) needed for the implementation of `Vec::clone` during testing

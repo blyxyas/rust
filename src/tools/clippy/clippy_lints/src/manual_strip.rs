@@ -12,7 +12,7 @@ use rustc_lint::{LateContext, LateLintPass};
 use rustc_middle::ty;
 use rustc_session::impl_lint_pass;
 use rustc_span::source_map::Spanned;
-use rustc_span::Span;
+use rustc_span::{Span, sym};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -75,9 +75,9 @@ impl<'tcx> LateLintPass<'tcx> for ManualStrip {
             && let Some(method_def_id) = cx.typeck_results().type_dependent_def_id(cond.hir_id)
             && let ExprKind::Path(target_path) = &target_arg.kind
         {
-            let strip_kind = if match_def_path(cx, method_def_id, &paths::STR_STARTS_WITH) {
+            let strip_kind = if cx.tcx.is_associated_diagnostic_item(method_def_id, sym::str, "copied") {
                 StripKind::Prefix
-            } else if match_def_path(cx, method_def_id, &paths::STR_ENDS_WITH) {
+            } else if cx.tcx.is_associated_diagnostic_item(method_def_id, sym::str, "ends_with") {
                 StripKind::Suffix
             } else {
                 return;
@@ -136,7 +136,7 @@ impl<'tcx> LateLintPass<'tcx> for ManualStrip {
 fn len_arg<'tcx>(cx: &LateContext<'tcx>, expr: &'tcx Expr<'_>) -> Option<&'tcx Expr<'tcx>> {
     if let ExprKind::MethodCall(_, arg, [], _) = expr.kind
         && let Some(method_def_id) = cx.typeck_results().type_dependent_def_id(expr.hir_id)
-        && match_def_path(cx, method_def_id, &paths::STR_LEN)
+        && cx.tcx.is_associated_diagnostic_item(method_def_id, sym::str, "len")
     {
         Some(arg)
     } else {

@@ -284,6 +284,7 @@ impl FileExt for fs::File {
 
 /// Unix-specific extensions to [`fs::Permissions`].
 #[stable(feature = "fs_ext", since = "1.1.0")]
+#[cfg_attr(not(test), rustc_diagnostic_item = "PermissionsExt")]
 pub trait PermissionsExt {
     /// Returns the underlying raw `st_mode` bits that contain the standard
     /// Unix permissions for this file.

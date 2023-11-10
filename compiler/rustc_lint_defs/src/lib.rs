@@ -1,4 +1,6 @@
 #![feature(min_specialization)]
+#![feature(rustc_attrs)]
+#![allow(internal_features)]
 #![deny(rustc::untranslatable_diagnostic)]
 #![deny(rustc::diagnostic_outside_of_impl)]
 
@@ -50,6 +52,7 @@ macro_rules! pluralize {
 /// before applying the suggestion.
 #[derive(Copy, Clone, Debug, Hash, Encodable, Decodable, Serialize, Deserialize)]
 #[derive(PartialEq, Eq, PartialOrd, Ord)]
+#[cfg_attr(not(test), rustc_diagnostic_item = "Applicability")]
 pub enum Applicability {
     /// The suggestion is definitely what the user intended, or maintains the exact meaning of the code.
     /// This suggestion should be automatically applied.
@@ -287,6 +290,7 @@ impl Level {
 
 /// Specification of a single lint.
 #[derive(Copy, Clone, Debug)]
+#[cfg_attr(not(test), rustc_diagnostic_item = "Lint")]
 pub struct Lint {
     /// A string identifier for the lint.
     ///

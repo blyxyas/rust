@@ -47,12 +47,12 @@ use rustc_errors::{
     DecorateLint, DiagCtxt, DiagnosticBuilder, DiagnosticMessage, ErrorGuaranteed, MultiSpan,
 };
 use rustc_hir as hir;
-use rustc_hir::def::DefKind;
+use rustc_hir::def::{CtorOf, DefKind, Res};
 use rustc_hir::def_id::{CrateNum, DefId, LocalDefId, LOCAL_CRATE};
-use rustc_hir::definitions::Definitions;
+use rustc_hir::definitions::{DefPathData, Definitions};
 use rustc_hir::intravisit::Visitor;
 use rustc_hir::lang_items::LangItem;
-use rustc_hir::{HirId, Node, TraitCandidate};
+use rustc_hir::{ExprKind, HirId, Node, QPath, TraitCandidate};
 use rustc_index::IndexVec;
 use rustc_macros::HashStable;
 use rustc_query_system::dep_graph::DepNodeIndex;
@@ -78,6 +78,8 @@ use std::hash::{Hash, Hasher};
 use std::iter;
 use std::mem;
 use std::ops::{Bound, Deref};
+
+use if_chain::if_chain;
 
 #[allow(rustc::usage_of_ty_tykind)]
 impl<'tcx> Interner for TyCtxt<'tcx> {
@@ -841,6 +843,60 @@ impl<'tcx> TyCtxt<'tcx> {
     /// Check whether the diagnostic item with the given `name` has the given `DefId`.
     pub fn is_diagnostic_item(self, name: Symbol, did: DefId) -> bool {
         self.diagnostic_items(did.krate).name_to_id.get(&name) == Some(&did)
+    }
+
+    /// Checks if the current [`DefId`] has the name `associated_name`, and is part
+    /// of a diagnostic item.
+    pub fn is_associated_diagnostic_item(
+        self,
+        def_id: DefId,
+        _trait_name: Symbol,
+        _associated_name: &str,
+    ) -> bool {
+        let binding = self.def_path(def_id);
+        dbg!(&binding);
+        let mut def_path = binding.data.iter();
+        let last = def_path.clone().last().unwrap();
+        if let DefPathData::ValueNs(val) = last.data &&
+            val.as_str() == _associated_name &&
+            def_path.any(|data| {
+                if let DefPathData::TypeNs(val) = data.data && val == _trait_name {
+                    return true;
+                }
+                false
+            }){
+                return true;
+            }
+        // if let Some()
+        // self.opt_associated_item(def_id).is_some_and(|assoc_item| {
+        //     self.is_diagnostic_item(trait_name, assoc_item.container_id(self))
+        //         && assoc_item.name.as_str() == associated_name
+        // })
+        false
+    }
+
+    pub fn is_variant_diagnostic_item(
+        self,
+        def_id: HirId,
+        adt_name: Symbol,
+        variant_name: &str,
+    ) -> bool {
+        if_chain! {
+            if let Node::Expr(expr) = self.hir().get(def_id);
+            if let ExprKind::Path(qpath) = expr.kind;
+            if let QPath::Resolved(.., path) = qpath;
+            if let Res::Def(defkind, _) = path.res;
+            if let DefKind::Ctor(ctor_of, _) = defkind;
+            if let CtorOf::Variant = ctor_of;
+            if let Some(first_seg) = path.segments.first();
+            if first_seg.ident.name == adt_name;
+            then {
+                return path.segments.last()
+                    .unwrap() // If there's a first segment, there's a last one
+                    .ident.as_str() == variant_name;
+            }
+        }
+        false
     }
 
     pub fn is_coroutine(self, def_id: DefId) -> bool {

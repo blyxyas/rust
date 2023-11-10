@@ -110,7 +110,7 @@ impl LateLintPass<'_> for InstantSubtraction {
 fn is_instant_now_call(cx: &LateContext<'_>, expr_block: &'_ Expr<'_>) -> bool {
     if let ExprKind::Call(fn_expr, []) = expr_block.kind
         && let Some(fn_id) = clippy_utils::path_def_id(cx, fn_expr)
-        && clippy_utils::match_def_path(cx, fn_id, &clippy_utils::paths::INSTANT_NOW)
+        && cx.tcx.is_associated_diagnostic_item(fn_id, sym::Instant, "now")
     {
         true
     } else {

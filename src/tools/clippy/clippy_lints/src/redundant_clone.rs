@@ -2,7 +2,8 @@ use clippy_utils::diagnostics::{span_lint_hir, span_lint_hir_and_then};
 use clippy_utils::mir::{visit_local_usage, LocalUsage, PossibleBorrowerMap};
 use clippy_utils::source::snippet_opt;
 use clippy_utils::ty::{has_drop, is_copy, is_type_diagnostic_item, is_type_lang_item, walk_ptrs_ty_depth};
-use clippy_utils::{fn_has_unsatisfiable_preds, match_def_path, paths};
+use clippy_utils::fn_has_unsatisfiable_preds;
+use if_chain::if_chain;
 use rustc_errors::Applicability;
 use rustc_hir::intravisit::FnKind;
 use rustc_hir::{def_id, Body, FnDecl, LangItem};
@@ -96,14 +97,14 @@ impl<'tcx> LateLintPass<'tcx> for RedundantClone {
             let (fn_def_id, arg, arg_ty, clone_ret) =
                 unwrap_or_continue!(is_call_with_ref_arg(cx, mir, &terminator.kind));
 
-            let from_borrow = match_def_path(cx, fn_def_id, &paths::CLONE_TRAIT_METHOD)
+            let from_borrow = cx.tcx.is_associated_diagnostic_item(fn_def_id, sym::Clone, "clone")
                 || cx.tcx.is_diagnostic_item(sym::to_owned_method, fn_def_id)
                 || (cx.tcx.is_diagnostic_item(sym::to_string_method, fn_def_id)
                     && is_type_lang_item(cx, arg_ty, LangItem::String));
 
             let from_deref = !from_borrow
-                && (match_def_path(cx, fn_def_id, &paths::PATH_TO_PATH_BUF)
-                    || match_def_path(cx, fn_def_id, &paths::OS_STR_TO_OS_STRING));
+                && (cx.tcx.is_associated_diagnostic_item(fn_def_id, sym::Path, "to_path_buf")
+                    || cx.tcx.is_associated_diagnostic_item(fn_def_id, sym::OsStr, "to_os_string"));
 
             if !from_borrow && !from_deref {
                 continue;

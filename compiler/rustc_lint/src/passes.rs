@@ -63,6 +63,7 @@ macro_rules! late_lint_methods {
 
 macro_rules! declare_late_lint_pass {
     ([], [$($(#[$attr:meta])* fn $name:ident($($param:ident: $arg:ty),*);)*]) => (
+        #[cfg_attr(not(test), rustc_diagnostic_item = "LateLintPass")]
         pub trait LateLintPass<'tcx>: LintPass {
             $(#[inline(always)] fn $name(&mut self, _: &LateContext<'tcx>, $(_: $arg),*) {})*
         }
@@ -180,6 +181,7 @@ macro_rules! early_lint_methods {
 
 macro_rules! declare_early_lint_pass {
     ([], [$($(#[$attr:meta])* fn $name:ident($($param:ident: $arg:ty),*);)*]) => (
+        #[cfg_attr(not(test), rustc_diagnostic_item = "EarlyLintPass")]
         pub trait EarlyLintPass: LintPass {
             $(#[inline(always)] fn $name(&mut self, _: &EarlyContext<'_>, $(_: $arg),*) {})*
         }

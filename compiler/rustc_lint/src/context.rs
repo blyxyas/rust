@@ -509,6 +509,7 @@ pub struct LateContext<'tcx> {
 }
 
 /// Context for lint checking of the AST, after expansion, before lowering to HIR.
+#[cfg_attr(not(test), rustc_diagnostic_item = "EarlyContext")]
 pub struct EarlyContext<'a> {
     pub builder: LintLevelsBuilder<'a, crate::levels::TopDown>,
     pub buffered: LintBuffer,
@@ -698,6 +699,7 @@ impl LintContext for EarlyContext<'_> {
     }
 }
 
+#[cfg_attr(not(test), rustc_diagnostic_item = "LateContext")]
 impl<'tcx> LateContext<'tcx> {
     /// Gets the type-checking results for the current body,
     /// or `None` if outside a body.

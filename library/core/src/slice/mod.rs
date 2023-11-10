@@ -119,6 +119,7 @@ enum Direction {
 }
 
 #[cfg(not(test))]
+#[rustc_diagnostic_item = "impl_Slice"]
 impl<T> [T] {
     /// Returns the number of elements in the slice.
     ///

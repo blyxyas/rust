@@ -1,9 +1,9 @@
 use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::source::{reindent_multiline, snippet_indent, snippet_with_applicability, snippet_with_context};
 use clippy_utils::{
-    can_move_expr_to_closure_no_visit, higher, is_expr_final_block_expr, is_expr_used_or_unified, match_def_path,
-    paths, peel_hir_expr_while, SpanlessEq,
+    can_move_expr_to_closure_no_visit, higher, is_expr_final_block_expr, is_expr_used_or_unified, peel_hir_expr_while, SpanlessEq,
 };
+use rustc_span::sym;
 use core::fmt::{self, Write};
 use rustc_errors::Applicability;
 use rustc_hir::hir_id::HirIdSet;
@@ -249,9 +249,9 @@ fn try_parse_contains<'tcx>(cx: &LateContext<'_>, expr: &'tcx Expr<'_>) -> Optio
                 key,
                 call_ctxt: expr.span.ctxt(),
             };
-            if match_def_path(cx, id, &paths::BTREEMAP_CONTAINS_KEY) {
+            if cx.tcx.is_associated_diagnostic_item(id, sym::BTreeMap, "contains_key") {
                 Some((MapType::BTree, expr))
-            } else if match_def_path(cx, id, &paths::HASHMAP_CONTAINS_KEY) {
+            } else if cx.tcx.is_associated_diagnostic_item(id, sym::HashMap, "contains_key") {
                 Some((MapType::Hash, expr))
             } else {
                 None
@@ -269,7 +269,7 @@ struct InsertExpr<'tcx> {
 fn try_parse_insert<'tcx>(cx: &LateContext<'tcx>, expr: &'tcx Expr<'_>) -> Option<InsertExpr<'tcx>> {
     if let ExprKind::MethodCall(_, map, [key, value], _) = expr.kind {
         let id = cx.typeck_results().type_dependent_def_id(expr.hir_id)?;
-        if match_def_path(cx, id, &paths::BTREEMAP_INSERT) || match_def_path(cx, id, &paths::HASHMAP_INSERT) {
+        if cx.tcx.is_associated_diagnostic_item(id, sym::BTreeMap, "insert") || cx.tcx.is_associated_diagnostic_item(id, sym::HashMap, "insert") {
             Some(InsertExpr { map, key, value })
         } else {
             None

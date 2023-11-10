@@ -66,7 +66,7 @@ impl<'tcx> LateLintPass<'tcx> for NonOctalUnixPermissions {
             ExprKind::Call(func, [param]) => {
                 if let ExprKind::Path(ref path) = func.kind
                     && let Some(def_id) = cx.qpath_res(path, func.hir_id).opt_def_id()
-                    && match_def_path(cx, def_id, &paths::PERMISSIONS_FROM_MODE)
+                    && cx.tcx.is_associated_diagnostic_item(def_id, sym::PermissionsExt, "from_mode")
                     && let ExprKind::Lit(_) = param.kind
                     && param.span.eq_ctxt(expr.span)
                     && let Some(snip) = snippet_opt(cx, param.span)

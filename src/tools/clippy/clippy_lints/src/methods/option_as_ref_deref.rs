@@ -2,12 +2,13 @@ use clippy_config::msrvs::{self, Msrv};
 use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::source::snippet;
 use clippy_utils::ty::is_type_diagnostic_item;
-use clippy_utils::{match_def_path, path_to_local_id, paths, peel_blocks};
+use clippy_utils::{path_to_local_id, peel_blocks};
+use if_chain::if_chain;
 use rustc_errors::Applicability;
 use rustc_hir as hir;
 use rustc_lint::LateContext;
 use rustc_middle::ty;
-use rustc_span::sym;
+use rustc_span::{sym, Symbol};
 
 use super::OPTION_AS_REF_DEREF;
 
@@ -31,14 +32,14 @@ pub(super) fn check(
         return;
     }
 
-    let deref_aliases: [&[&str]; 7] = [
-        &paths::CSTRING_AS_C_STR,
-        &paths::OS_STRING_AS_OS_STR,
-        &paths::PATH_BUF_AS_PATH,
-        &paths::STRING_AS_STR,
-        &paths::STRING_AS_MUT_STR,
-        &paths::VEC_AS_SLICE,
-        &paths::VEC_AS_MUT_SLICE,
+    let deref_aliases: [(Symbol, &str); 7] = [
+        (sym::CString, "as_c_str"),
+        (sym::OsString, "as_os_str"),
+        (sym::PathBuf, "as_path"),
+        (sym::String, "as_str"),
+        (sym::String, "as_mut_str"),
+        (sym::Vec, "as_slice"),
+        (sym::Vec, "as_mut_slice"),
     ];
 
     let is_deref = match map_arg.kind {
@@ -48,7 +49,7 @@ pub(super) fn check(
                 .map_or(false, |fun_def_id| {
                     cx.tcx.is_diagnostic_item(sym::deref_method, fun_def_id)
                         || cx.tcx.is_diagnostic_item(sym::deref_mut_method, fun_def_id)
-                        || deref_aliases.iter().any(|path| match_def_path(cx, fun_def_id, path))
+                        || deref_aliases.iter().any(|alias_| cx.tcx.is_associated_diagnostic_item(fun_def_id, alias_.0, alias_.1))
                 })
         },
         hir::ExprKind::Closure(&hir::Closure { body, .. }) => {
@@ -69,7 +70,7 @@ pub(super) fn check(
                         let method_did = cx.typeck_results().type_dependent_def_id(closure_expr.hir_id).unwrap();
                         cx.tcx.is_diagnostic_item(sym::deref_method, method_did)
                             || cx.tcx.is_diagnostic_item(sym::deref_mut_method, method_did)
-                            || deref_aliases.iter().any(|path| match_def_path(cx, method_did, path))
+                            || deref_aliases.iter().any(|alias_| cx.tcx.is_associated_diagnostic_item(method_did, alias_.0, alias_.1))
                     } else {
                         false
                     }

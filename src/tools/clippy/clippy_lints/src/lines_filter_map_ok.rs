@@ -1,6 +1,6 @@
 use clippy_utils::diagnostics::span_lint_and_then;
 use clippy_utils::ty::is_type_diagnostic_item;
-use clippy_utils::{is_diag_item_method, is_trait_method, match_def_path, path_to_local_id, paths};
+use clippy_utils::{is_diag_item_method, is_trait_method, path_to_local_id};
 use rustc_errors::Applicability;
 use rustc_hir::{Body, Closure, Expr, ExprKind};
 use rustc_lint::{LateContext, LateLintPass};
@@ -96,7 +96,7 @@ fn should_lint(cx: &LateContext<'_>, args: &[Expr<'_>], method_str: &str) -> boo
                 ExprKind::Path(qpath) => cx
                     .qpath_res(qpath, fm_arg.hir_id)
                     .opt_def_id()
-                    .map(|did| match_def_path(cx, did, &paths::CORE_RESULT_OK_METHOD))
+                    .map(|did| cx.tcx.is_associated_diagnostic_item(did, sym::Result, "ok"))
                     .unwrap_or_default(),
                 // Detect `|x| x.ok()`
                 ExprKind::Closure(Closure { body, .. }) => {

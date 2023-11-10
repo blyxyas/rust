@@ -266,6 +266,7 @@ pub fn is_separator(c: char) -> bool {
 ///
 /// For example, `/` on Unix and `\` on Windows.
 #[stable(feature = "rust1", since = "1.0.0")]
+#[cfg_attr(not(test), rustc_diagnostic_item = "MAIN_SEPARATOR")]
 pub const MAIN_SEPARATOR: char = crate::sys::path::MAIN_SEP;
 
 /// The primary separator of path components for the current platform.

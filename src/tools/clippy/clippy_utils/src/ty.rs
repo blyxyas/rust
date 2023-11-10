@@ -481,6 +481,12 @@ pub fn match_type(cx: &LateContext<'_>, ty: Ty<'_>, path: &[&str]) -> bool {
     }
 }
 
+/// Checks if the type is struct, enum or union type and is the given
+/// diagnostic item.
+pub fn match_type_diag_item(cx: &LateContext<'_>, ty: Ty<'_>, diag_item: Symbol) -> bool {
+    ty.ty_adt_def().is_some_and(|adt| cx.tcx.is_diagnostic_item(diag_item, adt.did()))
+}
+
 /// Checks if the drop order for a type matters. Some std types implement drop solely to
 /// deallocate memory. For these types, and composites containing them, changing the drop order
 /// won't result in any observable side effects.

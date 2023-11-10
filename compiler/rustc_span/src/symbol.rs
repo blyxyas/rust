@@ -130,6 +130,7 @@ symbols! {
         Acquire,
         AddToDiagnostic,
         Any,
+        Applicability,
         Arc,
         ArcWeak,
         Argument,
@@ -183,11 +184,14 @@ symbols! {
         DecorateLint,
         Default,
         Deref,
+        DiagnosticBuilder,
         DiagnosticMessage,
         DirBuilder,
         Display,
         DoubleEndedIterator,
         Duration,
+        EarlyContext,
+        EarlyLintPass,
         Encodable,
         Encoder,
         Eq,
@@ -213,6 +217,7 @@ symbols! {
         HashMapEntry,
         HashSet,
         Hasher,
+        Ident,
         Implied,
         InCleanup,
         IndexOutput,
@@ -236,11 +241,13 @@ symbols! {
         IterPeekable,
         Iterator,
         IteratorItem,
+        LateLintPass,
         Layout,
         Left,
         LinkedList,
         LintPass,
         LocalKey,
+        MAIN_SEPARATOR,
         Mutex,
         MutexGuard,
         N,
@@ -271,6 +278,7 @@ symbols! {
         Path,
         PathBuf,
         Pending,
+        PermissionsExt,
         Pointer,
         Poll,
         ProcMacro,
@@ -302,6 +310,7 @@ symbols! {
         RwLockReadGuard,
         RwLockWriteGuard,
         Saturating,
+        SeekFrom,
         Send,
         SeqCst,
         SliceIndex,
@@ -313,6 +322,7 @@ symbols! {
         StructuralPartialEq,
         SubdiagnosticMessage,
         Sync,
+        SyntaxContext,
         T,
         Target,
         ToOwned,
@@ -752,8 +762,10 @@ symbols! {
         f,
         f16c_target_feature,
         f32,
+        f32_epsilon,
         f32_nan,
         f64,
+        f64_epsilon,
         f64_nan,
         fabsf32,
         fabsf64,
@@ -1566,6 +1578,7 @@ symbols! {
         slice,
         slice_from_raw_parts,
         slice_from_raw_parts_mut,
+        slice_into_vec,
         slice_len_fn,
         slice_patterns,
         slicing_syntax,
@@ -1817,6 +1830,7 @@ symbols! {
 }
 
 #[derive(Copy, Clone, Eq, HashStable_Generic, Encodable, Decodable)]
+#[cfg_attr(not(test), rustc_diagnostic_item = "Ident")]
 pub struct Ident {
     pub name: Symbol,
     pub span: Span,
@@ -1883,6 +1897,7 @@ impl Ident {
     ///
     /// Note that the lifetime of the return value is a lie. See
     /// `Symbol::as_str()` for details.
+    #[cfg_attr(not(test), rustc_diagnostic_item = "Ident_as_str")]
     pub fn as_str(&self) -> &str {
         self.name.as_str()
     }
@@ -2005,6 +2020,7 @@ impl fmt::Display for MacroRulesNormalizedIdent {
 /// Note that `Symbol` cannot directly be a `rustc_index::newtype_index!` because it
 /// implements `fmt::Debug`, `Encodable`, and `Decodable` in special ways.
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(not(test), rustc_diagnostic_item = "Symbol")]
 pub struct Symbol(SymbolIndex);
 
 rustc_index::newtype_index! {
@@ -2023,6 +2039,7 @@ impl Symbol {
     }
 
     /// Maps a string to its interned representation.
+    #[cfg_attr(not(test), rustc_diagnostic_item = "Symbol_intern")]
     pub fn intern(string: &str) -> Self {
         with_session_globals(|session_globals| session_globals.symbol_interner.intern(string))
     }
@@ -2035,6 +2052,7 @@ impl Symbol {
     /// interner. Interners are long-lived, and there are very few of them, and
     /// this function is typically used for short-lived things, so in practice
     /// it works out ok.
+    #[cfg_attr(not(test), rustc_diagnostic_item = "Symbol_as_str")]
     pub fn as_str(&self) -> &str {
         with_session_globals(|session_globals| unsafe {
             std::mem::transmute::<&str, &str>(session_globals.symbol_interner.get(*self))
@@ -2053,6 +2071,7 @@ impl Symbol {
     /// identical to printing the original identifier token written in source code
     /// (`token_to_string`, `Ident::to_string`), except that symbols don't keep the rawness flag
     /// or edition, so we have to guess the rawness using the global edition.
+    #[cfg_attr(not(test), rustc_diagnostic_item = "Symbol_to_ident_string")]
     pub fn to_ident_string(self) -> String {
         Ident::with_dummy_span(self).to_string()
     }
@@ -2155,6 +2174,7 @@ impl Interner {
 ///
 /// Given that `kw` is imported, use them like `kw::keyword_name`.
 /// For example `kw::Loop` or `kw::Break`.
+#[cfg_attr(not(test), rustc_diagnostic_item = "kw")]
 pub mod kw {
     pub use super::kw_generated::*;
 }
@@ -2164,6 +2184,7 @@ pub mod kw {
 ///
 /// Given that `sym` is imported, use them like `sym::symbol_name`.
 /// For example `sym::rustfmt` or `sym::u8`.
+#[cfg_attr(not(test), rustc_diagnostic_item = "sym_module")]
 pub mod sym {
     use super::Symbol;
 
