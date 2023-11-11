@@ -65,9 +65,6 @@ macro_rules! declare_late_lint_pass {
     ([], [$($(#[$attr:meta])* fn $name:ident($($param:ident: $arg:ty),*);)*]) => (
         pub trait LateLintPass<'tcx>: LintPass {
             $(#[inline(always)] fn $name(&mut self, _: &LateContext<'tcx>, $(_: $arg),*) {})*
-            fn get_lints(&self) -> $crate::LintVec {
-                $crate::LintPass::get_lints(self)
-            } // Adding this lint manually
         }
     )
 }
@@ -116,7 +113,7 @@ macro_rules! declare_combined_late_lint_pass {
 
             $v fn get_lints() -> $crate::LintVec {
                 let mut lints = Vec::new();
-                $(lints.extend_from_slice(&LateLintPass::get_lints(&$pass::default()));)*
+                $(lints.extend_from_slice(&LintPass::get_lints(&$pass::default()));)*
                 lints
             }
         }

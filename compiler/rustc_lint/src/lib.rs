@@ -517,22 +517,22 @@ fn register_builtins(store: &mut LintStore) {
 fn register_internals(store: &mut LintStore) {
     store.register_lints(&LintPassImpl::default().get_lints());
     store.register_early_pass(|| Box::new(LintPassImpl));
-    store.register_lints(&LateLintPass::get_lints(&DefaultHashTypes::default()));
+    store.register_lints(&LintPass::get_lints(&DefaultHashTypes::default()));
     store.register_late_mod_pass(|_| Box::new(DefaultHashTypes));
-    store.register_lints(&LateLintPass::get_lints(&QueryStability::default()));
+    store.register_lints(&LintPass::get_lints(&QueryStability::default()));
     store.register_late_mod_pass(|_| Box::new(QueryStability));
-    store.register_lints(&LateLintPass::get_lints(&ExistingDocKeyword::default()));
+    store.register_lints(&LintPass::get_lints(&ExistingDocKeyword::default()));
     store.register_late_mod_pass(|_| Box::new(ExistingDocKeyword));
-    store.register_lints(&LateLintPass::get_lints(&TyTyKind::default()));
+    store.register_lints(&LintPass::get_lints(&TyTyKind::default()));
     store.register_late_mod_pass(|_| Box::new(TyTyKind));
-    store.register_lints(&LateLintPass::get_lints(&Diagnostics::default()));
+    store.register_lints(&LintPass::get_lints(&Diagnostics::default()));
     store.register_early_pass(|| Box::new(Diagnostics));
     store.register_late_mod_pass(|_| Box::new(Diagnostics));
-    store.register_lints(&LateLintPass::get_lints(&BadOptAccess::default()));
+    store.register_lints(&LintPass::get_lints(&BadOptAccess::default()));
     store.register_late_mod_pass(|_| Box::new(BadOptAccess));
-    store.register_lints(&LateLintPass::get_lints(&PassByValue::default()));
+    store.register_lints(&LintPass::get_lints(&PassByValue::default()));
     store.register_late_mod_pass(|_| Box::new(PassByValue));
-    store.register_lints(&SpanUseEqCtxt::get_lints());
+    store.register_lints(&LintPass::get_lints(&SpanUseEqCtxt::default()));
     store.register_late_mod_pass(|_| Box::new(SpanUseEqCtxt));
     // FIXME(davidtwco): deliberately do not include `UNTRANSLATABLE_DIAGNOSTIC` and
     // `DIAGNOSTIC_OUTSIDE_OF_IMPL` here because `-Wrustc::internal` is provided to every crate and

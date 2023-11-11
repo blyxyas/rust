@@ -157,30 +157,44 @@ fn lint_expectations(tcx: TyCtxt<'_>, (): ()) -> Vec<(LintExpectationId, LintExp
 /// globally-allowed lints)
 pub(crate) fn lints_that_can_emit(
     tcx: TyCtxt<'_>,
-) -> LintLevelsBuilder<'_, QueryMapExpectationsWrapper<'_>> {
+) -> FxHashMap<LintId, Level> {
     let store = unerased_lint_store(tcx);
 
-    let mut builder = LintLevelsBuilder {
-        sess: tcx.sess,
-        features: tcx.features(),
-        provider: QueryMapExpectationsWrapper {
-            tcx,
-            cur: hir::CRATE_HIR_ID,
-            specs: ShallowLintLevelMap::default(),
-            expectations: Vec::new(),
-            unstable_to_stable_ids: FxHashMap::default(),
-            empty: FxHashMap::default(),
-        },
-        warn_about_weird_lints: false,
-        store,
-        registered_tools: &tcx.registered_tools(()),
+    // let mut builder = LintLevelsBuilder {
+    //     sess: tcx.sess,
+    //     features: tcx.features(),
+    //     provider: 
+    //     warn_about_weird_lints: false,
+    //     store,
+    //     registered_tools: &tcx.registered_tools(()),
+    // };
+
+    let querymap = QueryMapExpectationsWrapper {
+        tcx,
+        cur: hir::CRATE_HIR_ID,
+        specs: ShallowLintLevelMap::default(),
+        expectations: Vec::new(),
+        unstable_to_stable_ids: FxHashMap::default(),
+        empty: FxHashMap::default(),
     };
 
-    builder.add_command_line();
-    builder.add_id(hir::CRATE_HIR_ID);
-    tcx.hir().walk_toplevel_module(&mut builder);
+    let mut hashmap = FxHashMap::default();
 
-    builder
+    for &lint in store.get_lints() {
+        let lint_id = LintId::of(lint);
+        let actual_level = reveal_actual_level(
+            None,
+            &mut LintLevelSource::Default,
+            tcx.sess,
+            lint_id,
+            |lintid| querymap.specs.probe_for_lint_level(tcx, lintid, hir::CRATE_HIR_ID)
+        );
+
+        hashmap.insert(lint_id, actual_level);
+
+    }
+
+    hashmap
 }
 
 #[instrument(level = "trace", skip(tcx), ret)]
