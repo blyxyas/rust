@@ -1,0 +1,74 @@
+Building stage0 library artifacts (x86_64-unknown-linux-gnu)
+Building compiler artifacts (stage0 -> stage1, x86_64-unknown-linux-gnu)
+Creating a sysroot for stage1 compiler (use `rustup toolchain link 'name' build/host/stage1`)
+Building stage1 library artifacts (x86_64-unknown-linux-gnu)
+Building compiler artifacts (stage1 -> stage2, x86_64-unknown-linux-gnu)
+Building tool clippy-driver (stage1 -> stage2, x86_64-unknown-linux-gnu)
+Building tool rustdoc (stage0 -> stage1, x86_64-unknown-linux-gnu)
+Testing clippy (stage1 -> stage2, x86_64-unknown-linux-gnu)
+
+running 1 test
+.
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+.
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+FAILED TEST: tests/ui/exit2.rs
+command: CLIPPY_CONF_DIR="tests" "/home/queen/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/x86_64-unknown-linux-gnu/release/clippy-driver" "--error-format=json" "--emit=metadata" "-Aunused" "-Ainternal_features" "-Zui-testing" "-Dwarnings" "-Ldependency=/home/queen/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/x86_64-unknown-linux-gnu/release/deps" "--extern=clippy_config=/home/queen/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/x86_64-unknown-linux-gnu/release/deps/libclippy_config-15859bc70e26b2c2.rlib" "--extern=clippy_lints=/home/queen/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/x86_64-unknown-linux-gnu/release/deps/libclippy_lints-6ae965a95ffd2e3c.rlib" "--extern=clippy_utils=/home/queen/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/x86_64-unknown-linux-gnu/release/deps/libclippy_utils-71733ddb9ecce88a.rlib" "--extern=futures=/home/queen/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/x86_64-unknown-linux-gnu/release/deps/libfutures-71302d2ee8a2c7bf.rlib" "--extern=if_chain=/home/queen/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/x86_64-unknown-linux-gnu/release/deps/libif_chain-999060082979f384.rlib" "--extern=itertools=/home/queen/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/x86_64-unknown-linux-gnu/release/deps/libitertools-550ba3cff1655c88.rlib" "--extern=parking_lot=/home/queen/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/x86_64-unknown-linux-gnu/release/deps/libparking_lot-6cdd429df493089b.rlib" "--extern=quote=/home/queen/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/x86_64-unknown-linux-gnu/release/deps/libquote-615cef40356d1416.rlib" "--extern=regex=/home/queen/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/x86_64-unknown-linux-gnu/release/deps/libregex-6b820ef91210afb4.rlib" "--extern=serde=/home/queen/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/x86_64-unknown-linux-gnu/release/deps/libserde-c10e61b4b82b3d45.rlib" "--extern=serde_derive=/home/queen/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/release/deps/libserde_derive-0ee13609fcf2aa2c.so" "--extern=syn=/home/queen/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/x86_64-unknown-linux-gnu/release/deps/libsyn-788f6a05a96fc056.rlib" "--extern=tokio=/home/queen/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/x86_64-unknown-linux-gnu/release/deps/libtokio-72251019acb0cd25.rlib" "-Ldependency=/home/queen/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/release/deps" "--out-dir" "/home/queen/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/ui_test/tests/ui" "tests/ui/exit2.rs" "--edition" "2021"
+
+error: actual output differed from expected
+Execute `cargo uibless` to update `tests/ui/exit2.stderr` to the actual output
+--- tests/ui/exit2.stderr
++++ <stderr output>
+-error: usage of `process::exit`
+-  --> $DIR/exit2.rs:4:5
+-   |
+-LL |     std::process::exit(3);
+-   |     ^^^^^^^^^^^^^^^^^^^^^
+-   |
+-   = note: `-D clippy::exit` implied by `-D warnings`
+-   = help: to override `-D warnings` add `#[allow(clippy::exit)]`
+-
+-error: aborting due to previous error
+-
+
+
+error: `usage of `process::exit`` not found in diagnostics on line 4
+ --> tests/ui/exit2.rs:5:17
+  |
+5 |     //~^ ERROR: usage of `process::exit`
+  |                 ^^^^^^^^^^^^^^^^^^^^^^^^ expected because of this pattern
+  |
+
+error: ``-D clippy::exit` implied by `-D warnings`` not found in diagnostics on line 4
+ --> tests/ui/exit2.rs:6:16
+  |
+6 |     //~| NOTE: `-D clippy::exit` implied by `-D warnings`
+  |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected because of this pattern
+  |
+
+full stderr:
+
+full stdout:
+
+
+FAILURES:
+    tests/ui/exit2.rs
+
+test result: FAIL. 1 failed;
+
+
+
+command did not execute successfully: cd "/home/queen/git/rust" && env -u MAKEFLAGS -u MFLAGS AR_x86_64_unknown_linux_gnu="ar" CARGO_INCREMENTAL="0" CARGO_PROFILE_RELEASE_DEBUG="0" CARGO_PROFILE_RELEASE_DEBUG_ASSERTIONS="false" CARGO_PROFILE_RELEASE_OVERFLOW_CHECKS="false" CARGO_TARGET_DIR="/home/queen/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools" CC_x86_64_unknown_linux_gnu="cc" CFG_COMPILER_HOST_TRIPLE="x86_64-unknown-linux-gnu" CFG_RELEASE="1.76.0-dev" CFG_RELEASE_CHANNEL="dev" CFG_RELEASE_NUM="1.76.0" CFG_VERSION="1.76.0-dev" CFLAGS_x86_64_unknown_linux_gnu="-ffunction-sections -fdata-sections -fPIC -m64" CXXFLAGS_x86_64_unknown_linux_gnu="-ffunction-sections -fdata-sections -fPIC -m64" CXX_x86_64_unknown_linux_gnu="c++" DOC_RUST_LANG_ORG_CHANNEL="https://doc.rust-lang.org/nightly" HOST_LIBS="/home/queen/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/release" LD_LIBRARY_PATH="/home/queen/git/rust/build/x86_64-unknown-linux-gnu/stage1/lib/rustlib/x86_64-unknown-linux-gnu/lib" LIBC_CHECK_CFG="1" LIBRARY_PATH="/home/queen/git/rust/build/x86_64-unknown-linux-gnu/ci-llvm/lib" LZMA_API_STATIC="1" RANLIB_x86_64_unknown_linux_gnu="ar s" REAL_LIBRARY_PATH_VAR="LD_LIBRARY_PATH" RUSTBUILD_NATIVE_DIR="/home/queen/git/rust/build/x86_64-unknown-linux-gnu/native" RUSTC="/home/queen/git/rust/build/bootstrap/debug/rustc" RUSTC_BOOTSTRAP="1" RUSTC_BREAK_ON_ICE="1" RUSTC_ERROR_METADATA_DST="/home/queen/git/rust/build/tmp/extended-error-metadata" RUSTC_HOST_FLAGS="-Zunstable-options --check-cfg=values(bootstrap)" RUSTC_INSTALL_BINDIR="bin" RUSTC_LIBDIR="/home/queen/git/rust/build/x86_64-unknown-linux-gnu/stage1/lib" RUSTC_LIB_PATH="/home/queen/git/rust/build/x86_64-unknown-linux-gnu/stage1/lib" RUSTC_LINT_FLAGS="-Wrust_2018_idioms -Wunused_lifetimes -Wsemicolon_in_expressions_from_macros -Dwarnings" RUSTC_REAL="/home/queen/git/rust/build/x86_64-unknown-linux-gnu/stage1/bin/rustc" RUSTC_SNAPSHOT="/home/queen/git/rust/build/x86_64-unknown-linux-gnu/stage1/bin/rustc" RUSTC_SNAPSHOT_LIBDIR="/home/queen/git/rust/build/x86_64-unknown-linux-gnu/stage1/lib" RUSTC_STAGE="1" RUSTC_SYSROOT="/home/queen/git/rust/build/x86_64-unknown-linux-gnu/stage1" RUSTC_TEST_SUITE="/home/queen/git/rust/build/x86_64-unknown-linux-gnu/stage1/bin/rustc" RUSTC_TLS_MODEL_INITIAL_EXEC="1" RUSTC_VERBOSE="0" RUSTDOC="/home/queen/git/rust/build/bootstrap/debug/rustdoc" RUSTDOCFLAGS="--cfg=windows_raw_dylib -Csymbol-mangling-version=v0 -Zunstable-options --check-cfg=values(bootstrap) --check-cfg=values(parallel_compiler) --check-cfg=values(no_btreemap_remove_entry) --check-cfg=values(crossbeam_loom) --check-cfg=values(span_locations) --check-cfg=values(rustix_use_libc) --check-cfg=values(emulate_second_only_system) --check-cfg=values(windows_raw_dylib) -Dwarnings -Wrustdoc::invalid_codeblock_attributes --crate-version 1.76.0-dev" RUSTDOC_LIBDIR="/home/queen/git/rust/build/x86_64-unknown-linux-gnu/stage1/lib" RUSTDOC_REAL="/home/queen/git/rust/build/x86_64-unknown-linux-gnu/stage1/bin/rustdoc" RUSTFLAGS="--cfg=windows_raw_dylib -Csymbol-mangling-version=v0 -Zunstable-options --check-cfg=values(bootstrap) --check-cfg=values(parallel_compiler) --check-cfg=values(no_btreemap_remove_entry) --check-cfg=values(crossbeam_loom) --check-cfg=values(span_locations) --check-cfg=values(rustix_use_libc) --check-cfg=values(emulate_second_only_system) --check-cfg=values(windows_raw_dylib) -Zmacro-backtrace -Clink-args=-Wl,-z,origin -Clink-args=-Wl,-rpath,$ORIGIN/../lib -Csplit-debuginfo=off" RUST_TEST_THREADS="12" SYSROOT="/home/queen/git/rust/build/x86_64-unknown-linux-gnu/stage1" __CARGO_DEFAULT_LIB_METADATA="devtool-rustc" "/home/queen/git/rust/build/x86_64-unknown-linux-gnu/stage0/bin/cargo" "test" "--target" "x86_64-unknown-linux-gnu" "--release" "-Zcheck-cfg=names,values,output,features" "-Zbinary-dep-depinfo" "-j" "12" "--manifest-path" "/home/queen/git/rust/src/tools/clippy/Cargo.toml" "--" "--quiet"
+expected success, got: exit status: 101
+
+stdout ----
+
+stderr ----
+
+
+
