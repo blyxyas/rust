@@ -150,6 +150,57 @@ fn lint_expectations(tcx: TyCtxt<'_>, (): ()) -> Vec<(LintExpectationId, LintExp
     builder.provider.expectations
 }
 
+/// Walk the whole crate collecting nodes where lint levels change
+/// (e.g. `#[allow]` attributes), and joins that list with the warn-by-default
+/// (and not allowed in the crate) and CLI lints. The final result is a builder
+/// that has information about just lints that can be emitted (leaving out
+/// globally-allowed lints)
+pub(crate) fn lints_that_can_emit(
+    tcx: TyCtxt<'_>,
+) -> FxHashMap<LintId, Level> {
+    let store = unerased_lint_store(tcx);
+
+    // let mut builder = LintLevelsBuilder {
+    //     sess: tcx.sess,
+    //     features: tcx.features(),
+    //     provider: 
+    //     warn_about_weird_lints: false,
+    //     store,
+    //     registered_tools: &tcx.registered_tools(()),
+    // };
+
+    let _querymap = QueryMapExpectationsWrapper {
+        tcx,
+        cur: hir::CRATE_HIR_ID,
+        specs: ShallowLintLevelMap::default(),
+        expectations: Vec::new(),
+        unstable_to_stable_ids: FxHashMap::default(),
+        empty: FxHashMap::default(),
+    };
+
+    let specs = tcx.shallow_lint_levels_on(hir::CRATE_HIR_ID.owner);
+
+    let mut hashmap = FxHashMap::default();
+
+    for &lint in store.get_lints() {
+        let lint_id = LintId::of(lint);
+        let actual_level = specs.probe_for_lint_level(tcx, lint_id, hir::CRATE_HIR_ID).0.unwrap_or(lint.default_level);
+        // let actual_level = reveal_actual_level(
+        //     None,
+        //     &mut LintLevelSource::Default,
+        //     tcx.sess,
+        //     lint_id,
+        //     |lintid| querymap.specs.probe_for_lint_level(tcx, lintid, hir::CRATE_HIR_ID)
+        // );
+
+        if actual_level > Level::Allow {
+            hashmap.insert(lint_id, actual_level);
+        }
+    }
+
+    hashmap
+}
+
 #[instrument(level = "trace", skip(tcx), ret)]
 fn shallow_lint_levels_on(tcx: TyCtxt<'_>, owner: hir::OwnerId) -> ShallowLintLevelMap {
     let store = unerased_lint_store(tcx.sess);
@@ -252,7 +303,7 @@ impl LintLevelsProvider for LintLevelQueryMap<'_> {
     }
 }
 
-struct QueryMapExpectationsWrapper<'tcx> {
+pub(crate) struct QueryMapExpectationsWrapper<'tcx> {
     tcx: TyCtxt<'tcx>,
     /// HirId of the currently investigated element.
     cur: HirId,
