@@ -870,6 +870,7 @@ pub type LintVec = Vec<&'static Lint>;
 
 pub trait LintPass {
     fn name(&self) -> &'static str;
+    fn get_lints(&self) -> LintVec;
 }
 
 /// Implements `LintPass for $ty` with the given list of `Lint` statics.
@@ -878,9 +879,7 @@ macro_rules! impl_lint_pass {
     ($ty:ty => [$($lint:expr),* $(,)?]) => {
         impl $crate::LintPass for $ty {
             fn name(&self) -> &'static str { stringify!($ty) }
-        }
-        impl $ty {
-            pub fn get_lints() -> $crate::LintVec { vec![$($lint),*] }
+            fn get_lints(&self) -> $crate::LintVec { vec![$($lint),*] }
         }
     };
 }
@@ -890,7 +889,18 @@ macro_rules! impl_lint_pass {
 #[macro_export]
 macro_rules! declare_lint_pass {
     ($(#[$m:meta])* $name:ident => [$($lint:expr),* $(,)?]) => {
-        $(#[$m])* #[derive(Copy, Clone)] pub struct $name;
+        $(#[$m])* #[derive(Copy, Clone, Default)] pub struct $name;
         $crate::impl_lint_pass!($name => [$($lint),*]);
     };
+}
+
+#[allow(rustc::lint_pass_impl_without_macro)]
+impl<P: LintPass + ?Sized> LintPass for Box<P> {
+    fn name(&self) -> &'static str {
+        (**self).name()
+    }
+
+    fn get_lints(&self) -> LintVec {
+        (**self).get_lints()
+    }
 }

@@ -18,8 +18,8 @@ pub(crate) fn expand_compile_error<'cx>(
         Err(guar) => return ExpandResult::Ready(DummyResult::any(sp, guar)),
     };
 
-    #[expect(rustc::diagnostic_outside_of_impl, reason = "diagnostic message is specified by user")]
-    #[expect(rustc::untranslatable_diagnostic, reason = "diagnostic message is specified by user")]
+    // #[expect(rustc::diagnostic_outside_of_impl, reason = "diagnostic message is specified by user")]
+    // #[expect(rustc::untranslatable_diagnostic, reason = "diagnostic message is specified by user")]
     let guar = cx.dcx().span_err(sp, var.to_string());
 
     ExpandResult::Ready(DummyResult::any(sp, guar))

@@ -151,6 +151,42 @@ fn lint_expectations(tcx: TyCtxt<'_>, (): ()) -> Vec<(LintExpectationId, LintExp
     builder.provider.expectations
 }
 
+/// Walk the whole crate collecting nodes where lint levels change
+/// (e.g. `#[allow]` attributes), and joins that list with the warn-by-default
+/// (and not allowed in the crate) and CLI lints. The final result is a builder
+/// that has information about just lints that can be emitted (leaving out
+/// globally-allowed lints)
+pub fn lints_that_can_emit(
+    tcx: TyCtxt<'_>,
+    (): ()
+) -> Vec<LintId> {
+    let store = unerased_lint_store(&tcx.sess);
+
+    // let mut builder = LintLevelsBuilder {
+    //     sess: tcx.sess,
+    //     features: tcx.features(),
+    //     provider: 
+    //     warn_about_weird_lints: false,
+    //     store,
+    //     registered_tools: &tcx.registered_tools(()),
+    // };
+    let specs = tcx.shallow_lint_levels_on(hir::CRATE_HIR_ID.owner);
+    let lints = store.get_lints();
+
+    let mut hashmap: Vec<LintId> = Vec::new();
+    hashmap.reserve((lints.len() >> 1) * usize::from(tcx.sess.opts.lint_cap.is_some())); // Avoid allocations, it's better to 
+
+    for &lint in lints {
+        let lint_id = LintId::of(lint);
+        let actual_level = specs.probe_for_lint_level(tcx, lint_id, hir::CRATE_HIR_ID).0.unwrap_or(lint.default_level);
+        if actual_level > Level::Allow {
+            hashmap.push(lint_id);
+        }
+    }
+
+    hashmap
+}
+
 #[instrument(level = "trace", skip(tcx), ret)]
 fn shallow_lint_levels_on(tcx: TyCtxt<'_>, owner: hir::OwnerId) -> ShallowLintLevelMap {
     let store = unerased_lint_store(tcx.sess);
@@ -253,7 +289,7 @@ impl LintLevelsProvider for LintLevelQueryMap<'_> {
     }
 }
 
-struct QueryMapExpectationsWrapper<'tcx> {
+pub(crate) struct QueryMapExpectationsWrapper<'tcx> {
     tcx: TyCtxt<'tcx>,
     /// HirId of the currently investigated element.
     cur: HirId,
@@ -1133,7 +1169,7 @@ impl<'s, P: LintLevelsProvider> LintLevelsBuilder<'s, P> {
 }
 
 pub(crate) fn provide(providers: &mut Providers) {
-    *providers = Providers { shallow_lint_levels_on, lint_expectations, ..*providers };
+    *providers = Providers { shallow_lint_levels_on, lint_expectations, lints_that_can_emit, ..*providers };
 }
 
 pub fn parse_lint_and_tool_name(lint_name: &str) -> (Option<Symbol>, &str) {

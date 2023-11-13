@@ -74,6 +74,7 @@ use rustc_trait_selection::traits::{self, misc::type_allowed_to_implement_copy};
 use crate::nonstandard_style::{method_context, MethodLateContext};
 
 use std::fmt::Write;
+use std::default::Default;
 
 // hardwired lints from rustc_lint_defs
 pub use rustc_session::lint::builtin::*;
@@ -462,6 +463,7 @@ declare_lint! {
     report_in_external_macro
 }
 
+#[derive(Default)]
 pub struct MissingDoc;
 
 impl_lint_pass!(MissingDoc => [MISSING_DOCS]);
@@ -903,8 +905,8 @@ pub struct DeprecatedAttr {
 
 impl_lint_pass!(DeprecatedAttr => []);
 
-impl DeprecatedAttr {
-    pub fn new() -> DeprecatedAttr {
+impl Default for DeprecatedAttr {
+    fn default() -> Self {
         DeprecatedAttr { depr_attrs: deprecated_attributes() }
     }
 }

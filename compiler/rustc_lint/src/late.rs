@@ -14,7 +14,7 @@
 //! upon. As the ast is traversed, this keeps track of the current lint level
 //! for all lint attributes.
 
-use crate::{passes::LateLintPassObject, LateContext, LateLintPass, LintStore};
+use crate::{passes::LateLintPassObject, LateContext, LateLintPass, LintStore, LintId};
 use rustc_data_structures::stack::ensure_sufficient_stack;
 use rustc_data_structures::sync::{join, Lrc};
 use rustc_hir as hir;
@@ -325,6 +325,9 @@ impl LintPass for RuntimeCombinedLateLintPass<'_, '_> {
     fn name(&self) -> &'static str {
         panic!()
     }
+    fn get_lints(&self) -> crate::LintVec {
+        panic!()
+    }
 }
 
 macro_rules! impl_late_lint_pass {
@@ -360,13 +363,22 @@ pub fn late_lint_mod<'tcx, T: LateLintPass<'tcx> + 'tcx>(
     // Note: `passes` is often empty. In that case, it's faster to run
     // `builtin_lints` directly rather than bundling it up into the
     // `RuntimeCombinedLateLintPass`.
-    let late_module_passes = &unerased_lint_store(tcx.sess).late_module_passes;
-    if late_module_passes.is_empty() {
-        late_lint_mod_inner(tcx, module_def_id, context, builtin_lints);
-    } else {
-        let mut passes: Vec<_> = late_module_passes.iter().map(|mk_pass| (mk_pass)(tcx)).collect();
-        passes.push(Box::new(builtin_lints));
-        let pass = RuntimeCombinedLateLintPass { passes: &mut passes[..] };
+let store = unerased_lint_store(tcx.sess);
+        
+        if store.late_module_passes.is_empty() {
+            late_lint_mod_inner(tcx, module_def_id, context, builtin_lints);
+        } else {
+            let passes: Vec<_> = store
+            .late_module_passes
+            .iter()
+            .map(|mk_pass| (mk_pass)(tcx))
+            .collect();
+            let emittable_lints = tcx.lints_that_can_emit(());
+            let mut filtered_passes: Vec<Box<dyn LateLintPass<'tcx>>> = passes.into_iter().filter(|pass| {
+                LintPass::get_lints(pass).iter().any(|&lint| emittable_lints.contains(&LintId::of(lint)))
+            }).collect();
+            filtered_passes.push(Box::new(builtin_lints));
+        let pass = RuntimeCombinedLateLintPass { passes: &mut filtered_passes[..] };
         late_lint_mod_inner(tcx, module_def_id, context, pass);
     }
 }
@@ -397,7 +409,7 @@ fn late_lint_mod_inner<'tcx, T: LateLintPass<'tcx>>(
 
 fn late_lint_crate<'tcx>(tcx: TyCtxt<'tcx>) {
     // Note: `passes` is often empty.
-    let mut passes: Vec<_> =
+    let passes: Vec<_> =
         unerased_lint_store(tcx.sess).late_passes.iter().map(|mk_pass| (mk_pass)(tcx)).collect();
 
     if passes.is_empty() {
@@ -415,7 +427,20 @@ fn late_lint_crate<'tcx>(tcx: TyCtxt<'tcx>) {
         only_module: false,
     };
 
-    let pass = RuntimeCombinedLateLintPass { passes: &mut passes[..] };
+    let hashmap = tcx.lints_that_can_emit(());
+    
+    let mut filtered_passes: Vec<Box<dyn LateLintPass<'tcx>>> = passes.into_iter().filter(|pass| {
+        LintPass::get_lints(pass).iter().any(|&lint| hashmap.contains(&LintId::of(lint)))
+    }).collect();
+
+    // let mut passes: Vec<std::boxed::Box<dyn LateLintPass<'tcx>>> = passes
+    //     .into_iter()
+    //     .filter(|pass| {
+    //         LintPass::get_lints(pass).iter().any(|&lint| )
+    //     })
+    //     .collect();
+
+    let pass = RuntimeCombinedLateLintPass { passes: &mut filtered_passes[..] };
     late_lint_crate_inner(tcx, context, pass);
 }
 
