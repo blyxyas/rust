@@ -158,7 +158,7 @@ fn lint_expectations(tcx: TyCtxt<'_>, (): ()) -> Vec<(LintExpectationId, LintExp
 pub(crate) fn lints_that_can_emit(
     tcx: TyCtxt<'_>,
 ) -> FxHashMap<LintId, Level> {
-    let store = unerased_lint_store(tcx);
+    let store = unerased_lint_store(&tcx.sess);
 
     // let mut builder = LintLevelsBuilder {
     //     sess: tcx.sess,
@@ -169,7 +169,7 @@ pub(crate) fn lints_that_can_emit(
     //     registered_tools: &tcx.registered_tools(()),
     // };
 
-    let _querymap = QueryMapExpectationsWrapper {
+    let querymap = QueryMapExpectationsWrapper {
         tcx,
         cur: hir::CRATE_HIR_ID,
         specs: ShallowLintLevelMap::default(),
@@ -178,20 +178,25 @@ pub(crate) fn lints_that_can_emit(
         empty: FxHashMap::default(),
     };
 
-    let specs = tcx.shallow_lint_levels_on(hir::CRATE_HIR_ID.owner);
-
     let mut hashmap = FxHashMap::default();
+
+    // for lint in store.get_lints() {
+    //     if lint.name == "clippy::EXIT" {
+    //         dbg!(_querymap.get_lint_level(lint, tcx.sess));
+    //     }
+    // }
+
 
     for &lint in store.get_lints() {
         let lint_id = LintId::of(lint);
-        let actual_level = specs.probe_for_lint_level(tcx, lint_id, hir::CRATE_HIR_ID).0.unwrap_or(lint.default_level);
-        // let actual_level = reveal_actual_level(
-        //     None,
-        //     &mut LintLevelSource::Default,
-        //     tcx.sess,
-        //     lint_id,
-        //     |lintid| querymap.specs.probe_for_lint_level(tcx, lintid, hir::CRATE_HIR_ID)
-        // );
+        // let actual_level = specs.probe_for_lint_level(tcx, lint_id, hir::CRATE_HIR_ID).0.unwrap_or(lint.default_level);
+        let actual_level = reveal_actual_level(
+            None,
+            &mut LintLevelSource::Default,
+            tcx.sess,
+            lint_id,
+            |lintid| querymap.specs.probe_for_lint_level(tcx, lintid, hir::CRATE_HIR_ID)
+        );
 
         if actual_level > Level::Allow {
             hashmap.insert(lint_id, actual_level);

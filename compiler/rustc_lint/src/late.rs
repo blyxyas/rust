@@ -408,7 +408,7 @@ fn late_lint_mod_inner<'tcx, T: LateLintPass<'tcx>>(
 
 fn late_lint_crate<'tcx>(tcx: TyCtxt<'tcx>) {
     // Note: `passes` is often empty.
-    let mut passes: Vec<_> =
+    let passes: Vec<_> =
         unerased_lint_store(&tcx.sess).late_passes.iter().map(|mk_pass| (mk_pass)(tcx)).collect();
 
     if passes.is_empty() {
@@ -433,7 +433,7 @@ fn late_lint_crate<'tcx>(tcx: TyCtxt<'tcx>) {
     }).collect();
 
     // let mut passes: Vec<std::boxed::Box<dyn LateLintPass<'tcx>>> = passes
-    //     .into_iter()
+    //     .into_iter()q
     //     .filter(|pass| {
     //         LintPass::get_lints(pass).iter().any(|&lint| builder.lint_level(lint).0 > Level::Allow)
     //     })
