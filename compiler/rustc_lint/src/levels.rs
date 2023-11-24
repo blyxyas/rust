@@ -158,7 +158,7 @@ fn lint_expectations(tcx: TyCtxt<'_>, (): ()) -> Vec<(LintExpectationId, LintExp
 pub(crate) fn lints_that_can_emit(
     tcx: TyCtxt<'_>,
 ) -> FxHashMap<LintId, Level> {
-    let store = unerased_lint_store(tcx);
+    let store = unerased_lint_store(&tcx.sess);
 
     // let mut builder = LintLevelsBuilder {
     //     sess: tcx.sess,
