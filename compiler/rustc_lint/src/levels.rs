@@ -155,9 +155,10 @@ fn lint_expectations(tcx: TyCtxt<'_>, (): ()) -> Vec<(LintExpectationId, LintExp
 /// (and not allowed in the crate) and CLI lints. The final result is a builder
 /// that has information about just lints that can be emitted (leaving out
 /// globally-allowed lints)
-pub(crate) fn lints_that_can_emit(
+pub fn lints_that_can_emit(
     tcx: TyCtxt<'_>,
-) -> FxHashMap<LintId, Level> {
+    (): ()
+) -> Vec<LintId> {
     let store = unerased_lint_store(&tcx.sess);
 
     // let mut builder = LintLevelsBuilder {
@@ -180,7 +181,7 @@ pub(crate) fn lints_that_can_emit(
 
     let specs = tcx.shallow_lint_levels_on(hir::CRATE_HIR_ID.owner);
 
-    let mut hashmap = FxHashMap::default();
+    let mut hashmap = Vec::new();
 
     for &lint in store.get_lints() {
         let lint_id = LintId::of(lint);
@@ -194,7 +195,7 @@ pub(crate) fn lints_that_can_emit(
         // );
 
         if actual_level > Level::Allow {
-            hashmap.insert(lint_id, actual_level);
+            hashmap.push(lint_id);
         }
     }
 
@@ -1183,7 +1184,7 @@ impl<'s, P: LintLevelsProvider> LintLevelsBuilder<'s, P> {
 }
 
 pub(crate) fn provide(providers: &mut Providers) {
-    *providers = Providers { shallow_lint_levels_on, lint_expectations, ..*providers };
+    *providers = Providers { shallow_lint_levels_on, lint_expectations, lints_that_can_emit, ..*providers };
 }
 
 pub fn parse_lint_and_tool_name(lint_name: &str) -> (Option<Symbol>, &str) {

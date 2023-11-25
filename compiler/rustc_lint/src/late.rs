@@ -14,7 +14,6 @@
 //! upon. As the ast is traversed, this keeps track of the current lint level
 //! for all lint attributes.
 
-use crate::levels::lints_that_can_emit;
 use crate::{passes::LateLintPassObject, LateContext, LateLintPass, LintStore, LintId};
 use rustc_ast as ast;
 use rustc_data_structures::stack::ensure_sufficient_stack;
@@ -420,20 +419,20 @@ fn late_lint_crate<'tcx>(tcx: TyCtxt<'tcx>) {
         only_module: false,
     };
 
-    let hashmap = lints_that_can_emit(tcx);
+    let hashmap = tcx.lints_that_can_emit(());
 
-    let mut passes: Vec<Box<dyn LateLintPass<'tcx>>> = passes.into_iter().filter(|pass| {
-        LintPass::get_lints(pass).iter().any(|&lint| hashmap.get(&LintId::of(lint)).is_some())
+    let mut filtered_passes: Vec<Box<dyn LateLintPass<'tcx>>> = passes.into_iter().filter(|pass| {
+        LintPass::get_lints(pass).iter().any(|&lint| hashmap.contains(&LintId::of(lint)))
     }).collect();
 
     // let mut passes: Vec<std::boxed::Box<dyn LateLintPass<'tcx>>> = passes
     //     .into_iter()
     //     .filter(|pass| {
-    //         LintPass::get_lints(pass).iter().any(|&lint| builder.lint_level(lint).0 > Level::Allow)
+    //         LintPass::get_lints(pass).iter().any(|&lint| )
     //     })
     //     .collect();
 
-    let pass = RuntimeCombinedLateLintPass { passes: &mut passes[..] };
+    let pass = RuntimeCombinedLateLintPass { passes: &mut filtered_passes[..] };
     late_lint_crate_inner(tcx, context, pass);
 }
 
