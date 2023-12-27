@@ -94,13 +94,13 @@ impl<'tcx> LateLintPass<'tcx> for UseSelf {
         // we're in an `impl` or nested item, that we don't want to lint
         let stack_item = if let ItemKind::Impl(Impl { self_ty, generics, .. }) = item.kind
             && let TyKind::Path(QPath::Resolved(_, item_path)) = self_ty.kind
+            && !is_from_proc_macro(cx, item)
             && let parameters = &item_path.segments.last().expect(SEGMENTS_MSG).args
             && parameters.as_ref().map_or(true, |params| {
                 params.parenthesized == GenericArgsParentheses::No
                     && !params.args.iter().any(|arg| matches!(arg, GenericArg::Lifetime(_)))
             })
             && !item.span.from_expansion()
-            && !is_from_proc_macro(cx, item)
         // expensive, should be last check
         {
             // Self cannot be used inside const generic parameters

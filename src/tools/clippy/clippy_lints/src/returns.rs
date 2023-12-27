@@ -180,6 +180,7 @@ impl<'tcx> LateLintPass<'tcx> for Return {
     fn check_stmt(&mut self, cx: &LateContext<'tcx>, stmt: &'tcx Stmt<'_>) {
         if !in_external_macro(cx.sess(), stmt.span)
             && let StmtKind::Semi(expr) = stmt.kind
+            && !is_from_proc_macro(cx, expr)
             && let ExprKind::Ret(Some(ret)) = expr.kind
             && let ExprKind::Match(.., MatchSource::TryDesugar(_)) = ret.kind
             // Ensure this is not the final stmt, otherwise removing it would cause a compile error
@@ -190,7 +191,6 @@ impl<'tcx> LateLintPass<'tcx> for Return {
             && !is_inside_let_else(cx.tcx, expr)
             && let [.., final_stmt] = block.stmts
             && final_stmt.hir_id != stmt.hir_id
-            && !is_from_proc_macro(cx, expr)
             && !stmt_needs_never_type(cx, stmt.hir_id)
         {
             span_lint_and_sugg(

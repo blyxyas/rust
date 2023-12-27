@@ -81,6 +81,7 @@ impl_lint_pass!(Default => [DEFAULT_TRAIT_ACCESS, FIELD_REASSIGN_WITH_DEFAULT]);
 impl<'tcx> LateLintPass<'tcx> for Default {
     fn check_expr(&mut self, cx: &LateContext<'tcx>, expr: &'tcx Expr<'_>) {
         if !expr.span.from_expansion()
+            && !is_from_proc_macro(cx, expr)
             // Avoid cases already linted by `field_reassign_with_default`
             && !self.reassigned_linted.contains(&expr.span)
             && let ExprKind::Call(path, ..) = expr.kind
@@ -93,7 +94,6 @@ impl<'tcx> LateLintPass<'tcx> for Default {
             && let QPath::Resolved(None, _path) = qpath
             && let expr_ty = cx.typeck_results().expr_ty(expr)
             && let ty::Adt(def, ..) = expr_ty.kind()
-            && !is_from_proc_macro(cx, expr)
         {
             let replacement = with_forced_trimmed_paths!(format!("{}::default()", cx.tcx.def_path_str(def.did())));
             span_lint_and_sugg(

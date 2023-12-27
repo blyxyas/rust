@@ -25,8 +25,12 @@ use rustc_lint::{LateContext, LintContext};
 use rustc_middle::ty::TyCtxt;
 use rustc_session::Session;
 use rustc_span::symbol::Ident;
-use rustc_span::{Span, Symbol};
+use rustc_span::{Span, Symbol, DUMMY_SP};
 use rustc_target::spec::abi::Abi;
+
+use std::sync::RwLock;
+
+static MEOW: RwLock<(Span, bool)> = RwLock::new((DUMMY_SP, false));
 
 /// The search pattern to look for. Used by `span_matches_pat`
 #[derive(Clone)]
@@ -421,8 +425,19 @@ impl<'cx> WithSearchPat<'cx> for Ident {
 /// This should be called after `in_external_macro` and the initial pattern matching of the ast as
 /// it is significantly slower than both of those.
 pub fn is_from_proc_macro<'cx, T: WithSearchPat<'cx>>(cx: &T::Context, item: &T) -> bool {
-    let (start_pat, end_pat) = item.search_pat(cx);
-    !span_matches_pat(cx.sess(), item.span(), start_pat, end_pat)
+    
+    let meow_r = MEOW.read().unwrap();
+
+    // Check if there's some cache
+    if !meow_r.0.contains(item.span()) || !meow_r.1 { // If MEOW DOES NOT enclose new span     
+        let (start_pat, end_pat) = item.search_pat(cx);
+        let result = !span_matches_pat(cx.sess(), item.span(), start_pat, end_pat);
+        let mut w = MEOW.write().unwrap();
+        *w = (item.span(), result);
+        return result;
+    } else {
+        meow_r.1
+    }
 }
 
 /// Checks if the span actually refers to a match expression

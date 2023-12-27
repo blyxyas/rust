@@ -98,7 +98,9 @@ fn check_array<'tcx>(cx: &LateContext<'tcx>, expr: &'tcx Expr<'tcx>, elements: &
 }
 
 fn check_tuple<'tcx>(cx: &LateContext<'tcx>, expr: &'tcx Expr<'tcx>, elements: &'tcx [Expr<'tcx>]) {
-    if let ty::Tuple(tys) = cx.typeck_results().expr_ty(expr).kind()
+    
+    if !is_from_proc_macro(cx, expr) 
+        && let ty::Tuple(tys) = cx.typeck_results().expr_ty(expr).kind()
         && let [first, ..] = elements
         // Fix #11100
         && tys.iter().all_equal()
@@ -121,7 +123,6 @@ fn check_tuple<'tcx>(cx: &LateContext<'tcx>, expr: &'tcx Expr<'tcx>, elements: &
             _ => None,
         })
         && all_bindings_are_for_conv(cx, tys, expr, elements, &locals, ToType::Tuple)
-        && !is_from_proc_macro(cx, expr)
     {
         span_lint_and_help(
             cx,

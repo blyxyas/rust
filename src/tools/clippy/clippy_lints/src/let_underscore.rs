@@ -142,6 +142,7 @@ impl<'tcx> LateLintPass<'tcx> for LetUnderscore {
         if !in_external_macro(cx.tcx.sess, local.span)
             && let PatKind::Wild = local.pat.kind
             && let Some(init) = local.init
+            && !is_from_proc_macro(cx, init)
         {
             let init_ty = cx.typeck_results().expr_ty(init);
             let contains_sync_guard = init_ty.walk().any(|inner| match inner.unpack() {
@@ -196,11 +197,6 @@ impl<'tcx> LateLintPass<'tcx> for LetUnderscore {
                 if let Some(init) = local.init
                     && !cx.typeck_results().expr_ty(init).is_suggestable(cx.tcx, true)
                 {
-                    return;
-                }
-
-                // Ignore if it is from a procedural macro...
-                if is_from_proc_macro(cx, init) {
                     return;
                 }
 

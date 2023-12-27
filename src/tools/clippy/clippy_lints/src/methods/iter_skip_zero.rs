@@ -10,6 +10,7 @@ use super::ITER_SKIP_ZERO;
 
 pub(super) fn check<'tcx>(cx: &LateContext<'tcx>, expr: &'tcx Expr<'tcx>, arg_expr: &Expr<'_>) {
     if !expr.span.from_expansion()
+        && !is_from_proc_macro(cx, expr)
         && is_trait_method(cx, expr, sym::Iterator)
         && let Some(arg) = constant(cx, cx.typeck_results(), arg_expr).and_then(|constant| {
             if let Constant::Int(arg) = constant {
@@ -19,7 +20,6 @@ pub(super) fn check<'tcx>(cx: &LateContext<'tcx>, expr: &'tcx Expr<'tcx>, arg_ex
             }
         })
         && arg == 0
-        && !is_from_proc_macro(cx, expr)
     {
         span_lint_and_then(cx, ITER_SKIP_ZERO, arg_expr.span, "usage of `.skip(0)`", |diag| {
             diag.span_suggestion(

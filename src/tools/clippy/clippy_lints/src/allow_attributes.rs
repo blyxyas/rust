@@ -53,11 +53,11 @@ impl LateLintPass<'_> for AllowAttribute {
     // Separate each crate's features.
     fn check_attribute<'cx>(&mut self, cx: &LateContext<'cx>, attr: &'cx Attribute) {
         if !in_external_macro(cx.sess(), attr.span)
+            && !is_from_proc_macro(cx, &attr)
             && cx.tcx.features().lint_reasons
             && let AttrStyle::Outer = attr.style
             && let Some(ident) = attr.ident()
             && ident.name == rustc_span::symbol::sym::allow
-            && !is_from_proc_macro(cx, &attr)
         {
             span_lint_and_sugg(
                 cx,

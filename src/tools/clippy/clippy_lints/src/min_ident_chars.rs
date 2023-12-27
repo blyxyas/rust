@@ -104,6 +104,9 @@ impl Visitor<'_> for IdentVisitor<'_, '_> {
         let Some(ident) = node.ident() else {
             return;
         };
+        if is_from_proc_macro(cx, &ident) {
+            return;
+        }
 
         let str = ident.as_str();
         if conf.is_ident_too_short(cx, str, ident.span) {
@@ -138,10 +141,6 @@ impl Visitor<'_> for IdentVisitor<'_, '_> {
             if let Node::GenericParam(generic_param) = node
                 && let GenericParamKind::Const { .. } = generic_param.kind
             {
-                return;
-            }
-
-            if is_from_proc_macro(cx, &ident) {
                 return;
             }
 

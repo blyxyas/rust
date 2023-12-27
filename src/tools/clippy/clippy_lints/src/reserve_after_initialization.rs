@@ -125,10 +125,10 @@ impl<'tcx> LateLintPass<'tcx> for ReserveAfterInitialization {
     fn check_stmt(&mut self, cx: &LateContext<'tcx>, stmt: &'tcx Stmt<'_>) {
         if let Some(searcher) = self.searcher.take() {
             if let StmtKind::Expr(expr) | StmtKind::Semi(expr) = stmt.kind
+                && !is_from_proc_macro(cx, expr)
                 && let ExprKind::MethodCall(name, self_arg, [space_hint], _) = expr.kind
                 && path_to_local_id(self_arg, searcher.local_id)
                 && name.ident.as_str() == "reserve"
-                && !is_from_proc_macro(cx, expr)
             {
                 self.searcher = Some(VecReserveSearcher {
                     err_span: searcher.err_span.to(stmt.span),
