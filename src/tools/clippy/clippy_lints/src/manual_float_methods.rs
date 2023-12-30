@@ -83,6 +83,7 @@ impl Variant {
 impl<'tcx> LateLintPass<'tcx> for ManualFloatMethods {
     fn check_expr(&mut self, cx: &LateContext<'tcx>, expr: &'tcx Expr<'tcx>) {
         if !in_external_macro(cx.sess(), expr.span)
+            && !is_from_proc_macro(cx, expr)
             && (
                 matches!(cx.tcx.constness(cx.tcx.hir().enclosing_body_owner(expr.hir_id)), Constness::NotConst)
                     || cx.tcx.features().declared(sym!(const_float_classify))
@@ -112,9 +113,6 @@ impl<'tcx> LateLintPass<'tcx> for ManualFloatMethods {
                 (BinOpKind::And, BinOpKind::Ne, BinOpKind::Ne) => Variant::ManualIsFinite,
                 _ => return,
             };
-            if is_from_proc_macro(cx, expr) {
-                return;
-            }
 
             span_lint_and_then(cx, variant.lint(), expr.span, variant.msg(), |diag| {
                 match variant {

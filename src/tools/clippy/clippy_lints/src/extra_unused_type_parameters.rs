@@ -269,8 +269,8 @@ impl<'cx, 'tcx> Visitor<'tcx> for TypeWalker<'cx, 'tcx> {
 impl<'tcx> LateLintPass<'tcx> for ExtraUnusedTypeParameters {
     fn check_item(&mut self, cx: &LateContext<'tcx>, item: &'tcx Item<'tcx>) {
         if let ItemKind::Fn(_, generics, body_id) = item.kind
-            && !self.is_empty_exported_or_macro(cx, item.span, item.owner_id.def_id, body_id)
-            && !is_from_proc_macro(cx, item)
+        && !is_from_proc_macro(cx, item)
+        && !self.is_empty_exported_or_macro(cx, item.span, item.owner_id.def_id, body_id)
         {
             let mut walker = TypeWalker::new(cx, generics);
             walk_item(&mut walker, item);

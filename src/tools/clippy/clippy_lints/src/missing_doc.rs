@@ -139,6 +139,8 @@ impl<'tcx> LateLintPass<'tcx> for MissingDoc {
     }
 
     fn check_item(&mut self, cx: &LateContext<'tcx>, it: &'tcx hir::Item<'_>) {
+        if is_from_proc_macro(cx, it) {return;}
+        
         match it.kind {
             hir::ItemKind::Fn(..) => {
                 // ignore main()
@@ -170,9 +172,7 @@ impl<'tcx> LateLintPass<'tcx> for MissingDoc {
         let (article, desc) = cx.tcx.article_and_description(it.owner_id.to_def_id());
 
         let attrs = cx.tcx.hir().attrs(it.hir_id());
-        if !is_from_proc_macro(cx, it) {
-            self.check_missing_docs_attrs(cx, it.owner_id.def_id, attrs, it.span, article, desc);
-        }
+        self.check_missing_docs_attrs(cx, it.owner_id.def_id, attrs, it.span, article, desc);
     }
 
     fn check_trait_item(&mut self, cx: &LateContext<'tcx>, trait_item: &'tcx hir::TraitItem<'_>) {

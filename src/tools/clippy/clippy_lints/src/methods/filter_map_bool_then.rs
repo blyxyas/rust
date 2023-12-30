@@ -14,6 +14,7 @@ use rustc_span::{sym, Span};
 
 pub(super) fn check<'tcx>(cx: &LateContext<'tcx>, expr: &'tcx Expr<'tcx>, arg: &Expr<'_>, call_span: Span) {
     if !in_external_macro(cx.sess(), expr.span)
+        && !is_from_proc_macro(cx, expr)
         && is_trait_method(cx, expr, sym::Iterator)
         && let ExprKind::Closure(closure) = arg.kind
         && let body = cx.tcx.hir().body(closure.body)
@@ -36,7 +37,6 @@ pub(super) fn check<'tcx>(cx: &LateContext<'tcx>, expr: &'tcx Expr<'tcx>, arg: &
         && let then_body = peel_blocks(cx.tcx.hir().body(then_closure.body).value)
         && let Some(def_id) = cx.typeck_results().type_dependent_def_id(value.hir_id)
         && match_def_path(cx, def_id, &BOOL_THEN)
-        && !is_from_proc_macro(cx, expr)
         // Count the number of derefs needed to get to the bool because we need those in the suggestion
         && let needed_derefs = cx.typeck_results().expr_adjustments(recv)
             .iter()

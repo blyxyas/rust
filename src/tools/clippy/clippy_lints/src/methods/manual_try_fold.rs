@@ -21,6 +21,7 @@ pub(super) fn check<'tcx>(
     msrv: &Msrv,
 ) {
     if !in_external_macro(cx.sess(), fold_span)
+        && !is_from_proc_macro(cx, expr)
         && msrv.meets(msrvs::ITERATOR_TRY_FOLD)
         && is_trait_method(cx, expr, sym::Iterator)
         && let init_ty = cx.typeck_results().expr_ty(init)
@@ -30,7 +31,6 @@ pub(super) fn check<'tcx>(
         && let ExprKind::Path(qpath) = path.kind
         && let Res::Def(DefKind::Ctor(_, _), _) = cx.qpath_res(&qpath, path.hir_id)
         && let ExprKind::Closure(closure) = acc.kind
-        && !is_from_proc_macro(cx, expr)
         && let Some(args_snip) = closure.fn_arg_span.and_then(|fn_arg_span| snippet_opt(cx, fn_arg_span))
     {
         let init_snip = rest

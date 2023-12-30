@@ -39,6 +39,7 @@ declare_lint_pass!(NeedlessIf => [NEEDLESS_IF]);
 impl LateLintPass<'_> for NeedlessIf {
     fn check_stmt<'tcx>(&mut self, cx: &LateContext<'tcx>, stmt: &Stmt<'tcx>) {
         if let StmtKind::Expr(expr) = stmt.kind
+            && !is_from_proc_macro(cx, expr)
             && let Some(If {cond, then, r#else: None }) = If::hir(expr)
             && let ExprKind::Block(block, ..) = then.kind
             && block.stmts.is_empty()
@@ -52,7 +53,6 @@ impl LateLintPass<'_> for NeedlessIf {
             // - #[cfg]'d out code
             && then_snippet.chars().all(|ch| matches!(ch, '{' | '}') || ch.is_ascii_whitespace())
             && let Some(cond_snippet) = snippet_opt(cx, cond.span)
-            && !is_from_proc_macro(cx, expr)
         {
             span_lint_and_sugg(
                 cx,

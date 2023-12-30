@@ -25,8 +25,10 @@ use rustc_lint::{LateContext, LintContext};
 use rustc_middle::ty::TyCtxt;
 use rustc_session::Session;
 use rustc_span::symbol::Ident;
-use rustc_span::{Span, Symbol};
+use rustc_span::{Span, Symbol, SpanData};
 use rustc_target::spec::abi::Abi;
+
+static mut MEOW: (u32, u32, bool) = (0, 0, false);
 
 /// The search pattern to look for. Used by `span_matches_pat`
 #[derive(Clone)]
@@ -353,40 +355,40 @@ fn ty_search_pat(ty: &Ty<'_>) -> (Pat, Pat) {
 }
 
 pub trait WithSearchPat<'cx> {
-    type Context: LintContext;
-    fn search_pat(&self, cx: &Self::Context) -> (Pat, Pat);
+    fn search_pat(&self, cx: &LateContext<'_>) -> (Pat, Pat);
     fn span(&self) -> Span;
 }
 macro_rules! impl_with_search_pat {
-    ($cx:ident: $ty:ident with $fn:ident $(($tcx:ident))?) => {
+    ($ty:ident with $fn:ident $(($tcx:ident))?) => {
         impl<'cx> WithSearchPat<'cx> for $ty<'cx> {
-            type Context = $cx<'cx>;
             #[allow(unused_variables)]
-            fn search_pat(&self, cx: &Self::Context) -> (Pat, Pat) {
+            #[inline]
+            fn search_pat(&self, cx: &LateContext<'_>) -> (Pat, Pat) {
                 $(let $tcx = cx.tcx;)?
                 $fn($($tcx,)? self)
             }
+            #[inline]
             fn span(&self) -> Span {
                 self.span
             }
         }
     };
 }
-impl_with_search_pat!(LateContext: Expr with expr_search_pat(tcx));
-impl_with_search_pat!(LateContext: Item with item_search_pat);
-impl_with_search_pat!(LateContext: TraitItem with trait_item_search_pat);
-impl_with_search_pat!(LateContext: ImplItem with impl_item_search_pat);
-impl_with_search_pat!(LateContext: FieldDef with field_def_search_pat);
-impl_with_search_pat!(LateContext: Variant with variant_search_pat);
-impl_with_search_pat!(LateContext: Ty with ty_search_pat);
+impl_with_search_pat!(Expr with expr_search_pat(tcx));
+impl_with_search_pat!(Item with item_search_pat);
+impl_with_search_pat!(TraitItem with trait_item_search_pat);
+impl_with_search_pat!(ImplItem with impl_item_search_pat);
+impl_with_search_pat!(FieldDef with field_def_search_pat);
+impl_with_search_pat!(Variant with variant_search_pat);
+impl_with_search_pat!(Ty with ty_search_pat);
 
 impl<'cx> WithSearchPat<'cx> for (&FnKind<'cx>, &Body<'cx>, HirId, Span) {
-    type Context = LateContext<'cx>;
-
-    fn search_pat(&self, cx: &Self::Context) -> (Pat, Pat) {
+    #[inline]
+    fn search_pat(&self, cx: &LateContext<'_>) -> (Pat, Pat) {
         fn_kind_pat(cx.tcx, self.0, self.1, self.2)
     }
 
+    #[inline]
     fn span(&self) -> Span {
         self.3
     }
@@ -394,12 +396,11 @@ impl<'cx> WithSearchPat<'cx> for (&FnKind<'cx>, &Body<'cx>, HirId, Span) {
 
 // `Attribute` does not have the `hir` associated lifetime, so we cannot use the macro
 impl<'cx> WithSearchPat<'cx> for &'cx Attribute {
-    type Context = LateContext<'cx>;
-
-    fn search_pat(&self, _cx: &Self::Context) -> (Pat, Pat) {
+    fn search_pat(&self, _cx: &LateContext<'_>) -> (Pat, Pat) {
         attr_search_pat(self)
     }
 
+    #[inline]
     fn span(&self) -> Span {
         self.span
     }
@@ -407,12 +408,11 @@ impl<'cx> WithSearchPat<'cx> for &'cx Attribute {
 
 // `Ident` does not have the `hir` associated lifetime, so we cannot use the macro
 impl<'cx> WithSearchPat<'cx> for Ident {
-    type Context = LateContext<'cx>;
-
-    fn search_pat(&self, _cx: &Self::Context) -> (Pat, Pat) {
+    fn search_pat(&self, _cx: &LateContext<'_>) -> (Pat, Pat) {
         (Pat::Sym(self.name), Pat::Sym(self.name))
     }
 
+    #[inline]
     fn span(&self) -> Span {
         self.span
     }
@@ -422,9 +422,19 @@ impl<'cx> WithSearchPat<'cx> for Ident {
 ///
 /// This should be called after `in_external_macro` and the initial pattern matching of the ast as
 /// it is significantly slower than both of those.
-pub fn is_from_proc_macro<'cx, T: WithSearchPat<'cx>>(cx: &T::Context, item: &T) -> bool {
-    let (start_pat, end_pat) = item.search_pat(cx);
-    !span_matches_pat(cx.sess(), item.span(), start_pat, end_pat)
+pub fn is_from_proc_macro<'cx, T: WithSearchPat<'cx>>(cx: &LateContext<'_>, item: &T) -> bool {
+    // Check if there's some cache
+    let patterns = item.search_pat(cx);
+    unsafe { _is_from_proc_macro(cx, &item.span().data(), patterns) }
+}
+
+unsafe fn _is_from_proc_macro(cx: &LateContext<'_>, sp: &SpanData, patterns: (Pat, Pat)) -> bool {
+    if !MEOW.2 || !(MEOW.0 <= sp.lo.0 && MEOW.1 >= sp.hi.0) { // If MEOW DOES NOT enclose new span
+        let result = !span_matches_pat(cx.sess(), sp.span(), patterns.0, patterns.1);
+        unsafe { MEOW = (sp.lo.0, sp.hi.0, result); }
+        return result;
+    }
+    MEOW.2
 }
 
 /// Checks if the span actually refers to a match expression

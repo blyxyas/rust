@@ -45,10 +45,10 @@ declare_lint_pass!(ItemsAfterTestModule => [ITEMS_AFTER_TEST_MODULE]);
 
 fn cfg_test_module<'tcx>(cx: &LateContext<'tcx>, item: &Item<'tcx>) -> bool {
     if let ItemKind::Mod(test_mod) = item.kind
+        && !is_from_proc_macro(cx, item)
         && item.span.hi() == test_mod.spans.inner_span.hi()
         && is_cfg_test(cx.tcx, item.hir_id())
         && !item.span.from_expansion()
-        && !is_from_proc_macro(cx, item)
     {
         true
     } else {

@@ -8,7 +8,7 @@ use rustc_lint::LateContext;
 use super::{utils, UNIT_ARG};
 
 pub(super) fn check<'tcx>(cx: &LateContext<'tcx>, expr: &'tcx Expr<'tcx>) {
-    if expr.span.from_expansion() {
+    if expr.span.from_expansion() || is_from_proc_macro(cx, expr) {
         return;
     }
 
@@ -46,7 +46,7 @@ pub(super) fn check<'tcx>(cx: &LateContext<'tcx>, expr: &'tcx Expr<'tcx>) {
             }
         })
         .collect::<Vec<_>>();
-    if !args_to_recover.is_empty() && !is_from_proc_macro(cx, expr) {
+    if !args_to_recover.is_empty() {
         lint_unit_args(cx, expr, args_to_recover.as_slice());
     }
 }

@@ -53,6 +53,7 @@ impl<'tcx> LateLintPass<'tcx> for RedundantLocals {
             && local.ty.is_none()
             // the expression is a resolved path
             && let Some(expr) = local.init
+            && !is_from_proc_macro(cx, expr)
             && let ExprKind::Path(qpath @ QPath::Resolved(None, path)) = expr.kind
             // the path is a single segment equal to the local's name
             && let [last_segment] = path.segments
@@ -68,7 +69,6 @@ impl<'tcx> LateLintPass<'tcx> for RedundantLocals {
             && !needs_ordered_drop(cx, cx.typeck_results().expr_ty(expr))
             // the local is user-controlled
             && !in_external_macro(cx.sess(), local.span)
-            && !is_from_proc_macro(cx, expr)
         {
             span_lint_and_help(
                 cx,
