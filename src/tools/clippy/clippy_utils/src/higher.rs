@@ -5,7 +5,6 @@
 use crate::consts::{constant_simple, Constant};
 use crate::ty::is_type_diagnostic_item;
 use crate::is_expn_of;
-use if_chain::if_chain;
 use rustc_ast::ast;
 use rustc_hir as hir;
 use rustc_hir::{Arm, Block, Expr, ExprKind, HirId, LoopSource, MatchSource, Node, Pat, QPath};

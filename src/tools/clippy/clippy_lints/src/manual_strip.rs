@@ -3,7 +3,7 @@ use clippy_utils::consts::{constant, Constant};
 use clippy_utils::diagnostics::{multispan_sugg, span_lint_and_then};
 use clippy_utils::source::snippet;
 use clippy_utils::usage::mutated_variables;
-use clippy_utils::{eq_expr_value, higher, match_def_path, paths};
+use clippy_utils::{eq_expr_value, higher};
 use rustc_ast::ast::LitKind;
 use rustc_hir::def::Res;
 use rustc_hir::intravisit::{walk_expr, Visitor};

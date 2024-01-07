@@ -79,8 +79,6 @@ use std::iter;
 use std::mem;
 use std::ops::{Bound, Deref};
 
-use if_chain::if_chain;
-
 #[allow(rustc::usage_of_ty_tykind)]
 impl<'tcx> Interner for TyCtxt<'tcx> {
     type DefId = DefId;
@@ -881,21 +879,20 @@ impl<'tcx> TyCtxt<'tcx> {
         adt_name: Symbol,
         variant_name: &str,
     ) -> bool {
-        if_chain! {
-            if let Node::Expr(expr) = self.hir().get(def_id);
-            if let ExprKind::Path(qpath) = expr.kind;
-            if let QPath::Resolved(.., path) = qpath;
-            if let Res::Def(defkind, _) = path.res;
-            if let DefKind::Ctor(ctor_of, _) = defkind;
-            if let CtorOf::Variant = ctor_of;
-            if let Some(first_seg) = path.segments.first();
-            if first_seg.ident.name == adt_name;
-            then {
+        if let Some(Node::Expr(expr)) = self.opt_hir_node(def_id)
+        && let ExprKind::Path(qpath) = expr.kind
+        && let QPath::Resolved(.., path) = qpath
+        && let Res::Def(defkind, _) = path.res
+        && let DefKind::Ctor(ctor_of, _) = defkind
+        && let CtorOf::Variant = ctor_of
+        && let Some(first_seg) = path.segments.first()
+        && first_seg.ident.name == adt_name
+            {
                 return path.segments.last()
                     .unwrap() // If there's a first segment, there's a last one
                     .ident.as_str() == variant_name;
             }
-        }
+        
         false
     }
 
