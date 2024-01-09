@@ -175,8 +175,8 @@ pub fn lints_that_can_emit(
         cur: hir::CRATE_HIR_ID,
         specs: ShallowLintLevelMap::default(),
         expectations: Vec::new(),
-        unstable_to_stable_ids: FxHashMap::default(),
-        empty: FxHashMap::default(),
+        unstable_to_stable_ids: FxIndexMap::default(),
+        empty: FxIndexMap::default(),
     };
 
     let specs = tcx.shallow_lint_levels_on(hir::CRATE_HIR_ID.owner);

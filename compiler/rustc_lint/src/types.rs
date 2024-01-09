@@ -136,36 +136,6 @@ declare_lint! {
     Warn,
     "detects invalid floating point NaN comparisons"
 }
-declare_lint! {
-    /// The `ambiguous_wide_pointer_comparisons` lint checks comparison
-    /// of `*const/*mut ?Sized` as the operands.
-    ///
-    /// ### Example
-    ///
-    /// ```rust
-    /// # struct A;
-    /// # struct B;
-    ///
-    /// # trait T {}
-    /// # impl T for A {}
-    /// # impl T for B {}
-    ///
-    /// let ab = (A, B);
-    /// let a = &ab.0 as *const dyn T;
-    /// let b = &ab.1 as *const dyn T;
-    ///
-    /// let _ = a == b;
-    /// ```
-    ///
-    /// {{produces}}
-    ///
-    /// ### Explanation
-    ///
-    /// The comparison includes metadata which may not be expected.
-    AMBIGUOUS_WIDE_POINTER_COMPARISONS,
-    Warn,
-    "detects ambiguous wide pointer comparisons"
-}
 
 declare_lint! {
     /// The `ambiguous_wide_pointer_comparisons` lint checks comparison
