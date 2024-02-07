@@ -169,31 +169,15 @@ pub fn lints_that_can_emit(
     //     store,
     //     registered_tools: &tcx.registered_tools(()),
     // };
-
-    let _querymap = QueryMapExpectationsWrapper {
-        tcx,
-        cur: hir::CRATE_HIR_ID,
-        specs: ShallowLintLevelMap::default(),
-        expectations: Vec::new(),
-        unstable_to_stable_ids: FxIndexMap::default(),
-        empty: FxIndexMap::default(),
-    };
-
     let specs = tcx.shallow_lint_levels_on(hir::CRATE_HIR_ID.owner);
+    let lints = store.get_lints();
 
-    let mut hashmap = Vec::new();
+    let mut hashmap: Vec<LintId> = Vec::new();
+    hashmap.reserve((lints.len() >> 1) * usize::from(tcx.sess.opts.lint_cap.is_some())); // Avoid allocations, it's better to 
 
-    for &lint in store.get_lints() {
+    for &lint in lints {
         let lint_id = LintId::of(lint);
         let actual_level = specs.probe_for_lint_level(tcx, lint_id, hir::CRATE_HIR_ID).0.unwrap_or(lint.default_level);
-        // let actual_level = reveal_actual_level(
-        //     None,
-        //     &mut LintLevelSource::Default,
-        //     tcx.sess,
-        //     lint_id,
-        //     |lintid| querymap.specs.probe_for_lint_level(tcx, lintid, hir::CRATE_HIR_ID)
-        // );
-
         if actual_level > Level::Allow {
             hashmap.push(lint_id);
         }
