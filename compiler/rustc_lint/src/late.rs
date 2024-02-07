@@ -364,16 +364,16 @@ pub fn late_lint_mod<'tcx, T: LateLintPass<'tcx> + 'tcx>(
     // Note: `passes` is often empty. In that case, it's faster to run
     // `builtin_lints` directly rather than bundling it up into the
     // `RuntimeCombinedLateLintPass`.
-    let passes: Vec<_> = unerased_lint_store(tcx.sess)
-        .late_module_passes
-        .iter()
-        .map(|mk_pass| (mk_pass)(tcx))
-        .collect();
-
+let store = unerased_lint_store(tcx.sess);
         
-        if passes.is_empty() {
+        if store.late_module_passes.is_empty() {
             late_lint_mod_inner(tcx, module_def_id, context, builtin_lints);
         } else {
+            let passes: Vec<_> = store
+            .late_module_passes
+            .iter()
+            .map(|mk_pass| (mk_pass)(tcx))
+            .collect();
             let emittable_lints = tcx.lints_that_can_emit(());
             let mut filtered_passes: Vec<Box<dyn LateLintPass<'tcx>>> = passes.into_iter().filter(|pass| {
                 LintPass::get_lints(pass).iter().any(|&lint| emittable_lints.contains(&LintId::of(lint)))
