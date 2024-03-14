@@ -561,7 +561,6 @@ fn register_internals(store: &mut LintStore) {
     store.register_lints(&TyTyKind::default().get_lints());
     store.register_late_mod_pass(|_| Box::new(TyTyKind));
     store.register_lints(&Diagnostics::default().get_lints());
-    store.register_early_pass(|| Box::new(Diagnostics));
     store.register_late_mod_pass(|_| Box::new(Diagnostics));
     store.register_lints(&BadOptAccess::default().get_lints());
     store.register_late_mod_pass(|_| Box::new(BadOptAccess));
