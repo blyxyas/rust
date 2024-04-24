@@ -15,7 +15,6 @@
 //! for all lint attributes.
 
 use crate::{passes::LateLintPassObject, LateContext, LateLintPass, LintStore, LintId};
-use rustc_ast as ast;
 use rustc_data_structures::stack::ensure_sufficient_stack;
 use rustc_data_structures::sync::{join, Lrc};
 use rustc_hir as hir;
