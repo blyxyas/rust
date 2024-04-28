@@ -162,19 +162,11 @@ pub fn lints_that_can_emit(
 ) -> Vec<LintId> {
     let store = unerased_lint_store(&tcx.sess);
 
-    // let mut builder = LintLevelsBuilder {
-    //     sess: tcx.sess,
-    //     features: tcx.features(),
-    //     provider: 
-    //     warn_about_weird_lints: false,
-    //     store,
-    //     registered_tools: &tcx.registered_tools(()),
-    // };
     let specs = tcx.shallow_lint_levels_on(hir::CRATE_HIR_ID.owner);
     let lints = store.get_lints();
 
     let mut hashmap: Vec<LintId> = Vec::new();
-    hashmap.reserve((lints.len() >> 1) * usize::from(tcx.sess.opts.lint_cap.is_some())); // Avoid allocations, it's better to 
+    hashmap.reserve((lints.len() >> 1) * usize::from(tcx.sess.opts.lint_cap.is_some())); // Avoid allocations
 
     for &lint in lints {
         let lint_id = LintId::of(lint);

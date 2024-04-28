@@ -433,12 +433,10 @@ fn late_lint_crate<'tcx>(tcx: TyCtxt<'tcx>) {
         LintPass::get_lints(pass).iter().any(|&lint| hashmap.contains(&LintId::of(lint)))
     }).collect();
 
-    // let mut passes: Vec<std::boxed::Box<dyn LateLintPass<'tcx>>> = passes
-    //     .into_iter()
-    //     .filter(|pass| {
-    //         LintPass::get_lints(pass).iter().any(|&lint| )
-    //     })
-    //     .collect();
+    // filtered_passes may be empty in case of `#[allow(all)]`
+    if filtered_passes.is_empty() {
+        return;
+    }
 
     let pass = RuntimeCombinedLateLintPass { passes: &mut filtered_passes[..] };
     late_lint_crate_inner(tcx, context, pass);
