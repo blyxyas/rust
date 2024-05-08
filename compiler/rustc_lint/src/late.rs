@@ -14,7 +14,7 @@
 //! upon. As the ast is traversed, this keeps track of the current lint level
 //! for all lint attributes.
 
-use crate::{passes::LateLintPassObject, LateContext, LateLintPass, LintStore, LintId};
+use crate::{passes::LateLintPassObject, LateContext, LateLintPass, LintStore};
 use rustc_data_structures::stack::ensure_sufficient_stack;
 use rustc_data_structures::sync::{join, Lrc};
 use rustc_hir as hir;
@@ -25,7 +25,7 @@ use rustc_middle::hir::nested_filter;
 use rustc_middle::ty::{self, TyCtxt};
 use rustc_session::lint::LintPass;
 use rustc_session::Session;
-use rustc_span::Span;
+use rustc_span::{Span, Symbol};
 
 use std::any::Any;
 use std::cell::Cell;
@@ -363,21 +363,43 @@ pub fn late_lint_mod<'tcx, T: LateLintPass<'tcx> + 'tcx>(
     // Note: `passes` is often empty. In that case, it's faster to run
     // `builtin_lints` directly rather than bundling it up into the
     // `RuntimeCombinedLateLintPass`.
-let store = unerased_lint_store(tcx.sess);
-        
-        if store.late_module_passes.is_empty() {
-            late_lint_mod_inner(tcx, module_def_id, context, builtin_lints);
-        } else {
-            let passes: Vec<_> = store
-            .late_module_passes
-            .iter()
-            .map(|mk_pass| (mk_pass)(tcx))
+    let store = unerased_lint_store(tcx.sess);
+
+    if store.late_module_passes.is_empty() {
+        late_lint_mod_inner(tcx, module_def_id, context, builtin_lints);
+    } else {
+        let passes: Vec<_> =
+            store.late_module_passes.iter().map(|mk_pass| (mk_pass)(tcx)).collect();
+
+        // Filter unused lints
+        let (lints_to_emit, lints_allowed) = &**tcx.lints_that_can_emit(());
+        // let lints_to_emit = &lints_that_can_emit.0;
+        // let lints_allowed = &lints_that_can_emit.1;
+        let passes_lints: Vec<_> = passes.iter().map(|pass| LintPass::get_lints(pass)).collect();
+
+        // Now, we'll filtered passes in a way that discards any lint that
+        let mut filtered_passes: Vec<Box<dyn LateLintPass<'tcx>>> = passes
+            .into_iter()
+            .enumerate()
+            .filter_map(|(i, pass)| {
+                if passes_lints[i].iter().any(|&lint| {
+                    let symbol = Symbol::intern(lint.name);
+                    // ^^^ Expensive, but more expensive would be having to
+                    // cast every element to &str
+
+                    lints_to_emit.contains(&symbol)
+                        || (!lints_allowed.contains(&symbol)
+                            && lint.default_level > crate::Level::Allow)
+                }) {
+                    Some(pass)
+                } else {
+                    None
+                }
+            })
             .collect();
-            let emittable_lints = tcx.lints_that_can_emit(());
-            let mut filtered_passes: Vec<Box<dyn LateLintPass<'tcx>>> = passes.into_iter().filter(|pass| {
-                LintPass::get_lints(pass).iter().any(|&lint| emittable_lints.contains(&LintId::of(lint)))
-            }).collect();
-            filtered_passes.push(Box::new(builtin_lints));
+
+        filtered_passes.push(Box::new(builtin_lints));
+
         let pass = RuntimeCombinedLateLintPass { passes: &mut filtered_passes[..] };
         late_lint_mod_inner(tcx, module_def_id, context, pass);
     }
@@ -427,11 +449,36 @@ fn late_lint_crate<'tcx>(tcx: TyCtxt<'tcx>) {
         only_module: false,
     };
 
-    let hashmap = tcx.lints_that_can_emit(());
-    
-    let mut filtered_passes: Vec<Box<dyn LateLintPass<'tcx>>> = passes.into_iter().filter(|pass| {
-        LintPass::get_lints(pass).iter().any(|&lint| hashmap.contains(&LintId::of(lint)))
-    }).collect();
+    let (lints_to_emit, lints_allowed) = &**tcx.lints_that_can_emit(());
+    // let lints_to_emit = &lints_that_can_emit.0;
+    // let lints_allowed = &lints_that_can_emit.1;
+    let passes_lints: Vec<_> = passes.iter().map(|pass| LintPass::get_lints(pass)).collect();
+
+    // Now, we'll filtered passes in a way that discards any lint that
+    let mut filtered_passes: Vec<Box<dyn LateLintPass<'tcx>>> = passes
+        .into_iter()
+        .enumerate()
+        .filter_map(|(i, pass)| {
+            if passes_lints[i].iter().any(|&lint| {
+                let symbol = Symbol::intern(
+                    &lint.name.to_lowercase()
+                        // Doing some calculations here to account for those separators
+                        [lint.name.find("::").unwrap_or(lint.name.len() - 2) + 2..],
+                );
+
+                // ^^^ Expensive, but more expensive would be having to
+                // cast every element to &str
+
+                lints_to_emit.contains(&symbol)
+                    || (!lints_allowed.contains(&symbol)
+                        && lint.default_level > crate::Level::Allow)
+            }) {
+                Some(pass)
+            } else {
+                None
+            }
+        })
+        .collect();
 
     // filtered_passes may be empty in case of `#[allow(all)]`
     if filtered_passes.is_empty() {

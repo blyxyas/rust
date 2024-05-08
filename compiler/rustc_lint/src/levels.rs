@@ -15,7 +15,7 @@ use crate::{
 };
 use rustc_ast as ast;
 use rustc_ast_pretty::pprust;
-use rustc_data_structures::fx::FxIndexMap;
+use rustc_data_structures::{fx::FxIndexMap, sync::Lrc};
 use rustc_errors::{Diag, DiagMessage, LintDiagnostic, MultiSpan};
 use rustc_feature::{Features, GateIssue};
 use rustc_hir as hir;
@@ -153,30 +153,18 @@ fn lint_expectations(tcx: TyCtxt<'_>, (): ()) -> Vec<(LintExpectationId, LintExp
 
 /// Walk the whole crate collecting nodes where lint levels change
 /// (e.g. `#[allow]` attributes), and joins that list with the warn-by-default
-/// (and not allowed in the crate) and CLI lints. The final result is a builder
-/// that has information about just lints that can be emitted (leaving out
-/// globally-allowed lints)
-pub fn lints_that_can_emit(
-    tcx: TyCtxt<'_>,
-    (): ()
-) -> Vec<LintId> {
-    let store = unerased_lint_store(&tcx.sess);
+/// (and not allowed in the crate) and CLI lints. The returned value is a tuple
+/// of 1. The lints that will emit (or at least, should run), and 2.
+/// The lints that are allowed at the crate level and will not emit.
+pub fn lints_that_can_emit(tcx: TyCtxt<'_>, (): ()) -> Lrc<(Vec<Symbol>, Vec<Symbol>)> {
+    // builder.add_command_line();
+    // builder.add_id(hir::CRATE_HIR_ID);
 
-    let specs = tcx.shallow_lint_levels_on(hir::CRATE_HIR_ID.owner);
-    let lints = store.get_lints();
+    let mut visitor = LintLevelMinimumVisitor::new(tcx);
+    visitor.process_opts();
+    tcx.hir().walk_attributes(&mut visitor);
 
-    let mut hashmap: Vec<LintId> = Vec::new();
-    hashmap.reserve((lints.len() >> 1) * usize::from(tcx.sess.opts.lint_cap.is_some())); // Avoid allocations
-
-    for &lint in lints {
-        let lint_id = LintId::of(lint);
-        let actual_level = specs.probe_for_lint_level(tcx, lint_id, hir::CRATE_HIR_ID).0.unwrap_or(lint.default_level);
-        if actual_level > Level::Allow {
-            hashmap.push(lint_id);
-        }
-    }
-
-    hashmap
+    Lrc::new((visitor.lints_to_emit, visitor.lints_allowed))
 }
 
 #[instrument(level = "trace", skip(tcx), ret)]
@@ -475,6 +463,86 @@ impl<'tcx> Visitor<'tcx> for LintLevelsBuilder<'_, QueryMapExpectationsWrapper<'
     fn visit_impl_item(&mut self, impl_item: &'tcx hir::ImplItem<'tcx>) {
         self.add_id(impl_item.hir_id());
         intravisit::walk_impl_item(self, impl_item);
+    }
+}
+
+/// Visitor with the only function of visiting every item-like in a crate and
+/// computing the highest level that every lint gets put to.
+///
+/// E.g., if a crate has a global #![allow(lint)] attribute, but a single item
+/// uses #[warn(lint)], this visitor will set that lint level as `Warn`
+struct LintLevelMinimumVisitor<'tcx> {
+    tcx: TyCtxt<'tcx>,
+    /// The actual list of detected lints.
+    lints_to_emit: Vec<Symbol>,
+    lints_allowed: Vec<Symbol>,
+}
+
+impl<'tcx> LintLevelMinimumVisitor<'tcx> {
+    pub fn new(tcx: TyCtxt<'tcx>) -> Self {
+        Self {
+            tcx,
+            // That magic number is the current number of lints + some more for possible future lints
+            lints_to_emit: Vec::with_capacity(230),
+            lints_allowed: Vec::with_capacity(100),
+        }
+    }
+
+    fn process_opts(&mut self) {
+        for (lint, level) in &self.tcx.sess.opts.lint_opts {
+            if *level == Level::Allow {
+                self.lints_allowed.push(Symbol::intern(&lint));
+            } else {
+                self.lints_to_emit.push(Symbol::intern(&lint));
+            }
+        }
+    }
+}
+
+impl<'tcx> Visitor<'tcx> for LintLevelMinimumVisitor<'tcx> {
+    type NestedFilter = nested_filter::All;
+
+    fn nested_visit_map(&mut self) -> Self::Map {
+        self.tcx.hir()
+    }
+
+    fn visit_attribute(&mut self, attribute: &'tcx ast::Attribute) {
+        if let Some(meta) = attribute.meta() {
+            if [sym::warn, sym::deny, sym::forbid, sym::expect]
+                .iter()
+                .any(|kind| meta.has_name(*kind))
+            {
+                // SAFETY: Lint attributes are always a metalist inside a
+                // metalist (even with just one lint).
+                for meta_list in meta.meta_item_list().unwrap() {
+                    // If it's a tool lint (e.g. clippy::my_clippy_lint)
+                    if let ast::NestedMetaItem::MetaItem(meta_item) = meta_list {
+                        if meta_item.path.segments.len() == 1 {
+                            self.lints_to_emit.push(
+                                // SAFETY: Lint attributes can only have literals
+                                meta_list.ident().unwrap().name,
+                            );
+                        } else {
+                            self.lints_to_emit.push(meta_item.path.segments[1].ident.name);
+                        }
+                    }
+                }
+            // We handle #![allow]s differently, as these remove checking rather than adding.
+            } else if meta.has_name(sym::allow)
+                && let ast::AttrStyle::Inner = attribute.style
+            {
+                for meta_list in meta.meta_item_list().unwrap() {
+                    // If it's a tool lint (e.g. clippy::my_clippy_lint)
+                    if let ast::NestedMetaItem::MetaItem(meta_item) = meta_list {
+                        if meta_item.path.segments.len() == 1 {
+                            self.lints_allowed.push(meta_list.name_or_empty())
+                        } else {
+                            self.lints_allowed.push(meta_item.path.segments[1].ident.name);
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -1161,7 +1229,8 @@ impl<'s, P: LintLevelsProvider> LintLevelsBuilder<'s, P> {
 }
 
 pub(crate) fn provide(providers: &mut Providers) {
-    *providers = Providers { shallow_lint_levels_on, lint_expectations, lints_that_can_emit, ..*providers };
+    *providers =
+        Providers { shallow_lint_levels_on, lint_expectations, lints_that_can_emit, ..*providers };
 }
 
 pub fn parse_lint_and_tool_name(lint_name: &str) -> (Option<Symbol>, &str) {

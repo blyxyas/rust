@@ -73,8 +73,8 @@ use rustc_trait_selection::traits::{self, misc::type_allowed_to_implement_copy};
 
 use crate::nonstandard_style::{method_context, MethodLateContext};
 
-use std::fmt::Write;
 use std::default::Default;
+use std::fmt::Write;
 
 // hardwired lints from rustc_lint_defs
 pub use rustc_session::lint::builtin::*;
