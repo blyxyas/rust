@@ -135,7 +135,9 @@ impl<'a> Parser<'a> {
             Ok(attr::mk_attr_from_item(&self.psess.attr_id_generator, item, None, style, attr_sp))
         });
 
-        if let Ok(ref attr) = attribute_result && let Some(meta) = attr.meta() {
+        if let Ok(ref attr) = attribute_result
+            && let Some(meta) = attr.meta()
+        {
             if let Some(first) = meta.path.segments.first() {
                 if [sym::warn, sym::deny, sym::forbid]
                     .iter()
@@ -145,17 +147,13 @@ impl<'a> Parser<'a> {
                         // If it's a tool lint (e.g. clippy::my_clippy_lint)
                         if let ast::NestedMetaItem::MetaItem(ref meta_item) = meta_list {
                             if meta_item.path.segments.len() == 1 {
-                                self.psess
-                                    .lints_that_can_emit.with_lock(|lints_that_can_emit| {
-                                        lints_that_can_emit
-                                        .push(meta_list.ident().unwrap().name);
-                                    })
+                                self.psess.lints_that_can_emit.with_lock(|lints_that_can_emit| {
+                                    lints_that_can_emit.push(meta_list.ident().unwrap().name);
+                                })
                             } else {
-                                self.psess
-                                    .lints_that_can_emit.with_lock(|lints_that_can_emit| {
-                                        lints_that_can_emit
-                                        .push(meta_item.path.segments[1].ident.name);
-                                    })
+                                self.psess.lints_that_can_emit.with_lock(|lints_that_can_emit| {
+                                    lints_that_can_emit.push(meta_item.path.segments[1].ident.name);
+                                })
                             }
                         }
                     }

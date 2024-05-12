@@ -238,7 +238,7 @@ pub struct ParseSess {
     /// The list of lints that cannot emit, maybe because they are allowed
     /// globally, or the default level is Allow and they are not activated
     /// manually
-    pub lints_allowed: Lock<Vec<Symbol>>
+    pub lints_allowed: Lock<Vec<Symbol>>,
 }
 
 impl ParseSess {

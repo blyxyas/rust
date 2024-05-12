@@ -15,7 +15,10 @@ use crate::{
 };
 use rustc_ast as ast;
 use rustc_ast_pretty::pprust;
-use rustc_data_structures::{fx::FxIndexMap, sync::{Lrc, par_for_each_in,  Lock}};
+use rustc_data_structures::{
+    fx::FxIndexMap,
+    sync::{par_for_each_in, Lock, Lrc},
+};
 use rustc_errors::{Diag, DiagMessage, LintDiagnostic, MultiSpan};
 use rustc_feature::{Features, GateIssue};
 use rustc_hir as hir;
@@ -491,9 +494,11 @@ impl<'tcx> LintLevelMinimum<'tcx> {
     fn process_opts(&mut self) {
         for (lint, level) in &self.tcx.sess.opts.lint_opts {
             if *level == Level::Allow {
-                self.lints_allowed.with_lock(|lints_allowed|{lints_allowed.push(Symbol::intern(&lint)) });
+                self.lints_allowed
+                    .with_lock(|lints_allowed| lints_allowed.push(Symbol::intern(&lint)));
             } else {
-                self.lints_to_emit.with_lock(|lints_to_emit| {lints_to_emit.push(Symbol::intern(&lint)) });
+                self.lints_to_emit
+                    .with_lock(|lints_to_emit| lints_to_emit.push(Symbol::intern(&lint)));
             }
         }
     }
@@ -501,17 +506,14 @@ impl<'tcx> LintLevelMinimum<'tcx> {
     fn lint_level_minimums(&mut self, tcx: TyCtxt<'tcx>) {
         tcx.sess.psess.lints_that_can_emit.with_lock(|vec| {
             par_for_each_in(vec, |lint_symbol| {
-            self.lints_to_emit.with_lock(|lints_to_emit| {lints_to_emit.push(*lint_symbol)});
-            }
-            );
-       });
+                self.lints_to_emit.with_lock(|lints_to_emit| lints_to_emit.push(*lint_symbol));
+            });
+        });
         tcx.sess.psess.lints_allowed.with_lock(|vec| {
             par_for_each_in(vec, |lint_symbol| {
-            self.lints_allowed.with_lock(|lints_allowed| {lints_allowed.push(*lint_symbol)});
-            }
-            );
-    });
-
+                self.lints_allowed.with_lock(|lints_allowed| lints_allowed.push(*lint_symbol));
+            });
+        });
     }
 }
 
