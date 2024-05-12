@@ -15,7 +15,7 @@ use crate::{
 };
 use rustc_ast as ast;
 use rustc_ast_pretty::pprust;
-use rustc_data_structures::{fx::FxIndexMap, sync::Lrc};
+use rustc_data_structures::{fx::FxIndexMap, sync::{Lrc, par_for_each_in,  Lock}};
 use rustc_errors::{Diag, DiagMessage, LintDiagnostic, MultiSpan};
 use rustc_feature::{Features, GateIssue};
 use rustc_hir as hir;
@@ -160,11 +160,11 @@ pub fn lints_that_can_emit(tcx: TyCtxt<'_>, (): ()) -> Lrc<(Vec<Symbol>, Vec<Sym
     // builder.add_command_line();
     // builder.add_id(hir::CRATE_HIR_ID);
 
-    let mut visitor = LintLevelMinimumVisitor::new(tcx);
+    let mut visitor = LintLevelMinimum::new(tcx);
     visitor.process_opts();
-    tcx.hir().walk_attributes(&mut visitor);
+    visitor.lint_level_minimums(tcx);
 
-    Lrc::new((visitor.lints_to_emit, visitor.lints_allowed))
+    Lrc::new((visitor.lints_to_emit.into_inner(), visitor.lints_allowed.into_inner()))
 }
 
 #[instrument(level = "trace", skip(tcx), ret)]
@@ -471,80 +471,96 @@ impl<'tcx> Visitor<'tcx> for LintLevelsBuilder<'_, QueryMapExpectationsWrapper<'
 ///
 /// E.g., if a crate has a global #![allow(lint)] attribute, but a single item
 /// uses #[warn(lint)], this visitor will set that lint level as `Warn`
-struct LintLevelMinimumVisitor<'tcx> {
+struct LintLevelMinimum<'tcx> {
     tcx: TyCtxt<'tcx>,
     /// The actual list of detected lints.
-    lints_to_emit: Vec<Symbol>,
-    lints_allowed: Vec<Symbol>,
+    lints_to_emit: Lock<Vec<Symbol>>,
+    lints_allowed: Lock<Vec<Symbol>>,
 }
 
-impl<'tcx> LintLevelMinimumVisitor<'tcx> {
+impl<'tcx> LintLevelMinimum<'tcx> {
     pub fn new(tcx: TyCtxt<'tcx>) -> Self {
         Self {
             tcx,
             // That magic number is the current number of lints + some more for possible future lints
-            lints_to_emit: Vec::with_capacity(230),
-            lints_allowed: Vec::with_capacity(100),
+            lints_to_emit: Lock::new(Vec::with_capacity(230)),
+            lints_allowed: Lock::new(Vec::with_capacity(100)),
         }
     }
 
     fn process_opts(&mut self) {
         for (lint, level) in &self.tcx.sess.opts.lint_opts {
             if *level == Level::Allow {
-                self.lints_allowed.push(Symbol::intern(&lint));
+                self.lints_allowed.with_lock(|lints_allowed|{lints_allowed.push(Symbol::intern(&lint)) });
             } else {
-                self.lints_to_emit.push(Symbol::intern(&lint));
+                self.lints_to_emit.with_lock(|lints_to_emit| {lints_to_emit.push(Symbol::intern(&lint)) });
             }
         }
     }
-}
 
-impl<'tcx> Visitor<'tcx> for LintLevelMinimumVisitor<'tcx> {
-    type NestedFilter = nested_filter::All;
-
-    fn nested_visit_map(&mut self) -> Self::Map {
-        self.tcx.hir()
-    }
-
-    fn visit_attribute(&mut self, attribute: &'tcx ast::Attribute) {
-        if let Some(meta) = attribute.meta() {
-            if [sym::warn, sym::deny, sym::forbid, sym::expect]
-                .iter()
-                .any(|kind| meta.has_name(*kind))
-            {
-                // SAFETY: Lint attributes are always a metalist inside a
-                // metalist (even with just one lint).
-                for meta_list in meta.meta_item_list().unwrap() {
-                    // If it's a tool lint (e.g. clippy::my_clippy_lint)
-                    if let ast::NestedMetaItem::MetaItem(meta_item) = meta_list {
-                        if meta_item.path.segments.len() == 1 {
-                            self.lints_to_emit.push(
-                                // SAFETY: Lint attributes can only have literals
-                                meta_list.ident().unwrap().name,
-                            );
-                        } else {
-                            self.lints_to_emit.push(meta_item.path.segments[1].ident.name);
-                        }
-                    }
-                }
-            // We handle #![allow]s differently, as these remove checking rather than adding.
-            } else if meta.has_name(sym::allow)
-                && let ast::AttrStyle::Inner = attribute.style
-            {
-                for meta_list in meta.meta_item_list().unwrap() {
-                    // If it's a tool lint (e.g. clippy::my_clippy_lint)
-                    if let ast::NestedMetaItem::MetaItem(meta_item) = meta_list {
-                        if meta_item.path.segments.len() == 1 {
-                            self.lints_allowed.push(meta_list.name_or_empty())
-                        } else {
-                            self.lints_allowed.push(meta_item.path.segments[1].ident.name);
-                        }
-                    }
-                }
+    fn lint_level_minimums(&mut self, tcx: TyCtxt<'tcx>) {
+        tcx.sess.psess.lints_that_can_emit.with_lock(|vec| {
+            par_for_each_in(vec, |lint_symbol| {
+            self.lints_to_emit.with_lock(|lints_to_emit| {lints_to_emit.push(*lint_symbol)});
             }
-        }
+            );
+       });
+        tcx.sess.psess.lints_allowed.with_lock(|vec| {
+            par_for_each_in(vec, |lint_symbol| {
+            self.lints_allowed.with_lock(|lints_allowed| {lints_allowed.push(*lint_symbol)});
+            }
+            );
+    });
+
     }
 }
+
+// impl<'tcx> Visitor<'tcx> for LintLevelMinimum<'tcx> {
+//     type NestedFilter = nested_filter::All;
+
+//     fn nested_visit_map(&mut self) -> Self::Map {
+//         self.tcx.hir()
+//     }
+
+//     fn visit_attribute(&mut self, attribute: &'tcx ast::Attribute) {
+//         if let Some(meta) = attribute.meta() {
+//             if [sym::warn, sym::deny, sym::forbid, sym::expect]
+//                 .iter()
+//                 .any(|kind| meta.has_name(*kind))
+//             {
+//                 // SAFETY: Lint attributes are always a metalist inside a
+//                 // metalist (even with just one lint).
+//                 for meta_list in meta.meta_item_list().unwrap() {
+//                     // If it's a tool lint (e.g. clippy::my_clippy_lint)
+//                     if let ast::NestedMetaItem::MetaItem(meta_item) = meta_list {
+//                         if meta_item.path.segments.len() == 1 {
+//                             self.lints_to_emit.push(
+//                                 // SAFETY: Lint attributes can only have literals
+//                                 meta_list.ident().unwrap().name,
+//                             );
+//                         } else {
+//                             self.lints_to_emit.push(meta_item.path.segments[1].ident.name);
+//                         }
+//                     }
+//                 }
+//             // We handle #![allow]s differently, as these remove checking rather than adding.
+//             } else if meta.has_name(sym::allow)
+//                 && let ast::AttrStyle::Inner = attribute.style
+//             {
+//                 for meta_list in meta.meta_item_list().unwrap() {
+//                     // If it's a tool lint (e.g. clippy::my_clippy_lint)
+//                     if let ast::NestedMetaItem::MetaItem(meta_item) = meta_list {
+//                         if meta_item.path.segments.len() == 1 {
+//                             self.lints_allowed.push(meta_list.name_or_empty())
+//                         } else {
+//                             self.lints_allowed.push(meta_item.path.segments[1].ident.name);
+//                         }
+//                     }
+//                 }
+//             }
+//         }
+//     }
+// }
 
 pub struct LintLevelsBuilder<'s, P> {
     sess: &'s Session,
