@@ -148,11 +148,11 @@ impl<'a> Parser<'a> {
                         if let ast::NestedMetaItem::MetaItem(ref meta_item) = meta_list {
                             if meta_item.path.segments.len() == 1 {
                                 self.psess.lints_that_can_emit.with_lock(|lints_that_can_emit| {
-                                    lints_that_can_emit.push(meta_list.ident().unwrap().name);
+                                    lints_that_can_emit.push(meta_list.ident().unwrap().name.as_str().to_string());
                                 })
                             } else {
                                 self.psess.lints_that_can_emit.with_lock(|lints_that_can_emit| {
-                                    lints_that_can_emit.push(meta_item.path.segments[1].ident.name);
+                                    lints_that_can_emit.push(meta_item.path.segments[1].ident.name.as_str().to_string());
                                 })
                             }
                         }
@@ -163,11 +163,11 @@ impl<'a> Parser<'a> {
                         if let ast::NestedMetaItem::MetaItem(ref meta_item) = meta_list {
                             if meta_item.path.segments.len() == 1 {
                                 self.psess.lints_allowed.with_lock(|lints_allowed| {
-                                    lints_allowed.push(meta_list.name_or_empty())
+                                    lints_allowed.push(meta_list.name_or_empty().as_str().to_string())
                                 })
                             } else {
                                 self.psess.lints_allowed.with_lock(|lints_allowed| {
-                                    lints_allowed.push(meta_item.path.segments[1].ident.name);
+                                    lints_allowed.push(meta_item.path.segments[1].ident.name.as_str().to_string());
                                 })
                             }
                         }

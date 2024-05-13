@@ -17,7 +17,7 @@ use rustc_ast as ast;
 use rustc_ast_pretty::pprust;
 use rustc_data_structures::{
     fx::FxIndexMap,
-    sync::{par_for_each_in, Lock},
+    sync::{join, par_for_each_in, Lock, Lrc},
 };
 use rustc_errors::{Diag, DiagMessage, LintDiagnostic, MultiSpan};
 use rustc_feature::{Features, GateIssue};
@@ -159,12 +159,12 @@ fn lint_expectations(tcx: TyCtxt<'_>, (): ()) -> Vec<(LintExpectationId, LintExp
 /// (and not allowed in the crate) and CLI lints. The returned value is a tuple
 /// of 1. The lints that will emit (or at least, should run), and 2.
 /// The lints that are allowed at the crate level and will not emit.
-pub fn lints_that_can_emit(tcx: TyCtxt<'_>, (): ()) -> Vec<String> {
+pub fn lints_that_can_emit(tcx: TyCtxt<'_>, (): ()) -> Lrc<(Vec<String>, Vec<String>)> {
     let mut visitor = LintLevelMinimum::new(tcx);
     visitor.process_opts();
     visitor.lint_level_minimums();
 
-    visitor.lints_allowed.into_inner()
+    Lrc::new((visitor.lints_to_emit.into_inner(), visitor.lints_allowed.into_inner()))
 }
 
 #[instrument(level = "trace", skip(tcx), ret)]
@@ -474,29 +474,51 @@ impl<'tcx> Visitor<'tcx> for LintLevelsBuilder<'_, QueryMapExpectationsWrapper<'
 struct LintLevelMinimum<'tcx> {
     tcx: TyCtxt<'tcx>,
     /// The actual list of detected lints.
+    lints_to_emit: Lock<Vec<String>>,
     lints_allowed: Lock<Vec<String>>,
 }
 
 impl<'tcx> LintLevelMinimum<'tcx> {
     pub fn new(tcx: TyCtxt<'tcx>) -> Self {
-        Self { tcx, lints_allowed: Lock::new(Vec::with_capacity(100)) }
+        Self {
+            tcx,
+            // That magic number is the current number of lints + some more for possible future lints
+            lints_to_emit: Lock::new(Vec::with_capacity(230)),
+            lints_allowed: Lock::new(Vec::with_capacity(100)),
+        }
     }
 
     fn process_opts(&mut self) {
         for (lint, level) in &self.tcx.sess.opts.lint_opts {
             if *level == Level::Allow {
-                self.lints_allowed.with_lock(|lints_allowed| lints_allowed.push(lint.to_string()));
+                self.lints_allowed
+                    .with_lock(|lints_allowed| lints_allowed.push(lint.to_string()));
+            } else {
+                self.lints_to_emit
+                    .with_lock(|lints_to_emit| lints_to_emit.push(lint.to_string()));
             }
         }
     }
 
     fn lint_level_minimums(&mut self) {
-        self.tcx.sess.psess.lints_allowed.with_lock(|vec| {
-            par_for_each_in(vec, |lint_symbol| {
-                self.lints_allowed
-                    .with_lock(|lints_allowed| lints_allowed.push(lint_symbol.to_string()));
-            });
-        });
+        join(
+            || {
+                self.tcx.sess.psess.lints_that_can_emit.with_lock(|vec| {
+                    par_for_each_in(vec, |lint_symbol| {
+                        self.lints_to_emit
+                            .with_lock(|lints_to_emit| lints_to_emit.push(lint_symbol.to_string()));
+                    });
+                });
+            },
+            || {
+                self.tcx.sess.psess.lints_allowed.with_lock(|vec| {
+                    par_for_each_in(vec, |lint_symbol| {
+                        self.lints_allowed
+                            .with_lock(|lints_allowed| lints_allowed.push(lint_symbol.to_string()));
+                    });
+                });
+            },
+        );
     }
 }
 

@@ -372,35 +372,37 @@ pub fn late_lint_mod<'tcx, T: LateLintPass<'tcx> + 'tcx>(
             store.late_module_passes.iter().map(|mk_pass| (mk_pass)(tcx)).collect();
 
         // Filter unused lints
-        let lints_allowed = &**tcx.lints_that_can_emit(());
+        let (lints_to_emit, lints_allowed) = &**tcx.lints_that_can_emit(());
         // let lints_to_emit = &lints_that_can_emit.0;
         // let lints_allowed = &lints_that_can_emit.1;
 
         // Now, we'll filtered passes in a way that discards any lint that
         let mut filtered_passes: Vec<Box<dyn LateLintPass<'tcx>>> = passes
-            .into_iter()
-            .filter(|pass| {
-                let pass = LintPass::get_lints(pass);
-                pass.iter().any(|&lint| {
-                    let lint_name = &lint.name.to_lowercase()
+        .into_iter()
+        .filter(|pass| {
+            let pass = LintPass::get_lints(pass);
+            pass.iter().any(|&lint| {
+                                let lint_name = 
+                    &lint.name.to_lowercase()
                         // Doing some calculations here to account for those separators
-                        [lint.name.find("::").unwrap_or(lint.name.len() - 2) + 2..];
-                    !lints_allowed.contains(&lint_name.to_string())
-                        && lint.default_level != crate::Level::Allow
-                })
-                // if passes_lints[i].iter().any(|&lint| {
-                //     let symbol =
-                //         &lint.name.to_lowercase()
-                //             // Doing some calculations here to account for those separators
-                //             [lint.name.find("::").unwrap_or(lint.name.len() - 2) + 2..]
-
-                //     // ^^^ Expensive, but more expensive would be having to
-                //     // cast every element to &str
-
-                //         (!lints_allowed.contains(&lint.name)
-                //             && lint.default_level != crate::Level::Allow)
+                        [lint.name.find("::").unwrap_or(lint.name.len() - 2) + 2..].to_string();
+                lints_to_emit.contains(&lint_name) || ( !lints_allowed.contains(&lint_name) && lint.default_level != crate::Level::Allow )
             })
-            .collect();
+            // if passes_lints[i].iter().any(|&lint| {                
+            //     let symbol = 
+            //         &lint.name.to_lowercase()
+            //             // Doing some calculations here to account for those separators
+            //             [lint.name.find("::").unwrap_or(lint.name.len() - 2) + 2..]
+
+            //     // ^^^ Expensive, but more expensive would be having to
+            //     // cast every element to &str
+
+                
+
+            //         (!lints_allowed.contains(&lint.name)
+            //             && lint.default_level != crate::Level::Allow)
+            })
+        .collect();
 
         filtered_passes.push(Box::new(builtin_lints));
 
@@ -453,9 +455,7 @@ fn late_lint_crate<'tcx>(tcx: TyCtxt<'tcx>) {
         only_module: false,
     };
 
-    let lints_allowed = &**tcx.lints_that_can_emit(());
-    // let lints_to_emit = &lints_that_can_emit.0;
-    // let lints_allowed = &lints_that_can_emit.1;
+    let (lints_to_emit, lints_allowed) = &**tcx.lints_that_can_emit(());
 
     // Now, we'll filtered passes in a way that discards any lint that
     let mut filtered_passes: Vec<Box<dyn LateLintPass<'tcx>>> = passes
@@ -463,14 +463,27 @@ fn late_lint_crate<'tcx>(tcx: TyCtxt<'tcx>) {
         .filter(|pass| {
             let pass = LintPass::get_lints(pass);
             pass.iter().any(|&lint| {
-                let lint_name = &lint.name.to_lowercase()
+                                let lint_name = 
+                    &lint.name.to_lowercase()
                         // Doing some calculations here to account for those separators
-                        [lint.name.find("::").unwrap_or(lint.name.len() - 2) + 2..];
-                !lints_allowed.contains(&lint_name.to_string())
-                    && lint.default_level != crate::Level::Allow
+                        [lint.name.find("::").unwrap_or(lint.name.len() - 2) + 2..].to_string();
+                lints_to_emit.contains(&lint_name) ||
+                        (!lints_allowed.contains(lint_name) && lint.default_level != crate::Level::Allow)
             })
-        })
-        .collect();
+            // if passes_lints[i].iter().any(|&lint| {                
+            //     let symbol = 
+            //         &lint.name.to_lowercase()
+            //             // Doing some calculations here to account for those separators
+            //             [lint.name.find("::").unwrap_or(lint.name.len() - 2) + 2..]
+
+            //     // ^^^ Expensive, but more expensive would be having to
+            //     // cast every element to &str
+
+                
+
+            //         (!lints_allowed.contains(&lint.name)
+            //             && lint.default_level != crate::Level::Allow)
+}).collect();
 
     let pass = RuntimeCombinedLateLintPass { passes: &mut filtered_passes[..] };
     late_lint_crate_inner(tcx, context, pass);

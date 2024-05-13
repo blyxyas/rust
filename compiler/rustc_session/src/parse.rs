@@ -232,6 +232,9 @@ pub struct ParseSess {
     proc_macro_quoted_spans: AppendOnlyVec<Span>,
     /// Used to generate new `AttrId`s. Every `AttrId` is unique.
     pub attr_id_generator: AttrIdGenerator,
+    /// All lints that can emit, even if not emitted (i.e. lints that are mentioned
+    /// in e.g. #![warn] attributes)
+    pub lints_that_can_emit: Lock<Vec<String>>,
     /// The list of lints that cannot emit, maybe because they are allowed
     /// globally, or the default level is Allow and they are not activated
     /// manually
@@ -270,6 +273,7 @@ impl ParseSess {
             assume_incomplete_release: false,
             proc_macro_quoted_spans: Default::default(),
             attr_id_generator: AttrIdGenerator::new(),
+            lints_that_can_emit: Lock::new(Vec::with_capacity(230)),
             lints_allowed: Lock::new(Vec::with_capacity(100)),
         }
     }
