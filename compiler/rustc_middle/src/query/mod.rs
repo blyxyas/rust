@@ -431,7 +431,7 @@ rustc_queries! {
         desc { "computing `#[expect]`ed lints in this crate" }
     }
 
-    query lints_that_can_emit(_: ()) -> &'tcx Lrc<(Vec<Symbol>, Vec<Symbol>)> {
+    query lints_that_can_emit(_: ()) -> &'tcx Vec<String> {
         arena_cache
         desc { "Computing all lints that are explicitly enabled or with a default level great than Allow" }
     }
