@@ -17,7 +17,7 @@ use rustc_ast as ast;
 use rustc_ast_pretty::pprust;
 use rustc_data_structures::{
     fx::FxIndexMap,
-    sync::{join, par_for_each_in, Lock, Lrc},
+    sync::{join, Lock, Lrc},
 };
 use rustc_errors::{Diag, DiagMessage, LintDiagnostic, MultiSpan};
 use rustc_feature::{Features, GateIssue};
@@ -491,11 +491,9 @@ impl<'tcx> LintLevelMinimum<'tcx> {
     fn process_opts(&mut self) {
         for (lint, level) in &self.tcx.sess.opts.lint_opts {
             if *level == Level::Allow {
-                self.lints_allowed
-                    .with_lock(|lints_allowed| lints_allowed.push(lint.to_string()));
+                self.lints_allowed.with_lock(|lints_allowed| lints_allowed.push(lint.to_string()));
             } else {
-                self.lints_to_emit
-                    .with_lock(|lints_to_emit| lints_to_emit.push(lint.to_string()));
+                self.lints_to_emit.with_lock(|lints_to_emit| lints_to_emit.push(lint.to_string()));
             }
         }
     }
@@ -504,18 +502,18 @@ impl<'tcx> LintLevelMinimum<'tcx> {
         join(
             || {
                 self.tcx.sess.psess.lints_that_can_emit.with_lock(|vec| {
-                    par_for_each_in(vec, |lint_symbol| {
+                    for lint_symbol in vec {
                         self.lints_to_emit
                             .with_lock(|lints_to_emit| lints_to_emit.push(lint_symbol.to_string()));
-                    });
+                    }
                 });
             },
             || {
                 self.tcx.sess.psess.lints_allowed.with_lock(|vec| {
-                    par_for_each_in(vec, |lint_symbol| {
+                    for lint_symbol in vec {
                         self.lints_allowed
                             .with_lock(|lints_allowed| lints_allowed.push(lint_symbol.to_string()));
-                    });
+                    }
                 });
             },
         );
