@@ -17,7 +17,7 @@ use rustc_ast as ast;
 use rustc_ast_pretty::pprust;
 use rustc_data_structures::{
     fx::FxIndexMap,
-    sync::{par_for_each_in, Lock, Lrc},
+    sync::{join, par_for_each_in, Lock, Lrc},
 };
 use rustc_errors::{Diag, DiagMessage, LintDiagnostic, MultiSpan};
 use rustc_feature::{Features, GateIssue};
@@ -160,12 +160,9 @@ fn lint_expectations(tcx: TyCtxt<'_>, (): ()) -> Vec<(LintExpectationId, LintExp
 /// of 1. The lints that will emit (or at least, should run), and 2.
 /// The lints that are allowed at the crate level and will not emit.
 pub fn lints_that_can_emit(tcx: TyCtxt<'_>, (): ()) -> Lrc<(Vec<Symbol>, Vec<Symbol>)> {
-    // builder.add_command_line();
-    // builder.add_id(hir::CRATE_HIR_ID);
-
     let mut visitor = LintLevelMinimum::new(tcx);
     visitor.process_opts();
-    visitor.lint_level_minimums(tcx);
+    visitor.lint_level_minimums();
 
     Lrc::new((visitor.lints_to_emit.into_inner(), visitor.lints_allowed.into_inner()))
 }
@@ -503,17 +500,25 @@ impl<'tcx> LintLevelMinimum<'tcx> {
         }
     }
 
-    fn lint_level_minimums(&mut self, tcx: TyCtxt<'tcx>) {
-        tcx.sess.psess.lints_that_can_emit.with_lock(|vec| {
-            par_for_each_in(vec, |lint_symbol| {
-                self.lints_to_emit.with_lock(|lints_to_emit| lints_to_emit.push(*lint_symbol));
-            });
-        });
-        tcx.sess.psess.lints_allowed.with_lock(|vec| {
-            par_for_each_in(vec, |lint_symbol| {
-                self.lints_allowed.with_lock(|lints_allowed| lints_allowed.push(*lint_symbol));
-            });
-        });
+    fn lint_level_minimums(&mut self) {
+        join(
+            || {
+                self.tcx.sess.psess.lints_that_can_emit.with_lock(|vec| {
+                    par_for_each_in(vec, |lint_symbol| {
+                        self.lints_to_emit
+                            .with_lock(|lints_to_emit| lints_to_emit.push(*lint_symbol));
+                    });
+                });
+            },
+            || {
+                self.tcx.sess.psess.lints_allowed.with_lock(|vec| {
+                    par_for_each_in(vec, |lint_symbol| {
+                        self.lints_allowed
+                            .with_lock(|lints_allowed| lints_allowed.push(*lint_symbol));
+                    });
+                });
+            },
+        );
     }
 }
 
