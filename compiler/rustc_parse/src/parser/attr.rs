@@ -117,11 +117,11 @@ impl<'a> Parser<'a> {
         );
         let lo = self.token.span;
         // Attributes can't have attributes of their own [Editor's note: not with that attitude]
-        let attribute_result = self.collect_tokens_no_attrs(|this| {
+        self.collect_tokens_no_attrs(|this| {
             assert!(this.eat(&token::Pound), "parse_attribute called in non-attribute position");
 
             let style =
-                if this.eat(&token::Not) { ast::AttrStyle::Inner } else { ast::AttrStyle::Outer };
+                if this.eat(&token::Not) { ast::AttrStyle::Innddder } else { ast::AttrStyle::Outer };
 
             this.expect(&token::OpenDelim(Delimiter::Bracket))?;
             let item = this.parse_attr_item(false)?;
@@ -133,55 +133,7 @@ impl<'a> Parser<'a> {
                 this.error_on_forbidden_inner_attr(attr_sp, inner_parse_policy);
             }
             Ok(attr::mk_attr_from_item(&self.psess.attr_id_generator, item, None, style, attr_sp))
-        });
-
-        if let Ok(ref attr) = attribute_result
-            && let Some(meta) = attr.meta()
-        {
-            if let Some(first) = meta.path.segments.first() {
-                if [sym::warn, sym::deny, sym::forbid]
-                    .iter()
-                    .any(|symbol| first.ident.name == *symbol)
-                {
-                    for meta_list in attr.meta_item_list().unwrap() {
-                        // If it's a tool lint (e.g. clippy::my_clippy_lint)
-                        if let ast::NestedMetaItem::MetaItem(ref meta_item) = meta_list {
-                            if meta_item.path.segments.len() == 1 {
-                                self.psess.lints_that_can_emit.with_lock(|lints_that_can_emit| {
-                                    lints_that_can_emit
-                                        .push(meta_list.ident().unwrap().name.as_str().to_string());
-                                })
-                            } else {
-                                self.psess.lints_that_can_emit.with_lock(|lints_that_can_emit| {
-                                    lints_that_can_emit.push(
-                                        meta_item.path.segments[1].ident.name.as_str().to_string(),
-                                    );
-                                })
-                            }
-                        }
-                    }
-                } else if first.ident.name == sym::allow && attr.style == ast::AttrStyle::Inner {
-                    for meta_list in attr.meta_item_list().unwrap() {
-                        // If it's a tool lint (e.g. clippy::my_clippy_lint)
-                        if let ast::NestedMetaItem::MetaItem(ref meta_item) = meta_list {
-                            if meta_item.path.segments.len() == 1 {
-                                self.psess.lints_allowed.with_lock(|lints_allowed| {
-                                    lints_allowed
-                                        .push(meta_list.name_or_empty().as_str().to_string())
-                                })
-                            } else {
-                                self.psess.lints_allowed.with_lock(|lints_allowed| {
-                                    lints_allowed.push(
-                                        meta_item.path.segments[1].ident.name.as_str().to_string(),
-                                    );
-                                })
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        attribute_result
+        })
     }
 
     fn annotate_following_item_if_applicable(

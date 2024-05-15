@@ -437,7 +437,7 @@ fn late_lint_mod_inner<'tcx, T: LateLintPass<'tcx>>(
 
 fn late_lint_crate<'tcx>(tcx: TyCtxt<'tcx>) {
     // Note: `passes` is often empty.
-    let passes: Vec<_> =
+    let mut passes: Vec<_> =
         unerased_lint_store(tcx.sess).late_passes.iter().map(|mk_pass| (mk_pass)(tcx)).collect();
 
     if passes.is_empty() {
@@ -455,40 +455,7 @@ fn late_lint_crate<'tcx>(tcx: TyCtxt<'tcx>) {
         only_module: false,
     };
 
-    let (lints_to_emit, lints_allowed) = &**tcx.lints_that_can_emit(());
-
-    // Now, we'll filtered passes in a way that discards any lint that
-    let mut filtered_passes: Vec<Box<dyn LateLintPass<'tcx>>> = passes
-        .into_iter()
-        .filter(|pass| {
-            let pass = LintPass::get_lints(pass);
-            pass.iter().any(|&lint| {
-                lint.is_externally_loaded ||
-                {
-                    let lint_name = &lint.name.to_lowercase()
-                        // Doing some calculations here to account for those separators
-                        [lint.name.find("::").unwrap_or(lint.name.len() - 2) + 2..]
-                        .to_string();
-                    lints_to_emit.contains(&lint_name)
-                        || (!lints_allowed.contains(lint_name)
-                            && lint.default_level != crate::Level::Allow)
-                }
-            })
-            // if passes_lints[i].iter().any(|&lint| {
-            //     let symbol =
-            //         &lint.name.to_lowercase()
-            //             // Doing some calculations here to account for those separators
-            //             [lint.name.find("::").unwrap_or(lint.name.len() - 2) + 2..]
-
-            //     // ^^^ Expensive, but more expensive would be having to
-            //     // cast every element to &str
-
-            //         (!lints_allowed.contains(&lint.name)
-            //             && lint.default_level != crate::Level::Allow)
-        })
-        .collect();
-
-    let pass = RuntimeCombinedLateLintPass { passes: &mut filtered_passes[..] };
+    let pass = RuntimeCombinedLateLintPass { passes: &mut passes[..] };
     late_lint_crate_inner(tcx, context, pass);
 }
 
