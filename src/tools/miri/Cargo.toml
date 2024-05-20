@@ -23,7 +23,7 @@ rand = "0.8"
 smallvec = "1.7"
 aes = { version = "0.8.3", features = ["hazmat"] }
 measureme = "11"
-ctrlc = "3.2.5"
+ctrlc = "3.4.4"
 chrono = { version = "0.4.38", default-features = false }
 chrono-tz = "0.9"
 directories = "5"
@@ -40,14 +40,14 @@ libc = "0.2"
 
 [target.'cfg(target_os = "linux")'.dependencies]
 libffi = "3.2.0"
-libloading = "0.8"
+libloading = "0.8.3"
 
 [dev-dependencies]
 colored = "2"
 ui_test = "0.21.1"
 rustc_version = "0.4"
 regex = "1.5.5"
-tempfile = "3"
+tempfile = "3.2.0"
 
 [package.metadata.rust-analyzer]
 # This crate uses #[feature(rustc_private)].

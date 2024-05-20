@@ -12,7 +12,7 @@ path = "src/main.rs"
 [dependencies]
 anyhow = "1.0.19"
 flate2 = "1.0.1"
-rayon = "1.0"
+rayon = "1.5.1"
 tar = "0.4.38"
 walkdir = "2"
 xz2 = "0.1.4"

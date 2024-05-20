@@ -6,7 +6,7 @@ ripgrep = {name = "ripgrep", versions = ['12.1.1']}
 xsv = {name = "xsv", versions = ['0.13.0']}
 # commented out because of 173K clippy::match_same_arms msgs in language_type.rs
 #tokei = { name = "tokei", versions = ['12.0.4']}
-rayon = {name = "rayon", versions = ['1.5.0']}
+rayon = {name = "rayon", versions = ['1.5.1']}
 serde = {name = "serde", versions = ['1.0.118']}
 # top 10 crates.io dls
 bitflags = {name = "bitflags", versions = ['1.2.1']}

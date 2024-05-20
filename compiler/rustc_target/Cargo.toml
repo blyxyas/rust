@@ -14,7 +14,7 @@ rustc_index = { path = "../rustc_index" }
 rustc_macros = { path = "../rustc_macros" }
 rustc_serialize = { path = "../rustc_serialize" }
 rustc_span = { path = "../rustc_span" }
-serde_json = "1.0.59"
+serde_json = "1.0.116"
 tracing = "0.1"
 # tidy-alphabetical-end
 

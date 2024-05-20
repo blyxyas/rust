@@ -15,7 +15,7 @@ edition = "2021"
 [dependencies]
 which = "4.4"
 walkdir = "2.3"
-itertools = "0.11"
+itertools = "0.12"
 path_macro = "1.0"
 shell-words = "1.1"
 anyhow = "1.0"

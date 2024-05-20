@@ -4,7 +4,7 @@ version = "0.0.0"
 edition = "2021"
 
 [dependencies]
-bitflags = "2.5.0"
+bitflags = "2.4.1"
 tracing = "0.1"
 twox-hash = "1.6.3"
 rustc_data_structures = { path = "../rustc_data_structures" }

@@ -47,10 +47,10 @@ rustc_span = { path = "../rustc_span" }
 rustc_target = { path = "../rustc_target" }
 rustc_trait_selection = { path = "../rustc_trait_selection" }
 rustc_ty_utils = { path = "../rustc_ty_utils" }
-serde_json = "1.0.59"
+serde_json = "1.0.116"
 shlex = "1.0"
 time = { version = "0.3.36", default-features = false, features = ["alloc", "formatting", "parsing", "macros"] }
-tracing = { version = "0.1.35" }
+tracing = { version = "0.1" }
 # tidy-alphabetical-end
 
 [target.'cfg(unix)'.dependencies]

@@ -10,7 +10,7 @@ bitflags = "2.4.1"
 either = "1.0"
 elsa = "=1.7.1"
 ena = "0.14.3"
-indexmap = { version = "2.0.0" }
+indexmap = { version = "2.1.0" }
 jobserver_crate = { version = "0.1.28", package = "jobserver" }
 libc = "0.2"
 measureme = "11"
@@ -44,7 +44,7 @@ features = [
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 # tidy-alphabetical-start
-memmap2 = "0.2.1"
+memmap2 = "0.5.4"
 # tidy-alphabetical-end
 
 [target.'cfg(any(target_arch = "powerpc", target_arch = "mips"))'.dependencies]
