@@ -2003,16 +2003,28 @@ pub fn match_function_call_with_def_id<'tcx>(
 /// Please use `tcx.get_diagnostic_name` if the targets are all diagnostic items.
 pub fn match_any_def_paths(cx: &LateContext<'_>, did: DefId, paths: &[&[&str]]) -> Option<usize> {
     let search_path = cx.get_def_path(did);
-    paths
-        .iter()
-        .position(|p| p.iter().map(|x| Symbol::intern(x)).eq(search_path.iter().copied()))
+
+    paths.iter().position(|p| {
+        p.len() == search_path.len()
+            && search_path
+                .iter()
+                .map(|segment| segment.as_str())
+                .rev()
+                .eq(p.iter().copied().rev())
+    })
 }
 
 /// Checks if the given `DefId` matches the path.
+/// Only use this function if the target doesn't have a diagnostic item.
 pub fn match_def_path(cx: &LateContext<'_>, did: DefId, syms: &[&str]) -> bool {
     // We should probably move to Symbols in Clippy as well rather than interning every time.
     let path = cx.get_def_path(did);
-    syms.iter().map(|x| Symbol::intern(x)).eq(path.iter().copied())
+    syms.len() == path.len()
+        && path
+            .iter()
+            .map(|segment| segment.as_str())
+            .rev()
+            .eq(syms.iter().copied().rev())
 }
 
 /// Checks if the given `DefId` matches the `libc` item.
