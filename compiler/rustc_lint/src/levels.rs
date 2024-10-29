@@ -3,7 +3,7 @@ use rustc_data_structures::fx::{FxIndexMap, FxIndexSet};
 use rustc_errors::{Diag, LintDiagnostic, MultiSpan};
 use rustc_feature::{Features, GateIssue};
 use rustc_hir::intravisit::{self, Visitor};
-use rustc_hir::{CRATE_HIR_ID, HirId};
+use rustc_hir::HirId;
 use rustc_index::IndexVec;
 use rustc_middle::bug;
 use rustc_middle::hir::nested_filter;
@@ -118,22 +118,13 @@ impl LintLevelSets {
 fn lints_that_dont_need_to_run(tcx: TyCtxt<'_>, (): ()) -> FxIndexSet<LintId> {
     let store = unerased_lint_store(&tcx.sess);
 
-    let map = tcx.shallow_lint_levels_on(rustc_hir::CRATE_OWNER_ID);
 
     let dont_need_to_run: FxIndexSet<LintId> = store
         .get_lints()
         .into_iter()
         .filter_map(|lint| {
-            if !lint.eval_always {
-                let lint_level = map.lint_level_id_at_node(tcx, LintId::of(lint), CRATE_HIR_ID);
-                if matches!(lint_level, (Level::Allow, ..))
-                    || (matches!(lint_level, (.., LintLevelSource::Default)))
-                        && lint.default_level(tcx.sess.edition()) == Level::Allow
-                {
-                    Some(LintId::of(lint))
-                } else {
-                    None
-                }
+            if !lint.eval_always && lint.default_level(tcx.sess.edition()) == Level::Allow {
+                Some(LintId::of(lint))
             } else {
                 None
             }
