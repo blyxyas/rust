@@ -179,6 +179,11 @@ impl<T> RwLock<T> {
     }
 
     #[inline(always)]
+    pub fn is_locked(&self) -> bool {
+        self.0.is_locked()
+    }
+
+    #[inline(always)]
     pub fn read(&self) -> ReadGuard<'_, T> {
         if ERROR_CHECKING {
             self.0.try_read().expect("lock was already held")

@@ -7,7 +7,7 @@ use std::cell::Cell;
 use std::slice;
 
 use rustc_data_structures::fx::FxIndexMap;
-use rustc_data_structures::sync;
+use rustc_data_structures::sync::{self, RwLock, ReadGuard};
 use rustc_data_structures::unord::UnordMap;
 use rustc_errors::{Diag, LintDiagnostic, MultiSpan};
 use rustc_feature::Features;
@@ -489,7 +489,7 @@ pub struct LateContext<'tcx> {
     /// and `maybe_typeck_results` methods, which handle querying the typeck results on demand.
     // FIXME(eddyb) move all the code accessing internal fields like this,
     // to this module, to avoid exposing it to lint logic.
-    pub(super) cached_typeck_results: Cell<Option<&'tcx ty::TypeckResults<'tcx>>>,
+    pub(super) cached_typeck_results: RwLock<Option<&'tcx ty::TypeckResults<'tcx>>>,
 
     /// Parameter environment for the item we are in.
     pub param_env: ty::ParamEnv<'tcx>,
@@ -685,14 +685,18 @@ impl<'tcx> LateContext<'tcx> {
 
     /// Gets the type-checking results for the current body,
     /// or `None` if outside a body.
-    pub fn maybe_typeck_results(&self) -> Option<&'tcx ty::TypeckResults<'tcx>> {
-        self.cached_typeck_results.get().or_else(|| {
+    pub fn maybe_typeck_results(&self) -> ReadGuard<'_, Option<&'tcx ty::TypeckResults<'tcx>>> {
+        let read_lock = self.cached_typeck_results.read();
+        if read_lock.is_none() {
+            // Drop the lock, later reaquired
+            drop(read_lock);
             self.enclosing_body.map(|body| {
+                let write_lock = self.cached_typeck_results.write();
                 let typeck_results = self.tcx.typeck_body(body);
-                self.cached_typeck_results.set(Some(typeck_results));
-                typeck_results
-            })
-        })
+                *write_lock = Some(typeck_results);
+            });
+        }
+        self.cached_typeck_results.read()
     }
 
     /// Gets the type-checking results for the current body.
@@ -700,7 +704,7 @@ impl<'tcx> LateContext<'tcx> {
     /// `Expr` or `Pat` nodes (they are guaranteed to be found only in bodies).
     #[track_caller]
     pub fn typeck_results(&self) -> &'tcx ty::TypeckResults<'tcx> {
-        self.maybe_typeck_results().expect("`LateContext::typeck_results` called outside of body")
+        (*self.maybe_typeck_results()).expect("`LateContext::typeck_results` called outside of body")
     }
 
     /// Returns the final resolution of a `QPath`, or `Res::Err` if unavailable.

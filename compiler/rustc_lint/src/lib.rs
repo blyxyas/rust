@@ -27,6 +27,7 @@
 #![feature(assert_matches)]
 #![feature(box_patterns)]
 #![feature(if_let_guard)]
+#![feature(int_roundings)]
 #![feature(iter_order_by)]
 #![feature(let_chains)]
 #![feature(rustc_attrs)]

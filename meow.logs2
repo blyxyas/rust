@@ -1,0 +1,83 @@
+Building stage0 library artifacts (x86_64-unknown-linux-gnu)
+Building compiler artifacts (stage0 -> stage1, x86_64-unknown-linux-gnu)
+Creating a sysroot for stage1 compiler (use `rustup toolchain link 'name' build/host/stage1`)
+Building stage0 tool lld-wrapper (x86_64-unknown-linux-gnu)
+Building stage1 library artifacts (x86_64-unknown-linux-gnu)
+Building compiler artifacts (stage1 -> stage2, x86_64-unknown-linux-gnu)
+Building tool clippy-driver (stage1 -> stage2, x86_64-unknown-linux-gnu)
+Building tool rustdoc (stage0 -> stage1, x86_64-unknown-linux-gnu)
+Testing clippy (stage1 -> stage2, x86_64-unknown-linux-gnu)
+
+running 2 tests
+..
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+.
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+Building aux file tests/ui/auxiliary/proc_macros.rs ... ok
+Building aux file tests/ui/auxiliary/proc_macro_derive.rs ... ok
+tests/ui/allow_attributes.rs ... FAILED
+
+FAILED TEST: tests/ui/allow_attributes.rs
+command: CLIPPY_CONF_DIR="tests" RUSTC_ICE="0" "/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/x86_64-unknown-linux-gnu/release/clippy-driver" "--error-format=json" "--emit=metadata" "-Aunused" "-Ainternal_features" "-Zui-testing" "-Zdeduplicate-diagnostics=no" "-Dwarnings" "-Ldependency=/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/x86_64-unknown-linux-gnu/release/deps" "--extern=clippy_config=/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/x86_64-unknown-linux-gnu/release/deps/libclippy_config-1156fe68cefd384c.rlib" "--extern=clippy_lints=/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/x86_64-unknown-linux-gnu/release/deps/libclippy_lints-b9407a37c4a7ac06.rlib" "--extern=clippy_utils=/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/x86_64-unknown-linux-gnu/release/deps/libclippy_utils-ff05c16503a43e92.rlib" "--extern=futures=/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/x86_64-unknown-linux-gnu/release/deps/libfutures-b22408330149fc50.rlib" "--extern=if_chain=/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/x86_64-unknown-linux-gnu/release/deps/libif_chain-f60edfae188327ea.rlib" "--extern=itertools=/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/x86_64-unknown-linux-gnu/release/deps/libitertools-65b9d69b016a6069.rlib" "--extern=parking_lot=/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/x86_64-unknown-linux-gnu/release/deps/libparking_lot-b162db153dd4e98f.rlib" "--extern=quote=/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/x86_64-unknown-linux-gnu/release/deps/libquote-ac38a0bfc4dcb133.rlib" "--extern=regex=/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/x86_64-unknown-linux-gnu/release/deps/libregex-82cffa40d99fe504.rlib" "--extern=serde=/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/x86_64-unknown-linux-gnu/release/deps/libserde-a4c29dbaf758d1d2.rlib" "--extern=serde_derive=/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage1/lib/rustlib/x86_64-unknown-linux-gnu/lib/libserde_derive-bb4012d3183608bd.so" "--extern=syn=/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/x86_64-unknown-linux-gnu/release/deps/libsyn-90c793fc7de7d308.rlib" "--extern=tokio=/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/x86_64-unknown-linux-gnu/release/deps/libtokio-9c813a270769b35a.rlib" "-Ldependency=/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/release/deps" "--crate-type=lib" "--out-dir" "/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/ui_test/tests/ui" "tests/ui/allow_attributes.rs" "--extern" "proc_macros=/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/ui_test/tests/ui/auxiliary/libproc_macros.so" "-L" "/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/ui_test/tests/ui/auxiliary" "--extern" "proc_macro_derive=/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/ui_test/tests/ui/auxiliary/libproc_macro_derive.so" "-L" "/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/ui_test/tests/ui/auxiliary" "--edition" "2021"
+
+error: actual output differed from expected
+Execute `cargo uibless` to update `tests/ui/allow_attributes.stderr` to the actual output
+--- tests/ui/allow_attributes.stderr
++++ <stderr output>
+-error: #[allow] attribute found
++[compiler/rustc_lint/src/levels.rs:149:5] &visitor.dont_need_to_run = {
+-  --> tests/ui/allow_attributes.rs:13:3
++    LintId {
+-   |
++        lint: Lint {
+-LL | #[allow(dead_code)]
++            name: "KEYWORD_IDENTS_2018",
+-   |   ^^^^^ help: replace it with: `expect`
++            default_level: Allow,
+-   |
++            desc: "detects edition keywords being used as an identifier",
+-   = note: `-D clippy::allow-attributes` implied by `-D warnings`
++            edition_lint_opts: None,
+-   = help: to override `-D warnings` add `#[allow(clippy::allow_attributes)]`
++            report_in_external_macro: false,
+-
++            future_incompatible: Some(
+-error: #[allow] attribute found
++                FutureIncompatibleInfo {
+-  --> tests/ui/allow_attributes.rs:22:30
++                    reference: "issue #49716 <https://github.com/rust-lang/rust/issues/49716>",
+-   |
++                    reason: EditionError(
+-LL | #[cfg_attr(panic = "unwind", allow(dead_code))]
++                        Edition2018,
+-   |                              ^^^^^ help: replace it with: `expect`
++                    ),
+-
++                    explain_reason: true,
+-error: #[allow] attribute found
++                },
+-  --> tests/ui/allow_attributes.rs:53:7
++            ),
+-   |
++            is_externally_loaded: false,
+-LL |     #[allow(unused)]
++            feature_gate: None,
+-   |       ^^^^^ help: replace it with: `expect`
++            crate_level_only: false,
+-
++            eval_always: false,
+-error: aborting due to 3 previous errors
++        },
+-
++    },
+
+
+FAILURES:
+    tests/ui/allow_attributes.rs
+
+test result: FAIL. 1 failed; 1028 filtered out
+

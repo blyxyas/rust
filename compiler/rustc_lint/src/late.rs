@@ -5,11 +5,14 @@
 
 use std::any::Any;
 use std::cell::Cell;
+use std::sync::{Mutex, Arc};
 
+use rustc_hir::AmbigArg;
 use rustc_data_structures::stack::ensure_sufficient_stack;
-use rustc_data_structures::sync::join;
+use rustc_data_structures::sync::{join, scope};
+use rustc_hir as hir;
 use rustc_hir::def_id::{LocalDefId, LocalModDefId};
-use rustc_hir::{self as hir, AmbigArg, HirId, intravisit as hir_visit};
+use rustc_hir::{HirId, intravisit as hir_visit};
 use rustc_middle::hir::nested_filter;
 use rustc_middle::ty::{self, TyCtxt};
 use rustc_session::Session;
@@ -17,6 +20,7 @@ use rustc_session::lint::LintPass;
 use rustc_session::lint::builtin::HardwiredLints;
 use rustc_span::Span;
 use tracing::debug;
+use parking_lot::RwLock;
 
 use crate::passes::LateLintPassObject;
 use crate::{LateContext, LateLintPass, LintId, LintStore};
@@ -90,14 +94,16 @@ impl<'tcx, T: LateLintPass<'tcx>> hir_visit::Visitor<'tcx> for LateContextAndPas
 
     fn visit_nested_body(&mut self, body_id: hir::BodyId) {
         let old_enclosing_body = self.context.enclosing_body.replace(body_id);
-        let old_cached_typeck_results = self.context.cached_typeck_results.get();
+        let old_cached_typeck_results = Arc::new(self.context.cached_typeck_results.read());
+        let context_clone = Arc::clone(&old_cached_typeck_results);
 
         // HACK(eddyb) avoid trashing `cached_typeck_results` when we're
         // nested in `visit_fn`, which may have already resulted in them
         // being queried.
         if old_enclosing_body != Some(body_id) {
-            self.context.cached_typeck_results.set(None);
-        }
+            let write_lock = self.context.cached_typeck_results.write();
+            *write_lock = None
+        };
 
         let body = self.context.tcx.hir_body(body_id);
         self.visit_body(body);
@@ -105,7 +111,8 @@ impl<'tcx, T: LateLintPass<'tcx>> hir_visit::Visitor<'tcx> for LateContextAndPas
 
         // See HACK comment above.
         if old_enclosing_body != Some(body_id) {
-            self.context.cached_typeck_results.set(old_cached_typeck_results);
+            let write_lock = self.context.cached_typeck_results.write();
+            *write_lock = **context_clone;
         }
     }
 
@@ -124,7 +131,9 @@ impl<'tcx, T: LateLintPass<'tcx>> hir_visit::Visitor<'tcx> for LateContextAndPas
     fn visit_item(&mut self, it: &'tcx hir::Item<'tcx>) {
         let generics = self.context.generics.take();
         self.context.generics = it.kind.generics();
-        let old_cached_typeck_results = self.context.cached_typeck_results.take();
+        let old_cached_typeck_results = Arc::new(self.context.cached_typeck_results.read());
+        let context_clone = Arc::clone(&old_cached_typeck_results);
+
         let old_enclosing_body = self.context.enclosing_body.take();
         self.with_lint_attrs(it.hir_id(), |cx| {
             cx.with_param_env(it.owner_id, |cx| {
@@ -134,7 +143,8 @@ impl<'tcx, T: LateLintPass<'tcx>> hir_visit::Visitor<'tcx> for LateContextAndPas
             });
         });
         self.context.enclosing_body = old_enclosing_body;
-        self.context.cached_typeck_results.set(old_cached_typeck_results);
+        let write_lock = self.context.cached_typeck_results.write();
+        *write_lock = **context_clone;
         self.context.generics = generics;
     }
 
@@ -190,12 +200,18 @@ impl<'tcx, T: LateLintPass<'tcx>> hir_visit::Visitor<'tcx> for LateContextAndPas
         // Wrap in typeck results here, not just in visit_nested_body,
         // in order for `check_fn` to be able to use them.
         let old_enclosing_body = self.context.enclosing_body.replace(body_id);
-        let old_cached_typeck_results = self.context.cached_typeck_results.take();
+        let old_cached_typeck_results = Arc::new(self.context.cached_typeck_results.read());
+        let context_clone = Arc::clone(&old_cached_typeck_results);
+
         let body = self.context.tcx.hir_body(body_id);
         lint_callback!(self, check_fn, fk, decl, body, span, id);
         hir_visit::walk_fn(self, fk, decl, body_id, id);
+
+        // Restore old values
+        
         self.context.enclosing_body = old_enclosing_body;
-        self.context.cached_typeck_results.set(old_cached_typeck_results);
+        let write_lock = self.context.cached_typeck_results.write();
+        *write_lock = **context_clone;
     }
 
     fn visit_variant_data(&mut self, s: &'tcx hir::VariantData<'tcx>) {
@@ -324,9 +340,78 @@ macro_rules! impl_late_lint_pass {
     ([], [$($(#[$attr:meta])* fn $f:ident($($param:ident: $arg:ty),*);)*]) => {
         impl<'tcx> LateLintPass<'tcx> for RuntimeCombinedLateLintPass<'_, 'tcx> {
             $(fn $f(&mut self, context: &LateContext<'tcx>, $($param: $arg),*) {
-                for pass in self.passes.iter_mut() {
-                    pass.$f(context, $($param),*);
-                }
+                // Slice all passes into the number of threads available.
+                let passes_div = self.passes.len().div_floor(3);
+                scope(|scope| {
+                    scope.spawn(move |_| {
+                        for pass_idx in 0..passes_div {
+                            self.passes[pass_idx].$f(&context, $($param),*);
+                        };
+                    }
+                    );
+                    scope.spawn(move |_| {
+                        for pass_idx in 0..passes_div {
+                            self.passes[pass_idx * 2].$f(&context, $($param),*);
+                        };
+                    }
+                    );
+                    scope.spawn(move |_| {
+                        for pass_idx in 0..passes_div {
+                            self.passes[pass_idx * 3].$f(&context, $($param),*);
+                        };
+                    }
+                    );
+                })
+                // join(|| {
+                //     for pass_idx in 0..passes_div {
+                //         self.passes[pass_idx].$f(&context, $($param),*);
+                //     }
+                // },
+                // || {
+                //     for pass_idx in 0..passes_div {
+                //         self.passes[pass_idx * 2].$f(&context, $($param),*);
+                //     }
+                // });
+                //
+                // STOP
+                //
+                // if is_dyn_thread_safe() {
+                //     let passes_div = self.passes.len().div_floor(2);
+
+                //     let context = Arc::new(context);
+                //     let thread1 = {
+                //         std::thread::spawn({
+                //             let cx = context.clone();
+                //             move || {
+                //                 for pass_idx in 0..passes_div {
+                //                     self.passes[pass_idx * 1].$f(&cx, $($param),*);
+                //                 }
+                //             }
+                //         })
+                //     };
+
+                //     let thread2 = {
+                //         std::thread::spawn({
+                //             let cx = context.clone();
+                //             move || {
+                //                 for pass_idx in 0..passes_div {
+                //                     self.passes[pass_idx * 2].$f(&cx, $($param),*);
+                //                 }
+                //             }
+                //         })
+                //     };
+
+                //     thread1.join().expect("Marramiau");
+                //     thread2.join().expect("Marramiau");
+
+                //     for pass in &self.passes[passes_div * 2..] {
+                //         pass.$f(&context, $($param),*);
+                //     }
+                // } else {
+                //     for pass in self.passes.iter_mut() {
+                //         pass.$f(context, $($param),*)
+                //     };
+                // };
             })*
         }
     };
@@ -397,12 +482,21 @@ fn late_lint_mod_inner<'tcx, T: LateLintPass<'tcx>>(
 
 fn late_lint_crate<'tcx>(tcx: TyCtxt<'tcx>) {
     // Note: `passes` is often empty.
-    let passes: Vec<_> =
-        unerased_lint_store(tcx.sess).late_passes.iter().map(|mk_pass| (mk_pass)(tcx)).collect();
-
-    if passes.is_empty() {
+    let store = unerased_lint_store(tcx.sess);
+    if store.late_passes.is_empty() {
         return;
     }
+
+    // let late_passes_arc = Arc::new(store.late_passes);
+
+    // let manager: Vec<Vec<Box<dyn LateLintPass<'tcx>>>> = store.late_passes.chunks(6).collect();
+
+    // std::thread::spawn(|| {
+
+    // });
+
+    let passes: Vec<_> =
+        unerased_lint_store(tcx.sess).late_passes.iter().map(|mk_pass| (mk_pass)(tcx)).collect();
 
     let context = LateContext {
         tcx,

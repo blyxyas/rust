@@ -1,0 +1,385 @@
+Building stage0 library artifacts (x86_64-unknown-linux-gnu)
+Building compiler artifacts (stage0 -> stage1, x86_64-unknown-linux-gnu)
+Creating a sysroot for stage1 compiler (use `rustup toolchain link 'name' build/host/stage1`)
+Building stage0 tool lld-wrapper (x86_64-unknown-linux-gnu)
+Building stage1 library artifacts (x86_64-unknown-linux-gnu)
+Building compiler artifacts (stage1 -> stage2, x86_64-unknown-linux-gnu)
+Building tool clippy-driver (stage1 -> stage2, x86_64-unknown-linux-gnu)
+Building tool rustdoc (stage0 -> stage1, x86_64-unknown-linux-gnu)
+Testing clippy (stage1 -> stage2, x86_64-unknown-linux-gnu)
+
+running 2 tests
+..
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+.
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+tests/ui/dbg_macro/dbg_macro.rs ... FAILED
+
+FAILED TEST: tests/ui/dbg_macro/dbg_macro.rs
+command: CLIPPY_CONF_DIR="tests" RUSTC_ICE="0" "/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/x86_64-unknown-linux-gnu/release/clippy-driver" "--error-format=json" "--emit=metadata" "-Aunused" "-Ainternal_features" "-Zui-testing" "-Zdeduplicate-diagnostics=no" "-Dwarnings" "-Ldependency=/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/x86_64-unknown-linux-gnu/release/deps" "--extern=clippy_config=/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/x86_64-unknown-linux-gnu/release/deps/libclippy_config-1156fe68cefd384c.rlib" "--extern=clippy_lints=/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/x86_64-unknown-linux-gnu/release/deps/libclippy_lints-b9407a37c4a7ac06.rlib" "--extern=clippy_utils=/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/x86_64-unknown-linux-gnu/release/deps/libclippy_utils-ff05c16503a43e92.rlib" "--extern=futures=/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/x86_64-unknown-linux-gnu/release/deps/libfutures-b22408330149fc50.rlib" "--extern=if_chain=/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/x86_64-unknown-linux-gnu/release/deps/libif_chain-f60edfae188327ea.rlib" "--extern=itertools=/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/x86_64-unknown-linux-gnu/release/deps/libitertools-65b9d69b016a6069.rlib" "--extern=parking_lot=/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/x86_64-unknown-linux-gnu/release/deps/libparking_lot-b162db153dd4e98f.rlib" "--extern=quote=/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/x86_64-unknown-linux-gnu/release/deps/libquote-ac38a0bfc4dcb133.rlib" "--extern=regex=/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/x86_64-unknown-linux-gnu/release/deps/libregex-82cffa40d99fe504.rlib" "--extern=serde=/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/x86_64-unknown-linux-gnu/release/deps/libserde-a4c29dbaf758d1d2.rlib" "--extern=serde_derive=/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage1/lib/rustlib/x86_64-unknown-linux-gnu/lib/libserde_derive-bb4012d3183608bd.so" "--extern=syn=/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/x86_64-unknown-linux-gnu/release/deps/libsyn-90c793fc7de7d308.rlib" "--extern=tokio=/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/x86_64-unknown-linux-gnu/release/deps/libtokio-9c813a270769b35a.rlib" "-Ldependency=/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/release/deps" "--test" "--out-dir" "/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage1-tools/ui_test/tests/ui/dbg_macro" "tests/ui/dbg_macro/dbg_macro.rs" "--edition" "2021"
+
+error: actual output differed from expected
+Execute `cargo uibless` to update `tests/ui/dbg_macro/dbg_macro.stderr` to the actual output
+--- tests/ui/dbg_macro/dbg_macro.stderr
++++ <stderr output>
+-error: the `dbg!` macro is intended as a debugging tool
+-  --> tests/ui/dbg_macro/dbg_macro.rs:5:22
+-   |
+-LL |     if let Some(n) = dbg!(n.checked_sub(4)) { n } else { n }
+-   |                      ^^^^^^^^^^^^^^^^^^^^^^
+-   |
+-   = note: `-D clippy::dbg-macro` implied by `-D warnings`
+-   = help: to override `-D warnings` add `#[allow(clippy::dbg_macro)]`
+-help: remove the invocation before committing it to a version control system
+-   |
+-LL |     if let Some(n) = n.checked_sub(4) { n } else { n }
+-   |                      ~~~~~~~~~~~~~~~~
+-
+-error: the `dbg!` macro is intended as a debugging tool
+-  --> tests/ui/dbg_macro/dbg_macro.rs:11:8
+-   |
+-LL |     if dbg!(n <= 1) {
+-   |        ^^^^^^^^^^^^
+-   |
+-help: remove the invocation before committing it to a version control system
+-   |
+-LL |     if n <= 1 {
+-   |        ~~~~~~
+-
+-error: the `dbg!` macro is intended as a debugging tool
+-  --> tests/ui/dbg_macro/dbg_macro.rs:13:9
+-   |
+-LL |         dbg!(1)
+-   |         ^^^^^^^
+-   |
+-help: remove the invocation before committing it to a version control system
+-   |
+-LL |         1
+-   |
+-
+-error: the `dbg!` macro is intended as a debugging tool
+-  --> tests/ui/dbg_macro/dbg_macro.rs:16:9
+-   |
+-LL |         dbg!(n * factorial(n - 1))
+-   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+-   |
+-help: remove the invocation before committing it to a version control system
+-   |
+-LL |         n * factorial(n - 1)
+-   |
+-
+-error: the `dbg!` macro is intended as a debugging tool
+-  --> tests/ui/dbg_macro/dbg_macro.rs:22:5
+-   |
+-LL |     dbg!(42);
+-   |     ^^^^^^^^
+-   |
+-help: remove the invocation before committing it to a version control system
+-   |
+-LL |     42;
+-   |     ~~
+-
+-error: the `dbg!` macro is intended as a debugging tool
+-  --> tests/ui/dbg_macro/dbg_macro.rs:24:14
+-   |
+-LL |     foo(3) + dbg!(factorial(4));
+-   |              ^^^^^^^^^^^^^^^^^^
+-   |
+-help: remove the invocation before committing it to a version control system
+-   |
+-LL |     foo(3) + factorial(4);
+-   |              ~~~~~~~~~~~~
+-
+-error: the `dbg!` macro is intended as a debugging tool
+-  --> tests/ui/dbg_macro/dbg_macro.rs:26:5
+-   |
+-LL |     dbg!(1, 2, 3, 4, 5);
+-   |     ^^^^^^^^^^^^^^^^^^^
+-   |
+-help: remove the invocation before committing it to a version control system
+-   |
+-LL |     (1, 2, 3, 4, 5);
+-   |     ~~~~~~~~~~~~~~~
+-
+-error: the `dbg!` macro is intended as a debugging tool
+-  --> tests/ui/dbg_macro/dbg_macro.rs:48:5
+-   |
+-LL |     dbg!();
+-   |     ^^^^^^
+-   |
+-help: remove the invocation before committing it to a version control system
+-   |
+-LL -     dbg!();
+-   |
+-
+-error: the `dbg!` macro is intended as a debugging tool
+-  --> tests/ui/dbg_macro/dbg_macro.rs:51:13
+-   |
+-LL |     let _ = dbg!();
+-   |             ^^^^^^
+-   |
+-help: remove the invocation before committing it to a version control system
+-   |
+-LL |     let _ = ();
+-   |             ~~
+-
+-error: the `dbg!` macro is intended as a debugging tool
+-  --> tests/ui/dbg_macro/dbg_macro.rs:53:9
+-   |
+-LL |     bar(dbg!());
+-   |         ^^^^^^
+-   |
+-help: remove the invocation before committing it to a version control system
+-   |
+-LL |     bar(());
+-   |         ~~
+-
+-error: the `dbg!` macro is intended as a debugging tool
+-  --> tests/ui/dbg_macro/dbg_macro.rs:55:10
+-   |
+-LL |     foo!(dbg!());
+-   |          ^^^^^^
+-   |
+-help: remove the invocation before committing it to a version control system
+-   |
+-LL |     foo!(());
+-   |          ~~
+-
+-error: the `dbg!` macro is intended as a debugging tool
+-  --> tests/ui/dbg_macro/dbg_macro.rs:57:16
+-   |
+-LL |     foo2!(foo!(dbg!()));
+-   |                ^^^^^^
+-   |
+-help: remove the invocation before committing it to a version control system
+-   |
+-LL |     foo2!(foo!(()));
+-   |                ~~
+-
+-error: the `dbg!` macro is intended as a debugging tool
+-  --> tests/ui/dbg_macro/dbg_macro.rs:43:13
+-   |
+-LL |             dbg!();
+-   |             ^^^^^^
+-...
+-LL |     expand_to_dbg!();
+-   |     ---------------- in this macro invocation
+-   |
+-   = note: this error originates in the macro `expand_to_dbg` (in Nightly builds, run with -Z macro-backtrace for more info)
+-help: remove the invocation before committing it to a version control system
+-   |
+-LL -             dbg!();
+-   |
+-
+-error: the `dbg!` macro is intended as a debugging tool
+-  --> tests/ui/dbg_macro/dbg_macro.rs:79:9
+-   |
+-LL |         dbg!(2);
+-   |         ^^^^^^^
+-   |
+-help: remove the invocation before committing it to a version control system
+-   |
+-LL |         2;
+-   |         ~
+-
+-error: the `dbg!` macro is intended as a debugging tool
+-  --> tests/ui/dbg_macro/dbg_macro.rs:86:5
+-   |
+-LL |     dbg!(1);
+-   |     ^^^^^^^
+-   |
+-help: remove the invocation before committing it to a version control system
+-   |
+-LL |     1;
+-   |     ~
+-
+-error: the `dbg!` macro is intended as a debugging tool
+-  --> tests/ui/dbg_macro/dbg_macro.rs:92:5
+-   |
+-LL |     dbg!(1);
+-   |     ^^^^^^^
+-   |
+-help: remove the invocation before committing it to a version control system
+-   |
+-LL |     1;
+-   |     ~
+-
+-error: the `dbg!` macro is intended as a debugging tool
+-  --> tests/ui/dbg_macro/dbg_macro.rs:99:9
+-   |
+-LL |         dbg!(1);
+-   |         ^^^^^^^
+-   |
+-help: remove the invocation before committing it to a version control system
+-   |
+-LL |         1;
+-   |         ~
+-
+-error: the `dbg!` macro is intended as a debugging tool
+-  --> tests/ui/dbg_macro/dbg_macro.rs:106:31
+-   |
+-LL |         println!("dbg: {:?}", dbg!(s));
+-   |                               ^^^^^^^
+-   |
+-help: remove the invocation before committing it to a version control system
+-   |
+-LL |         println!("dbg: {:?}", s);
+-   |                               ~
+-
+-error: the `dbg!` macro is intended as a debugging tool
+-  --> tests/ui/dbg_macro/dbg_macro.rs:108:22
+-   |
+-LL |         print!("{}", dbg!(s));
+-   |                      ^^^^^^^
+-   |
+-help: remove the invocation before committing it to a version control system
+-   |
+-LL |         print!("{}", s);
+-   |                      ~
+-
+-error: aborting due to 19 previous errors
+-
+
+
+error: `the `dbg!` macro is intended as a debugging tool` not found in diagnostics on line 5
+ --> tests/ui/dbg_macro/dbg_macro.rs:6:17
+  |
+6 |     //~^ ERROR: the `dbg!` macro is intended as a debugging tool
+  |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected because of this pattern
+  |
+
+error: `the `dbg!` macro is intended as a debugging tool` not found in diagnostics on line 11
+  --> tests/ui/dbg_macro/dbg_macro.rs:12:21
+   |
+12 |         //~^ ERROR: the `dbg!` macro is intended as a debugging tool
+   |                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected because of this pattern
+   |
+
+error: `the `dbg!` macro is intended as a debugging tool` not found in diagnostics on line 13
+  --> tests/ui/dbg_macro/dbg_macro.rs:14:21
+   |
+14 |         //~^ ERROR: the `dbg!` macro is intended as a debugging tool
+   |                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected because of this pattern
+   |
+
+error: `the `dbg!` macro is intended as a debugging tool` not found in diagnostics on line 16
+  --> tests/ui/dbg_macro/dbg_macro.rs:17:21
+   |
+17 |         //~^ ERROR: the `dbg!` macro is intended as a debugging tool
+   |                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected because of this pattern
+   |
+
+error: `the `dbg!` macro is intended as a debugging tool` not found in diagnostics on line 22
+  --> tests/ui/dbg_macro/dbg_macro.rs:23:17
+   |
+23 |     //~^ ERROR: the `dbg!` macro is intended as a debugging tool
+   |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected because of this pattern
+   |
+
+error: `the `dbg!` macro is intended as a debugging tool` not found in diagnostics on line 24
+  --> tests/ui/dbg_macro/dbg_macro.rs:25:17
+   |
+25 |     //~^ ERROR: the `dbg!` macro is intended as a debugging tool
+   |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected because of this pattern
+   |
+
+error: `the `dbg!` macro is intended as a debugging tool` not found in diagnostics on line 26
+  --> tests/ui/dbg_macro/dbg_macro.rs:27:17
+   |
+27 |     //~^ ERROR: the `dbg!` macro is intended as a debugging tool
+   |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected because of this pattern
+   |
+
+error: `the `dbg!` macro is intended as a debugging tool` not found in diagnostics on line 43
+  --> tests/ui/dbg_macro/dbg_macro.rs:44:25
+   |
+44 |             //~^ ERROR: the `dbg!` macro is intended as a debugging tool
+   |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected because of this pattern
+   |
+
+error: `the `dbg!` macro is intended as a debugging tool` not found in diagnostics on line 48
+  --> tests/ui/dbg_macro/dbg_macro.rs:49:17
+   |
+49 |     //~^ ERROR: the `dbg!` macro is intended as a debugging tool
+   |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected because of this pattern
+   |
+
+error: `the `dbg!` macro is intended as a debugging tool` not found in diagnostics on line 51
+  --> tests/ui/dbg_macro/dbg_macro.rs:52:17
+   |
+52 |     //~^ ERROR: the `dbg!` macro is intended as a debugging tool
+   |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected because of this pattern
+   |
+
+error: `the `dbg!` macro is intended as a debugging tool` not found in diagnostics on line 53
+  --> tests/ui/dbg_macro/dbg_macro.rs:54:17
+   |
+54 |     //~^ ERROR: the `dbg!` macro is intended as a debugging tool
+   |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected because of this pattern
+   |
+
+error: `the `dbg!` macro is intended as a debugging tool` not found in diagnostics on line 55
+  --> tests/ui/dbg_macro/dbg_macro.rs:56:17
+   |
+56 |     //~^ ERROR: the `dbg!` macro is intended as a debugging tool
+   |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected because of this pattern
+   |
+
+error: `the `dbg!` macro is intended as a debugging tool` not found in diagnostics on line 57
+  --> tests/ui/dbg_macro/dbg_macro.rs:58:17
+   |
+58 |     //~^ ERROR: the `dbg!` macro is intended as a debugging tool
+   |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected because of this pattern
+   |
+
+error: `the `dbg!` macro is intended as a debugging tool` not found in diagnostics on line 79
+  --> tests/ui/dbg_macro/dbg_macro.rs:80:21
+   |
+80 |         //~^ ERROR: the `dbg!` macro is intended as a debugging tool
+   |                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected because of this pattern
+   |
+
+error: `the `dbg!` macro is intended as a debugging tool` not found in diagnostics on line 86
+  --> tests/ui/dbg_macro/dbg_macro.rs:87:17
+   |
+87 |     //~^ ERROR: the `dbg!` macro is intended as a debugging tool
+   |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected because of this pattern
+   |
+
+error: `the `dbg!` macro is intended as a debugging tool` not found in diagnostics on line 92
+  --> tests/ui/dbg_macro/dbg_macro.rs:93:17
+   |
+93 |     //~^ ERROR: the `dbg!` macro is intended as a debugging tool
+   |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected because of this pattern
+   |
+
+error: `the `dbg!` macro is intended as a debugging tool` not found in diagnostics on line 99
+   --> tests/ui/dbg_macro/dbg_macro.rs:100:21
+    |
+100 |         //~^ ERROR: the `dbg!` macro is intended as a debugging tool
+    |                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected because of this pattern
+    |
+
+error: `the `dbg!` macro is intended as a debugging tool` not found in diagnostics on line 106
+   --> tests/ui/dbg_macro/dbg_macro.rs:107:21
+    |
+107 |         //~^ ERROR: the `dbg!` macro is intended as a debugging tool
+    |                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected because of this pattern
+    |
+
+error: `the `dbg!` macro is intended as a debugging tool` not found in diagnostics on line 108
+   --> tests/ui/dbg_macro/dbg_macro.rs:109:21
+    |
+109 |         //~^ ERROR: the `dbg!` macro is intended as a debugging tool
+    |                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected because of this pattern
+    |
+
+FAILURES:
+    tests/ui/dbg_macro/dbg_macro.rs
+
+test result: FAIL. 1 failed; 1028 filtered out
+
