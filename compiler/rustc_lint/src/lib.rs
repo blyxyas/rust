@@ -26,6 +26,7 @@
 #![feature(array_windows)]
 #![feature(assert_matches)]
 #![feature(box_patterns)]
+#![feature(concat_idents)]
 #![feature(if_let_guard)]
 #![feature(int_roundings)]
 #![feature(iter_order_by)]

@@ -9,7 +9,7 @@ use std::sync::{Mutex, Arc};
 
 use rustc_hir::AmbigArg;
 use rustc_data_structures::stack::ensure_sufficient_stack;
-use rustc_data_structures::sync::{join, scope};
+use rustc_data_structures::sync::{join, scope, FromDyn};
 use rustc_hir as hir;
 use rustc_hir::def_id::{LocalDefId, LocalModDefId};
 use rustc_hir::{HirId, intravisit as hir_visit};
@@ -326,6 +326,18 @@ struct RuntimeCombinedLateLintPass<'a, 'tcx> {
     passes: &'a mut [LateLintPassObject<'tcx>],
 }
 
+
+struct NonPersistentLateLintPass<'tcx>(Box<dyn LateLintPass<'tcx> + 'tcx>);
+
+// We're certain that non persistent lints are ZST
+unsafe impl Send for NonPersistentLateLintPass<'tcx> {}
+unsafe impl Sync for NonPersistentLateLintPass<'tcx> {}
+
+struct NonPersistentRuntimeCombinedLateLintPass<'a, 'tcx> {
+    passes: &'a mut [NonPersistentLateLintPass<'tcx>],
+}
+
+
 #[allow(rustc::lint_pass_impl_without_macro)]
 impl LintPass for RuntimeCombinedLateLintPass<'_, '_> {
     fn name(&self) -> &'static str {
@@ -338,26 +350,29 @@ impl LintPass for RuntimeCombinedLateLintPass<'_, '_> {
 
 macro_rules! impl_late_lint_pass {
     ([], [$($(#[$attr:meta])* fn $f:ident($($param:ident: $arg:ty),*);)*]) => {
-        impl<'tcx> LateLintPass<'tcx> for RuntimeCombinedLateLintPass<'_, 'tcx> {
+        impl<'tcx> LateLintPass<'tcx> for NonPersistentRuntimeCombinedLateLintPass<'_, 'tcx> {
             $(fn $f(&mut self, context: &LateContext<'tcx>, $($param: $arg),*) {
                 // Slice all passes into the number of threads available.
                 let passes_div = self.passes.len().div_floor(3);
+                rwlock
                 scope(|scope| {
-                    scope.spawn(move |_| {
+                    let dyn_context = FromDyn::from(context);
+                    $(let $param = FromDyn::from($param);)*
+                    scope.spawn(|_| {
                         for pass_idx in 0..passes_div {
-                            self.passes[pass_idx].$f(&context, $($param),*);
+                            self.passes[pass_idx].$f(&dyn_context, $(*$param),*);
                         };
                     }
                     );
-                    scope.spawn(move |_| {
+                    scope.spawn(|_| {
                         for pass_idx in 0..passes_div {
-                            self.passes[pass_idx * 2].$f(&context, $($param),*);
+                            self.passes[pass_idx * 2].$f(&dyn_context, $(*$param),*);
                         };
                     }
                     );
-                    scope.spawn(move |_| {
+                    scope.spawn(|_| {
                         for pass_idx in 0..passes_div {
-                            self.passes[pass_idx * 3].$f(&context, $($param),*);
+                            self.passes[pass_idx * 3].$f(&dyn_context, $(*$param),*);
                         };
                     }
                     );
@@ -462,7 +477,7 @@ fn late_lint_mod_inner<'tcx, T: LateLintPass<'tcx>>(
     context: LateContext<'tcx>,
     pass: T,
 ) {
-    let mut cx = LateContextAndPass { context, pass };
+    let mut cx = LateContextAndPass { context: context, pass };
 
     let (module, _span, hir_id) = tcx.hir_get_module(module_def_id);
 

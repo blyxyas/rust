@@ -1,6 +1,6 @@
 use rustc_session::lint::LintPass;
 use rustc_session::lint::builtin::HardwiredLints;
-
+use rustc_data_structures::sync::{DynSync, DynSend};
 use crate::context::{EarlyContext, LateContext};
 
 #[macro_export]
