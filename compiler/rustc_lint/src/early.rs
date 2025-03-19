@@ -8,6 +8,7 @@ use rustc_ast::ptr::P;
 use rustc_ast::visit::{self as ast_visit, Visitor, walk_list};
 use rustc_ast::{self as ast, HasAttrs};
 use rustc_data_structures::stack::ensure_sufficient_stack;
+use rustc_data_structures::sync::scope;
 use rustc_feature::Features;
 use rustc_middle::ty::{RegisteredTools, TyCtxt};
 use rustc_session::Session;
@@ -311,7 +312,24 @@ macro_rules! impl_early_lint_pass {
         impl EarlyLintPass for RuntimeCombinedEarlyLintPass<'_> {
             $(fn $f(&mut self, context: &EarlyContext<'_>, $($param: $arg),*) {
                 for pass in self.passes.iter_mut() {
-                    pass.$f(context, $($param),*);
+                    let passes_div = self.passes.len().div_floor(3)
+                    scope(|scope| {
+                        scope.spawn(|_| {
+                            for pass_idx in 0..passes_div {
+                                self.passes[pass_idx].$f(context, $($param),*);
+                            };
+                        });
+                        scope.spawn(|_| {
+                            for pass_idx in 0..passes_div {
+                                self.passes[pass_idx * 2].$f(context, $($param),*);
+                            };
+                        });
+                        scope.spawn(|_| {
+                            for pass_idx in 0..passes_div {
+                                self.passes[pass_idx * 3].$f(context, $($param),*);
+                            };
+                        });    
+                    });
                 }
             })*
         }
