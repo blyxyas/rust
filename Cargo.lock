@@ -3973,6 +3973,7 @@ dependencies = [
 name = "rustc_lint"
 version = "0.0.0"
 dependencies = [
+ "rustc-rayon",
  "rustc_abi",
  "rustc_ast",
  "rustc_ast_pretty",

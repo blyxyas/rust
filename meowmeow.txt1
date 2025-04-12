@@ -1,0 +1,1645 @@
+Building stage0 library artifacts (x86_64-unknown-linux-gnu)
+Building compiler artifacts (stage0 -> stage1, x86_64-unknown-linux-gnu)
+Creating a sysroot for stage1 compiler (use `rustup toolchain link 'name' build/host/stage1`)
+Building stage0 tool lld-wrapper (x86_64-unknown-linux-gnu)
+Building tool clippy-driver (stage0 -> stage1, x86_64-unknown-linux-gnu)
+Testing clippy (stage0 -> stage1, x86_64-unknown-linux-gnu)
+
+running 2 tests
+..
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+.
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+tests/ui/single_match.rs ... FAILED
+
+FAILED TEST: tests/ui/single_match.rs
+command: CLIPPY_CONF_DIR="tests" RUSTC_ICE="0" "/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage0-tools/x86_64-unknown-linux-gnu/release/clippy-driver" "--error-format=json" "--emit=metadata" "-Aunused" "-Ainternal_features" "-Zui-testing" "-Zdeduplicate-diagnostics=no" "-Dwarnings" "-Ldependency=/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage0-tools/x86_64-unknown-linux-gnu/release/deps" "--extern=clippy_config=/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage0-tools/x86_64-unknown-linux-gnu/release/deps/libclippy_config-999a1201d5a0f420.rlib" "--extern=clippy_lints=/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage0-tools/x86_64-unknown-linux-gnu/release/deps/libclippy_lints-c8cfbedd73a3a1c6.rlib" "--extern=clippy_utils=/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage0-tools/x86_64-unknown-linux-gnu/release/deps/libclippy_utils-94fb422d515aa755.rlib" "--extern=futures=/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage0-tools/x86_64-unknown-linux-gnu/release/deps/libfutures-5a600588da379ee3.rlib" "--extern=if_chain=/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage0-tools/x86_64-unknown-linux-gnu/release/deps/libif_chain-f836d5bedeebb61d.rlib" "--extern=itertools=/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage0-tools/x86_64-unknown-linux-gnu/release/deps/libitertools-fa1842ad18e38ba1.rlib" "--extern=parking_lot=/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage0-tools/x86_64-unknown-linux-gnu/release/deps/libparking_lot-b436977fa4a0dd7a.rlib" "--extern=quote=/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage0-tools/x86_64-unknown-linux-gnu/release/deps/libquote-423d46000793f799.rlib" "--extern=regex=/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage0-tools/x86_64-unknown-linux-gnu/release/deps/libregex-bcf048bae16446f4.rlib" "--extern=serde=/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage0-tools/x86_64-unknown-linux-gnu/release/deps/libserde-1c4f7ba8f45d14b9.rlib" "--extern=serde_derive=/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage0-sysroot/lib/rustlib/x86_64-unknown-linux-gnu/lib/libserde_derive-109d3a3dcb0600f5.so" "--extern=syn=/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage0-tools/x86_64-unknown-linux-gnu/release/deps/libsyn-ffd9176e129d2c92.rlib" "--extern=tokio=/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage0-tools/x86_64-unknown-linux-gnu/release/deps/libtokio-e0e81dc9d9502473.rlib" "-Ldependency=/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage0-tools/release/deps" "--out-dir" "/home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage0-tools/ui_test/tests/ui" "tests/ui/single_match.rs" "--edition" "2021"
+
+error: actual output differed from expected
+Execute `cargo uibless` to update `tests/ui/single_match.stderr` to the actual output
+--- tests/ui/single_match.stderr
++++ <stderr output>
+-error: you seem to be trying to use `match` for destructuring a single pattern. Consider using `if let`
++error[E0514]: found crate `std` compiled by an incompatible version of rustc
+    |
+-LL | /     match x {
++   = note: the following crate versions were found:
+-LL | |         Some(y) => {
++           crate `std` compiled by rustc 1.86.0-beta.1 (f0cb41030 2025-02-17): /home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage0-sysroot/lib/rustlib/x86_64-unknown-linux-gnu/lib/libstd-781360c5513f8b17.rlib
+-LL | |             println!("{:?}", y);
++           crate `std` compiled by rustc 1.86.0-beta.1 (f0cb41030 2025-02-17): /home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage0-sysroot/lib/rustlib/x86_64-unknown-linux-gnu/lib/libstd-781360c5513f8b17.so
+-LL | |         },
++           crate `std` compiled by rustc 1.86.0-beta.1 (f0cb41030 2025-02-17): /home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage0-sysroot/lib/rustlib/x86_64-unknown-linux-gnu/lib/libstd_detect-e8bf5e22430ec23d.rlib
+-LL | |         _ => (),
++   = help: please recompile that crate using this compiler (rustc 1.87.0-dev) (consider running `cargo clean` first)
+-LL | |     };
++
+-   | |_____^
++error[E0514]: found crate `std` compiled by an incompatible version of rustc
+    |
+-   = note: `-D clippy::single-match` implied by `-D warnings`
++LL | use std::borrow::Cow;
+-   = help: to override `-D warnings` add `#[allow(clippy::single_match)]`
++   |     ^^^
+    |
+-LL ~     if let Some(y) = x {
++   = note: the following crate versions were found:
+-LL +         println!("{:?}", y);
++           crate `std` compiled by rustc 1.86.0-beta.1 (f0cb41030 2025-02-17): /home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage0-sysroot/lib/rustlib/x86_64-unknown-linux-gnu/lib/libstd-781360c5513f8b17.rlib
+-LL ~     };
++           crate `std` compiled by rustc 1.86.0-beta.1 (f0cb41030 2025-02-17): /home/meow/git/rust/build/x86_64-unknown-linux-gnu/stage0-sysroot/lib/rustlib/x86_64-unknown-linux-gnu/lib/libstd-781360c5513f8b17.so
+    |
++LL |             println!("{:?}", y);
++   |             ^^^^^^^
+ 
+-error: you seem to be trying to use `match` for destructuring a single pattern. Consider using `if let`
++error: cannot find macro `println` in this scope
+-  --> tests/ui/single_match.rs:33:5
++  --> tests/ui/single_match.rs:28:20
+    |
+-LL | /     match z {
++LL |         Some(y) => println!("{:?}", y),
+-LL | |         (2..=3, 7..=9) => dummy(),
++   |                    ^^^^^^^
+ 
+-error: you seem to be trying to use `match` for destructuring a single pattern. Consider using `if let`
++error: cannot find macro `println` in this scope
+-  --> tests/ui/single_match.rs:63:5
++  --> tests/ui/single_match.rs:41:30
+    |
+-LL | /     match x {
++LL |         Some(y) if y == 0 => println!("{:?}", y),
+-LL | |         Some(y) => dummy(),
++   |                              ^^^^^^^
+ 
+-error: you seem to be trying to use `match` for destructuring a single pattern. Consider using `if let`
++error: cannot find macro `println` in this scope
+-  --> tests/ui/single_match.rs:69:5
++  --> tests/ui/single_match.rs:47:27
+    |
+-LL | /     match y {
++LL |         (2..=3, 7..=9) => println!("{:?}", z),
+-LL | |         Ok(y) => dummy(),
++   |                           ^^^^^^^
+ 
+-error: you seem to be trying to use `match` for destructuring a single pattern. Consider using `if let`
++error: cannot find macro `println` in this scope
+-  --> tests/ui/single_match.rs:77:5
++  --> tests/ui/single_match.rs:48:14
+    |
+-LL | /     match c {
++LL |         _ => println!("nope"),
+-LL | |         Cow::Borrowed(..) => dummy(),
++   |              ^^^^^^^
+ 
+-error: you seem to be trying to use `match` for an equality check. Consider using `if`
++error: cannot find macro `println` in this scope
+-  --> tests/ui/single_match.rs:99:5
++  --> tests/ui/single_match.rs:86:16
+    |
+-LL | /     match x {
++LL |         Bar => println!("42"),
+-LL | |         "test" => println!(),
++   |                ^^^^^^^
+ 
+-error: you seem to be trying to use `match` for an equality check. Consider using `if`
++error: cannot find macro `println` in this scope
+-  --> tests/ui/single_match.rs:113:5
++  --> tests/ui/single_match.rs:91:19
+    |
+-LL | /     match x {
++LL |         Baz(_) => println!("42"),
+-LL | |         Foo::A => println!(),
++   |                   ^^^^^^^
+ 
+-error: you seem to be trying to use `match` for an equality check. Consider using `if`
++error: cannot find macro `println` in this scope
+-  --> tests/ui/single_match.rs:120:5
++  --> tests/ui/single_match.rs:100:19
+    |
+-LL | /     match x {
++LL |         "test" => println!(),
+-LL | |         FOO_C => println!(),
++   |                   ^^^^^^^
+ 
+-error: you seem to be trying to use `match` for an equality check. Consider using `if`
++error: cannot find attribute `derive` in this scope
+-  --> tests/ui/single_match.rs:126:5
++  --> tests/ui/single_match.rs:105:7
+    |
+-LL | /     match &&x {
++LL |     #[derive(PartialEq, Eq)]
+-LL | |         Foo::A => println!(),
++   |       ^^^^^^
+ 
+-error: you seem to be trying to use `match` for an equality check. Consider using `if`
++error: cannot find macro `println` in this scope
+-  --> tests/ui/single_match.rs:133:5
++  --> tests/ui/single_match.rs:114:19
+    |
+-LL | /     match &x {
++LL |         Foo::A => println!(),
+-LL | |         Foo::A => println!(),
++   |                   ^^^^^^^
+ 
+-error: you seem to be trying to use `match` for destructuring a single pattern. Consider using `if let`
++error: cannot find macro `println` in this scope
+-  --> tests/ui/single_match.rs:151:5
++  --> tests/ui/single_match.rs:121:18
+    |
+-LL | /     match x {
++LL |         FOO_C => println!(),
+-LL | |         Bar::A => println!(),
++   |                  ^^^^^^^
+ 
+-error: you seem to be trying to use `match` for destructuring a single pattern. Consider using `if let`
++error: cannot find macro `println` in this scope
+-  --> tests/ui/single_match.rs:160:5
++  --> tests/ui/single_match.rs:127:19
+    |
+-LL | /     match x {
++LL |         Foo::A => println!(),
+-LL | |         None => println!(),
++   |                   ^^^^^^^
+ 
+-error: you seem to be trying to use `match` for destructuring a single pattern. Consider using `if let`
++error: cannot find macro `println` in this scope
+-  --> tests/ui/single_match.rs:183:5
++  --> tests/ui/single_match.rs:134:19
+    |
+-LL | /     match x {
++LL |         Foo::A => println!(),
+-LL | |         (Some(_), _) => {},
++   |                   ^^^^^^^
+ 
+-error: you seem to be trying to use `match` for destructuring a single pattern. Consider using `if let`
++error: cannot find macro `matches` in this scope
+-  --> tests/ui/single_match.rs:190:5
++  --> tests/ui/single_match.rs:145:13
+    |
+-LL | /     match x {
++LL |             matches!((self, rhs), (Self::A, Self::A) | (Self::B, Self::B))
+-LL | |         (Some(E::V), _) => todo!(),
++   |             ^^^^^^^
+ 
+-error: you seem to be trying to use `match` for destructuring a single pattern. Consider using `if let`
++error: cannot find macro `println` in this scope
+-  --> tests/ui/single_match.rs:197:5
++  --> tests/ui/single_match.rs:152:19
+    |
+-LL | /     match (Some(42), Some(E::V), Some(42)) {
++LL |         Bar::A => println!(),
+-LL | |         (.., Some(E::V), _) => {},
++   |                   ^^^^^^^
+ 
+-error: you seem to be trying to use `match` for destructuring a single pattern. Consider using `if let`
++error: cannot find macro `println` in this scope
+-  --> tests/ui/single_match.rs:270:5
++  --> tests/ui/single_match.rs:161:17
+    |
+-LL | /     match bar {
++LL |         None => println!(),
+-LL | |         Some(v) => unsafe {
++   |                 ^^^^^^^
+-LL | |             let r = &v as *const i32;
++
+-LL | |             println!("{}", *r);
++error: cannot find macro `todo` in this scope
+-LL | |         },
++  --> tests/ui/single_match.rs:191:28
+    |
+-help: try
++LL |         (Some(E::V), _) => todo!(),
+    |
+-LL ~     if let Some(v) = bar { unsafe {
++LL |             15 => println!("15"),
+-LL +         let r = &v as *const i32;
++   |                   ^^^^^^^
+-LL +         println!("{}", *r);
++...
+-LL +     } }
++LL |     single_match!(5);
+    |
++   = note: this error originates in the macro `single_match` (in Nightly builds, run with -Z macro-backtrace for more info)
+ 
+-error: you seem to be trying to use `match` for destructuring a single pattern. Consider using `if let`
++error: cannot find macro `println` in this scope
+-  --> tests/ui/single_match.rs:279:5
++  --> tests/ui/single_match.rs:273:13
+    |
+-LL | /     match bar {
++LL |             println!("{}", *r);
+-LL | |         #[rustfmt::skip]
++   |             ^^^^^^^
+-LL | |         Some(v) => {
++
+-LL | |             unsafe {
++error: cannot find macro `println` in this scope
+ ...  |
+-LL | |         _ => {},
++LL | | }
+-LL | |     }
++   | |_^
+-   | |_____^
++
+    |
+-help: try
++LL |     Baz(u8),
+    |
+-LL ~     if let Some(v) = bar {
++LL |   fn single_match_know_enum() {
+-LL +         unsafe {
++   |  _____________________________^
+-LL +             let r = &v as *const i32;
++LL | |     let x = Some(1u8);
+-LL +             println!("{}", *r);
++LL | |     let y: Result<_, i8> = Ok(1i8);
+-LL +         }
++...  |
+-LL +     }
++LL | | }
+    |
++LL |   fn if_suggestion() {
++   |  ____________________^
++LL | |     let x = "test";
++LL | |     match x {
++LL | |         "test" => println!(),
++...  |
++LL | | }
++   | |_^
+ 
+-error: you seem to be trying to use `match` for destructuring a single pattern. Consider using `if let`
++error: requires `sized` lang_item
+-  --> tests/ui/single_match.rs:360:5
++  --> tests/ui/single_match.rs:109:11
+    |
+-LL | /     match Ok::<_, u32>(Some(A)) {
++LL |         C(u32),
+-LL | |         Ok(Some(A)) => println!(),
++   |           ^^^
+ 
+-error: you seem to be trying to use `match` for destructuring a single pattern. Consider using `if let`
++error: requires `sized` lang_item
+-  --> tests/ui/single_match.rs:376:5
++  --> tests/ui/single_match.rs:119:18
+    |
+-LL | /     match &Some(A) {
++LL |     const FOO_C: Foo = Foo::C(0);
+-LL | |         Some(A | B) => println!(),
++   |                  ^^^
+ 
+-error: you seem to be trying to use `match` for an equality check. Consider using `if`
++error: requires `sized` lang_item
+-  --> tests/ui/single_match.rs:384:5
++  --> tests/ui/single_match.rs:168:13
+    |
+-LL | /     match &s[0..3] {
++LL |   fn ranges() {
+ LL | |         b"foo" => println!(),
+ LL | |         _ => {},
+-LL | |     }
++...  |
+-   | |_____^ help: try: `if &s[0..3] == b"foo" { println!() }`
++LL | | }
+ 
+-error: this pattern is irrefutable, `match` is useless
++error: requires `sized` lang_item
+-  --> tests/ui/single_match.rs:398:5
++  --> tests/ui/single_match.rs:392:17
+    |
+-LL | /     match DATA {
++LL | pub struct Data([u8; 4]);
+ LL | |         DATA => println!(),
+ LL | |         _ => {},
++...  |
++LL | | }
++   | |_^
++
++error: requires `sized` lang_item
++  --> tests/ui/single_match.rs:293:22
++   |
++LL |     struct SomeError(i32, i32);
++   |                      ^^^
++
++error: requires `sized` lang_item
++  --> tests/ui/single_match.rs:295:32
++   |
++LL |       fn foo(x: Result<i32, ()>) {
++   |  ________________________________^
++LL | |         match x {
++LL | |             Ok(y) => {
++LL | |                 println!("Yay! {y}");
++...  |
+ LL | |     }
+-   | |_____^ help: try: `println!();`
++   | |_____^
+ 
+-error: this pattern is irrefutable, `match` is useless
++error: requires `sized` lang_item
+-  --> tests/ui/single_match.rs:404:5
++  --> tests/ui/single_match.rs:306:39
+    |
+-LL | /     match CONST_I32 {
++LL |       fn bar(x: Result<i32, SomeError>) {
+-LL | |         CONST_I32 => println!(),
++   |  _______________________________________^
+-LL | |         _ => {},
++LL | |         match x {
+ LL | |     }
+-   | |_____^ help: try: `println!();`
++   | |_____^
+ 
+-error: this pattern is irrefutable, `match` is useless
++error: requires `sized` lang_item
+-  --> tests/ui/single_match.rs:411:5
++  --> tests/ui/single_match.rs:317:49
+    |
+-LL | /     match i {
++LL |       fn block_comment(x: Result<i32, SomeError>) {
+-LL | |         i => {
++   |  _________________________________________________^
+-LL | |             let a = 1;
++LL | |         match x {
+-LL | |             let b = 2;
++LL | |             Ok(y) => {
+-LL | |         },
++LL | |                 println!("Yay! {y}");
+-LL | |         _ => {},
++...  |
+ LL | |     }
+    | |_____^
++
++error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
++  --> tests/ui/single_match.rs:13:13
+    |
+-help: try
++LL |     let x = Some(1u8);
+    |
+-LL ~     {
++LL |     let x = Some(1u8);
+-LL +         let a = 1;
++   |             ^^^^ not found in this scope
+-LL +         let b = 2;
++
+-LL +     }
++error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
+    |
++LL |     let x = Some(1u8);
++   |             ^^^^ not found in this scope
+ 
+-error: this pattern is irrefutable, `match` is useless
++error[E0425]: cannot find function, tuple struct or tuple variant `Ok` in this scope
+-  --> tests/ui/single_match.rs:420:5
++  --> tests/ui/single_match.rs:61:28
+    |
+-LL | /     match i {
++LL |     let y: Result<_, i8> = Ok(1i8);
+-LL | |         i => {},
++   |                            ^^ not found in this scope
+ 
+-error: this pattern is irrefutable, `match` is useless
++error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
+-  --> tests/ui/single_match.rs:426:5
++  --> tests/ui/single_match.rs:159:13
+    |
+-LL | /     match i {
++LL |     let x = Some(X);
+-LL | |         i => (),
++   |             ^^^^ not found in this scope
+ 
+-error: this pattern is irrefutable, `match` is useless
++error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
+-  --> tests/ui/single_match.rs:432:5
++  --> tests/ui/single_match.rs:172:14
+    |
+-LL | /     match CONST_I32 {
++LL |     let x = (Some(E::V), Some(42));
+-LL | |         CONST_I32 => println!(),
++   |              ^^^^ not found in this scope
+ 
+-error: aborting due to 26 previous errors
++error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
+ 
++error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
++  --> tests/ui/single_match.rs:197:12
++   |
++LL |     match (Some(42), Some(E::V), Some(42)) {
++   |            ^^^^ not found in this scope
++
++error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
++  --> tests/ui/single_match.rs:197:22
++   |
++LL |     match (Some(42), Some(E::V), Some(42)) {
++   |                      ^^^^ not found in this scope
++
++error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
++  --> tests/ui/single_match.rs:197:34
++   |
++LL |     match (Some(42), Some(E::V), Some(42)) {
++   |                                  ^^^^ not found in this scope
++
++error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
++  --> tests/ui/single_match.rs:204:12
++   |
++LL |     match (Some(E::V), Some(E::V), Some(E::V)) {
++   |            ^^^^ not found in this scope
++
++error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
++  --> tests/ui/single_match.rs:204:24
++   |
++LL |     match (Some(E::V), Some(E::V), Some(E::V)) {
++   |                        ^^^^ not found in this scope
++
++error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
++  --> tests/ui/single_match.rs:204:36
++   |
++LL |     match (Some(E::V), Some(E::V), Some(E::V)) {
++   |                                    ^^^^ not found in this scope
++
++error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
++  --> tests/ui/single_match.rs:210:12
++   |
++LL |     match (Some(E::V), Some(E::V), Some(E::V)) {
++   |            ^^^^ not found in this scope
++
++error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
++  --> tests/ui/single_match.rs:210:24
++   |
++LL |     match (Some(E::V), Some(E::V), Some(E::V)) {
++   |                        ^^^^ not found in this scope
++
++error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
++  --> tests/ui/single_match.rs:210:36
++   |
++LL |     match (Some(E::V), Some(E::V), Some(E::V)) {
++   |                                    ^^^^ not found in this scope
++
++error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
++  --> tests/ui/single_match.rs:216:12
++   |
++LL |     match (Some(E::V), Some(E::V), Some(E::V)) {
++   |            ^^^^ not found in this scope
++
++error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
++  --> tests/ui/single_match.rs:216:24
++   |
++LL |     match (Some(E::V), Some(E::V), Some(E::V)) {
++   |                        ^^^^ not found in this scope
++
++error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
++  --> tests/ui/single_match.rs:216:36
++   |
++LL |     match (Some(E::V), Some(E::V), Some(E::V)) {
++   |                                    ^^^^ not found in this scope
++
++error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
++  --> tests/ui/single_match.rs:261:19
++   |
++LL |     let _ = match Some(0) {
++   |                   ^^^^ not found in this scope
++
++error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
++  --> tests/ui/single_match.rs:340:11
++   |
++LL |     match Some(A) {
++   |           ^^^^ not found in this scope
++
++error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
++  --> tests/ui/single_match.rs:345:11
++   |
++LL |     match Some(A) {
++   |           ^^^^ not found in this scope
++
++error[E0425]: cannot find function, tuple struct or tuple variant `Ok` in this scope
++  --> tests/ui/single_match.rs:355:11
++   |
++LL |     match Ok::<_, u32>(Some(A)) {
++   |           ^^ not found in this scope
++
++error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
++  --> tests/ui/single_match.rs:355:24
++   |
++LL |     match Ok::<_, u32>(Some(A)) {
++   |                        ^^^^ not found in this scope
++
++error[E0425]: cannot find function, tuple struct or tuple variant `Ok` in this scope
++  --> tests/ui/single_match.rs:360:11
++   |
++LL |     match Ok::<_, u32>(Some(A)) {
++   |           ^^ not found in this scope
++
++error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
++  --> tests/ui/single_match.rs:360:24
++   |
++LL |     match Ok::<_, u32>(Some(A)) {
++   |                        ^^^^ not found in this scope
++
++error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
++  --> tests/ui/single_match.rs:366:12
++   |
++LL |     match &Some(A) {
++   |            ^^^^ not found in this scope
++
++error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
++  --> tests/ui/single_match.rs:371:12
++   |
++LL |     match &Some(A) {
++   |            ^^^^ not found in this scope
++
++error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
++  --> tests/ui/single_match.rs:376:12
++   |
++LL |     match &Some(A) {
++   |            ^^^^ not found in this scope
++
++error: aborting due to 148 previous errors
++
++Some errors have detailed explanations: E0405, E0408, E0412, E0422, E0425, E0514, E0531.
++For more information about an error, try `rustc --explain E0405`.
+
+
+error: diagnostic code `clippy::single_match` not found on line 15
+  --> tests/ui/single_match.rs:21:15
+   |
+21 |     //~^^^^^^ single_match
+   |               ^^^^^^^^^^^^ expected because of this pattern
+   |
+
+error: diagnostic code `clippy::single_match` not found on line 33
+  --> tests/ui/single_match.rs:37:13
+   |
+37 |     //~^^^^ single_match
+   |             ^^^^^^^^^^^^ expected because of this pattern
+   |
+
+error: diagnostic code `clippy::single_match` not found on line 63
+  --> tests/ui/single_match.rs:67:13
+   |
+67 |     //~^^^^ single_match
+   |             ^^^^^^^^^^^^ expected because of this pattern
+   |
+
+error: diagnostic code `clippy::single_match` not found on line 69
+  --> tests/ui/single_match.rs:73:13
+   |
+73 |     //~^^^^ single_match
+   |             ^^^^^^^^^^^^ expected because of this pattern
+   |
+
+error: diagnostic code `clippy::single_match` not found on line 77
+  --> tests/ui/single_match.rs:81:13
+   |
+81 |     //~^^^^ single_match
+   |             ^^^^^^^^^^^^ expected because of this pattern
+   |
+
+error: diagnostic code `clippy::single_match` not found on line 99
+   --> tests/ui/single_match.rs:103:13
+    |
+103 |     //~^^^^ single_match
+    |             ^^^^^^^^^^^^ expected because of this pattern
+    |
+
+error: diagnostic code `clippy::single_match` not found on line 113
+   --> tests/ui/single_match.rs:117:13
+    |
+117 |     //~^^^^ single_match
+    |             ^^^^^^^^^^^^ expected because of this pattern
+    |
+
+error: diagnostic code `clippy::single_match` not found on line 120
+   --> tests/ui/single_match.rs:124:13
+    |
+124 |     //~^^^^ single_match
+    |             ^^^^^^^^^^^^ expected because of this pattern
+    |
+
+error: diagnostic code `clippy::single_match` not found on line 126
+   --> tests/ui/single_match.rs:130:13
+    |
+130 |     //~^^^^ single_match
+    |             ^^^^^^^^^^^^ expected because of this pattern
+    |
+
+error: diagnostic code `clippy::single_match` not found on line 133
+   --> tests/ui/single_match.rs:137:13
+    |
+137 |     //~^^^^ single_match
+    |             ^^^^^^^^^^^^ expected because of this pattern
+    |
+
+error: diagnostic code `clippy::single_match` not found on line 151
+   --> tests/ui/single_match.rs:155:13
+    |
+155 |     //~^^^^ single_match
+    |             ^^^^^^^^^^^^ expected because of this pattern
+    |
+
+error: diagnostic code `clippy::single_match` not found on line 160
+   --> tests/ui/single_match.rs:164:13
+    |
+164 |     //~^^^^ single_match
+    |             ^^^^^^^^^^^^ expected because of this pattern
+    |
+
+error: diagnostic code `clippy::single_match` not found on line 183
+   --> tests/ui/single_match.rs:187:13
+    |
+187 |     //~^^^^ single_match
+    |             ^^^^^^^^^^^^ expected because of this pattern
+    |
+
+error: diagnostic code `clippy::single_match` not found on line 190
+   --> tests/ui/single_match.rs:194:13
+    |
+194 |     //~^^^^ single_match
+    |             ^^^^^^^^^^^^ expected because of this pattern
+    |
+
+error: diagnostic code `clippy::single_match` not found on line 197
+   --> tests/ui/single_match.rs:201:13
+    |
+201 |     //~^^^^ single_match
+    |             ^^^^^^^^^^^^ expected because of this pattern
+    |
+
+error: diagnostic code `clippy::single_match` not found on line 270
+   --> tests/ui/single_match.rs:277:16
+    |
+277 |     //~^^^^^^^ single_match
+    |                ^^^^^^^^^^^^ expected because of this pattern
+    |
+
+error: diagnostic code `clippy::single_match` not found on line 279
+   --> tests/ui/single_match.rs:289:19
+    |
+289 |     //~^^^^^^^^^^ single_match
+    |                   ^^^^^^^^^^^^ expected because of this pattern
+    |
+
+error: diagnostic code `clippy::single_match` not found on line 360
+   --> tests/ui/single_match.rs:364:13
+    |
+364 |     //~^^^^ single_match
+    |             ^^^^^^^^^^^^ expected because of this pattern
+    |
+
+error: diagnostic code `clippy::single_match` not found on line 376
+   --> tests/ui/single_match.rs:380:13
+    |
+380 |     //~^^^^ single_match
+    |             ^^^^^^^^^^^^ expected because of this pattern
+    |
+
+error: diagnostic code `clippy::single_match` not found on line 384
+   --> tests/ui/single_match.rs:388:13
+    |
+388 |     //~^^^^ single_match
+    |             ^^^^^^^^^^^^ expected because of this pattern
+    |
+
+error: diagnostic code `clippy::single_match` not found on line 398
+   --> tests/ui/single_match.rs:402:13
+    |
+402 |     //~^^^^ single_match
+    |             ^^^^^^^^^^^^ expected because of this pattern
+    |
+
+error: diagnostic code `clippy::single_match` not found on line 404
+   --> tests/ui/single_match.rs:408:13
+    |
+408 |     //~^^^^ single_match
+    |             ^^^^^^^^^^^^ expected because of this pattern
+    |
+
+error: diagnostic code `clippy::single_match` not found on line 411
+   --> tests/ui/single_match.rs:418:16
+    |
+418 |     //~^^^^^^^ single_match
+    |                ^^^^^^^^^^^^ expected because of this pattern
+    |
+
+error: diagnostic code `clippy::single_match` not found on line 420
+   --> tests/ui/single_match.rs:424:13
+    |
+424 |     //~^^^^ single_match
+    |             ^^^^^^^^^^^^ expected because of this pattern
+    |
+
+error: diagnostic code `clippy::single_match` not found on line 426
+   --> tests/ui/single_match.rs:430:13
+    |
+430 |     //~^^^^ single_match
+    |             ^^^^^^^^^^^^ expected because of this pattern
+    |
+
+error: diagnostic code `clippy::single_match` not found on line 432
+   --> tests/ui/single_match.rs:436:13
+    |
+436 |     //~^^^^ single_match
+    |             ^^^^^^^^^^^^ expected because of this pattern
+    |
+
+error: there were 1 unmatched diagnostics that occurred outside the testfile and had no pattern
+    Error: found crate `std` compiled by an incompatible version of rustc
+
+error: there were 1 unmatched diagnostics
+ --> tests/ui/single_match.rs:1:1
+  |
+1 | #![warn(clippy::single_match)]
+  | ^ Error[E0514]: found crate `compiler_builtins` compiled by an incompatible version of rustc
+  |
+
+error: there were 1 unmatched diagnostics
+  --> tests/ui/single_match.rs:10:12
+   |
+10 | fn dummy() {}
+   |            ^^ Error: requires `sized` lang_item
+   |
+
+error: there were 1 unmatched diagnostics
+  --> tests/ui/single_match.rs:12:19
+   |
+12 |   fn single_match() {
+   |  ___________________^
+13 | |     let x = Some(1u8);
+...  |
+49 | |     }
+50 | | }
+   | |_^ Error: requires `sized` lang_item
+   |
+
+error: there were 1 unmatched diagnostics
+  --> tests/ui/single_match.rs:13:13
+   |
+13 |     let x = Some(1u8);
+   |             ^^^^ Error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
+   |
+
+error: there were 1 unmatched diagnostics
+  --> tests/ui/single_match.rs:16:9
+   |
+16 |         Some(y) => {
+   |         ^^^^ Error[E0531]: cannot find tuple struct or tuple variant `Some` in this scope
+   |
+
+error: there were 1 unmatched diagnostics
+  --> tests/ui/single_match.rs:17:13
+   |
+17 |             println!("{:?}", y);
+   |             ^^^^^^^ Error: cannot find macro `println` in this scope
+   |
+
+error: there were 1 unmatched diagnostics
+  --> tests/ui/single_match.rs:23:13
+   |
+23 |     let x = Some(1u8);
+   |             ^^^^ Error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
+   |
+
+error: there were 2 unmatched diagnostics
+  --> tests/ui/single_match.rs:28:20
+   |
+28 |         Some(y) => println!("{:?}", y),
+   |         ^^^^       ^^^^^^^ Error: cannot find macro `println` in this scope
+   |         |
+   |         Error[E0531]: cannot find tuple struct or tuple variant `Some` in this scope
+   |
+
+error: there were 2 unmatched diagnostics
+  --> tests/ui/single_match.rs:41:30
+   |
+41 |         Some(y) if y == 0 => println!("{:?}", y),
+   |         ^^^^                 ^^^^^^^ Error: cannot find macro `println` in this scope
+   |         |
+   |         Error[E0531]: cannot find tuple struct or tuple variant `Some` in this scope
+   |
+
+error: there were 1 unmatched diagnostics
+  --> tests/ui/single_match.rs:47:27
+   |
+47 |         (2..=3, 7..=9) => println!("{:?}", z),
+   |                           ^^^^^^^ Error: cannot find macro `println` in this scope
+   |
+
+error: there were 1 unmatched diagnostics
+  --> tests/ui/single_match.rs:48:14
+   |
+48 |         _ => println!("nope"),
+   |              ^^^^^^^ Error: cannot find macro `println` in this scope
+   |
+
+error: there were 1 unmatched diagnostics
+  --> tests/ui/single_match.rs:54:9
+   |
+54 |     Baz(u8),
+   |         ^^ Error: requires `sized` lang_item
+   |
+
+error: there were 1 unmatched diagnostics
+  --> tests/ui/single_match.rs:57:5
+   |
+57 | use std::borrow::Cow;
+   |     ^^^ Error[E0514]: found crate `std` compiled by an incompatible version of rustc
+   |
+
+error: there were 1 unmatched diagnostics
+  --> tests/ui/single_match.rs:59:29
+   |
+59 |   fn single_match_know_enum() {
+   |  _____________________________^
+60 | |     let x = Some(1u8);
+...  |
+93 | |     }
+94 | | }
+   | |_^ Error: requires `sized` lang_item
+   |
+
+error: there were 1 unmatched diagnostics
+  --> tests/ui/single_match.rs:60:13
+   |
+60 |     let x = Some(1u8);
+   |             ^^^^ Error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
+   |
+
+error: there were 2 unmatched diagnostics
+  --> tests/ui/single_match.rs:61:12
+   |
+61 |     let y: Result<_, i8> = Ok(1i8);
+   |            ^^^^^^          ^^ Error[E0425]: cannot find function, tuple struct or tuple variant `Ok` in this scope
+   |            |
+   |            Error[E0412]: cannot find type `Result` in this scope
+   |
+
+error: there were 1 unmatched diagnostics
+  --> tests/ui/single_match.rs:64:9
+   |
+64 |         Some(y) => dummy(),
+   |         ^^^^ Error[E0531]: cannot find tuple struct or tuple variant `Some` in this scope
+   |
+
+error: there were 1 unmatched diagnostics
+  --> tests/ui/single_match.rs:70:9
+   |
+70 |         Ok(y) => dummy(),
+   |         ^^ Error[E0531]: cannot find tuple struct or tuple variant `Ok` in this scope
+   |
+
+error: there were 1 unmatched diagnostics
+  --> tests/ui/single_match.rs:71:9
+   |
+71 |         Err(..) => (),
+   |         ^^^ Error[E0531]: cannot find tuple struct or tuple variant `Err` in this scope
+   |
+
+error: there were 1 unmatched diagnostics
+  --> tests/ui/single_match.rs:86:16
+   |
+86 |         Bar => println!("42"),
+   |                ^^^^^^^ Error: cannot find macro `println` in this scope
+   |
+
+error: there were 1 unmatched diagnostics
+  --> tests/ui/single_match.rs:91:19
+   |
+91 |         Baz(_) => println!("42"),
+   |                   ^^^^^^^ Error: cannot find macro `println` in this scope
+   |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:97:20
+    |
+ 97 |   fn if_suggestion() {
+    |  ____________________^
+ 98 | |     let x = "test";
+...   |
+164 | |     //~^^^^ single_match
+165 | | }
+    | |_^ Error: requires `sized` lang_item
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:100:19
+    |
+100 |         "test" => println!(),
+    |                   ^^^^^^^ Error: cannot find macro `println` in this scope
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:105:7
+    |
+105 |     #[derive(PartialEq, Eq)]
+    |       ^^^^^^ Error: cannot find attribute `derive` in this scope
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:109:11
+    |
+109 |         C(u32),
+    |           ^^^ Error: requires `sized` lang_item
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:114:19
+    |
+114 |         Foo::A => println!(),
+    |                   ^^^^^^^ Error: cannot find macro `println` in this scope
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:119:18
+    |
+119 |     const FOO_C: Foo = Foo::C(0);
+    |                  ^^^ Error: requires `sized` lang_item
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:121:18
+    |
+121 |         FOO_C => println!(),
+    |                  ^^^^^^^ Error: cannot find macro `println` in this scope
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:127:19
+    |
+127 |         Foo::A => println!(),
+    |                   ^^^^^^^ Error: cannot find macro `println` in this scope
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:134:19
+    |
+134 |         Foo::A => println!(),
+    |                   ^^^^^^^ Error: cannot find macro `println` in this scope
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:143:10
+    |
+143 |     impl PartialEq for Bar {
+    |          ^^^^^^^^^ Error[E0405]: cannot find trait `PartialEq` in this scope
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:145:13
+    |
+145 |             matches!((self, rhs), (Self::A, Self::A) | (Self::B, Self::B))
+    |             ^^^^^^^ Error: cannot find macro `matches` in this scope
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:148:10
+    |
+148 |     impl Eq for Bar {}
+    |          ^^ Error[E0405]: cannot find trait `Eq` in this scope
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:152:19
+    |
+152 |         Bar::A => println!(),
+    |                   ^^^^^^^ Error: cannot find macro `println` in this scope
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:159:13
+    |
+159 |     let x = Some(X);
+    |             ^^^^ Error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:161:17
+    |
+161 |         None => println!(),
+    |                 ^^^^^^^ Error: cannot find macro `println` in this scope
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:168:13
+    |
+168 |   fn ranges() {
+    |  _____________^
+169 | |     enum E {
+...   |
+219 | |     }
+220 | | }
+    | |_^ Error: requires `sized` lang_item
+    |
+
+error: there were 2 unmatched diagnostics
+   --> tests/ui/single_match.rs:172:14
+    |
+172 |     let x = (Some(E::V), Some(42));
+    |              ^^^^        ^^^^ Error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
+    |              |
+    |              Error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:178:10
+    |
+178 |         (Some(E::V), _) => {},
+    |          ^^^^ Error[E0531]: cannot find tuple struct or tuple variant `Some` in this scope
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:184:10
+    |
+184 |         (Some(_), _) => {},
+    |          ^^^^ Error[E0531]: cannot find tuple struct or tuple variant `Some` in this scope
+    |
+
+error: there were 2 unmatched diagnostics
+   --> tests/ui/single_match.rs:191:28
+    |
+191 |         (Some(E::V), _) => todo!(),
+    |          ^^^^              ^^^^ Error: cannot find macro `todo` in this scope
+    |          |
+    |          Error[E0531]: cannot find tuple struct or tuple variant `Some` in this scope
+    |
+
+error: there were 3 unmatched diagnostics
+   --> tests/ui/single_match.rs:197:12
+    |
+197 |     match (Some(42), Some(E::V), Some(42)) {
+    |            ^^^^      ^^^^        ^^^^ Error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
+    |            |         |
+    |            |         Error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
+    |            Error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:198:14
+    |
+198 |         (.., Some(E::V), _) => {},
+    |              ^^^^ Error[E0531]: cannot find tuple struct or tuple variant `Some` in this scope
+    |
+
+error: there were 3 unmatched diagnostics
+   --> tests/ui/single_match.rs:204:12
+    |
+204 |     match (Some(E::V), Some(E::V), Some(E::V)) {
+    |            ^^^^        ^^^^        ^^^^ Error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
+    |            |           |
+    |            |           Error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
+    |            Error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:205:14
+    |
+205 |         (.., Some(E::V), _) => {},
+    |              ^^^^ Error[E0531]: cannot find tuple struct or tuple variant `Some` in this scope
+    |
+
+error: there were 3 unmatched diagnostics
+   --> tests/ui/single_match.rs:210:12
+    |
+210 |     match (Some(E::V), Some(E::V), Some(E::V)) {
+    |            ^^^^        ^^^^        ^^^^ Error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
+    |            |           |
+    |            |           Error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
+    |            Error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:211:10
+    |
+211 |         (Some(E::V), ..) => {},
+    |          ^^^^ Error[E0531]: cannot find tuple struct or tuple variant `Some` in this scope
+    |
+
+error: there were 3 unmatched diagnostics
+   --> tests/ui/single_match.rs:216:12
+    |
+216 |     match (Some(E::V), Some(E::V), Some(E::V)) {
+    |            ^^^^        ^^^^        ^^^^ Error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
+    |            |           |
+    |            |           Error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
+    |            Error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:217:13
+    |
+217 |         (_, Some(E::V), ..) => {},
+    |             ^^^^ Error[E0531]: cannot find tuple struct or tuple variant `Some` in this scope
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:222:24
+    |
+222 |   fn skip_type_aliases() {
+    |  ________________________^
+223 | |     enum OptionEx {
+...   |
+245 | |     };
+246 | | }
+    | |_^ Error: requires `sized` lang_item
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:224:14
+    |
+224 |         Some(i32),
+    |              ^^^ Error: requires `sized` lang_item
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:228:13
+    |
+228 |         Err(i32),
+    |             ^^^ Error: requires `sized` lang_item
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:251:19
+    |
+251 |             15 => println!("15"),
+    |                   ^^^^^^^ Error: cannot find macro `println` in this scope
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:257:11
+    |
+257 |   fn main() {
+    |  ___________^
+258 | |     single_match!(5);
+...   |
+266 | |     };
+267 | | }
+    | |_^ Error: requires `sized` lang_item
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:261:19
+    |
+261 |     let _ = match Some(0) {
+    |                   ^^^^ Error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:264:9
+    |
+264 |         Some(x) => x,
+    |         ^^^^ Error[E0531]: cannot find tuple struct or tuple variant `Some` in this scope
+    |
+
+error: there were 2 unmatched diagnostics
+   --> tests/ui/single_match.rs:269:21
+    |
+269 |   fn issue_10808(bar: Option<i32>) {
+    |  _____________________^^^^^^_______^
+    | |                     |
+    | |                     Error[E0412]: cannot find type `Option` in this scope
+270 | |     match bar {
+...   |
+289 | |     //~^^^^^^^^^^ single_match
+290 | | }
+    | |_^ Error: requires `sized` lang_item
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:271:9
+    |
+271 |         Some(v) => unsafe {
+    |         ^^^^ Error[E0531]: cannot find tuple struct or tuple variant `Some` in this scope
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:273:13
+    |
+273 |             println!("{}", *r);
+    |             ^^^^^^^ Error: cannot find macro `println` in this scope
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:281:9
+    |
+281 |         Some(v) => {
+    |         ^^^^ Error[E0531]: cannot find tuple struct or tuple variant `Some` in this scope
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:284:17
+    |
+284 |                 println!("{}", *r);
+    |                 ^^^^^^^ Error: cannot find macro `println` in this scope
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:293:22
+    |
+293 |     struct SomeError(i32, i32);
+    |                      ^^^ Error: requires `sized` lang_item
+    |
+
+error: there were 2 unmatched diagnostics
+   --> tests/ui/single_match.rs:295:15
+    |
+295 |       fn foo(x: Result<i32, ()>) {
+    |  _______________^^^^^^___________^
+    | |               |
+    | |               Error[E0412]: cannot find type `Result` in this scope
+296 | |         match x {
+...   |
+303 | |         }
+304 | |     }
+    | |_____^ Error: requires `sized` lang_item
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:297:13
+    |
+297 |             Ok(y) => {
+    |             ^^ Error[E0531]: cannot find tuple struct or tuple variant `Ok` in this scope
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:298:17
+    |
+298 |                 println!("Yay! {y}");
+    |                 ^^^^^^^ Error: cannot find macro `println` in this scope
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:300:13
+    |
+300 |             Err(()) => {
+    |             ^^^ Error[E0531]: cannot find tuple struct or tuple variant `Err` in this scope
+    |
+
+error: there were 2 unmatched diagnostics
+   --> tests/ui/single_match.rs:306:15
+    |
+306 |       fn bar(x: Result<i32, SomeError>) {
+    |  _______________^^^^^^__________________^
+    | |               |
+    | |               Error[E0412]: cannot find type `Result` in this scope
+307 | |         match x {
+...   |
+314 | |         }
+315 | |     }
+    | |_____^ Error: requires `sized` lang_item
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:308:13
+    |
+308 |             Ok(y) => {
+    |             ^^ Error[E0531]: cannot find tuple struct or tuple variant `Ok` in this scope
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:309:17
+    |
+309 |                 println!("Yay! {y}");
+    |                 ^^^^^^^ Error: cannot find macro `println` in this scope
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:311:13
+    |
+311 |             Err(_) => {
+    |             ^^^ Error[E0531]: cannot find tuple struct or tuple variant `Err` in this scope
+    |
+
+error: there were 2 unmatched diagnostics
+   --> tests/ui/single_match.rs:317:25
+    |
+317 |       fn block_comment(x: Result<i32, SomeError>) {
+    |  _________________________^^^^^^__________________^
+    | |                         |
+    | |                         Error[E0412]: cannot find type `Result` in this scope
+318 | |         match x {
+...   |
+328 | |         }
+329 | |     }
+    | |_____^ Error: requires `sized` lang_item
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:319:13
+    |
+319 |             Ok(y) => {
+    |             ^^ Error[E0531]: cannot find tuple struct or tuple variant `Ok` in this scope
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:320:17
+    |
+320 |                 println!("Yay! {y}");
+    |                 ^^^^^^^ Error: cannot find macro `println` in this scope
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:322:13
+    |
+322 |             Err(_) => {
+    |             ^^^ Error[E0531]: cannot find tuple struct or tuple variant `Err` in this scope
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:332:17
+    |
+332 |   fn issue11365() {
+    |  _________________^
+333 | |     enum Foo {
+...   |
+380 | |     //~^^^^ single_match
+381 | | }
+    | |_^ Error: requires `sized` lang_item
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:340:11
+    |
+340 |     match Some(A) {
+    |           ^^^^ Error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
+    |
+
+error: there were 2 unmatched diagnostics
+   --> tests/ui/single_match.rs:341:28
+    |
+341 |         Some(A | B | C) => println!(),
+    |         ^^^^               ^^^^^^^ Error: cannot find macro `println` in this scope
+    |         |
+    |         Error[E0531]: cannot find tuple struct or tuple variant `Some` in this scope
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:345:11
+    |
+345 |     match Some(A) {
+    |           ^^^^ Error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
+    |
+
+error: there were 2 unmatched diagnostics
+   --> tests/ui/single_match.rs:346:24
+    |
+346 |         Some(A | B) => println!(),
+    |         ^^^^           ^^^^^^^ Error: cannot find macro `println` in this scope
+    |         |
+    |         Error[E0531]: cannot find tuple struct or tuple variant `Some` in this scope
+    |
+
+error: there were 2 unmatched diagnostics
+   --> tests/ui/single_match.rs:347:9
+    |
+347 |         Some { 0: C } | None => {},
+    |         ^^^^^^^^^^^^^
+    |         |
+    |         Error[E0408]: variable `None` is not bound in all patterns
+    |         Error[E0422]: cannot find struct, variant or union type `Some` in this scope
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:351:19
+    |
+351 |         [A, _] => println!(),
+    |                   ^^^^^^^ Error: cannot find macro `println` in this scope
+    |
+
+error: there were 2 unmatched diagnostics
+   --> tests/ui/single_match.rs:355:11
+    |
+355 |     match Ok::<_, u32>(Some(A)) {
+    |           ^^           ^^^^ Error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
+    |           |
+    |           Error[E0425]: cannot find function, tuple struct or tuple variant `Ok` in this scope
+    |
+
+error: there were 3 unmatched diagnostics
+   --> tests/ui/single_match.rs:356:24
+    |
+356 |         Ok(Some(A)) => println!(),
+    |         ^^ ^^^^        ^^^^^^^ Error: cannot find macro `println` in this scope
+    |         |  |
+    |         |  Error[E0531]: cannot find tuple struct or tuple variant `Some` in this scope
+    |         Error[E0531]: cannot find tuple struct or tuple variant `Ok` in this scope
+    |
+
+error: there were 5 unmatched diagnostics
+   --> tests/ui/single_match.rs:357:28
+    |
+357 |         Err(_) | Ok(None | Some(B | C)) => {},
+    |         ^^^^^^   ^^        ^^^^^^^^^^^
+    |         |        |         |
+    |         |        |         Error[E0408]: variable `None` is not bound in all patterns
+    |         |        |         Error[E0531]: cannot find tuple struct or tuple variant `Some` in this scope
+    |         |        Error[E0531]: cannot find tuple struct or tuple variant `Ok` in this scope
+    |         Error[E0408]: variable `None` is not bound in all patterns
+    |         Error[E0531]: cannot find tuple struct or tuple variant `Err` in this scope
+    |
+
+error: there were 2 unmatched diagnostics
+   --> tests/ui/single_match.rs:360:11
+    |
+360 |     match Ok::<_, u32>(Some(A)) {
+    |           ^^           ^^^^ Error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
+    |           |
+    |           Error[E0425]: cannot find function, tuple struct or tuple variant `Ok` in this scope
+    |
+
+error: there were 3 unmatched diagnostics
+   --> tests/ui/single_match.rs:361:24
+    |
+361 |         Ok(Some(A)) => println!(),
+    |         ^^ ^^^^        ^^^^^^^ Error: cannot find macro `println` in this scope
+    |         |  |
+    |         |  Error[E0531]: cannot find tuple struct or tuple variant `Some` in this scope
+    |         Error[E0531]: cannot find tuple struct or tuple variant `Ok` in this scope
+    |
+
+error: there were 5 unmatched diagnostics
+   --> tests/ui/single_match.rs:362:28
+    |
+362 |         Err(_) | Ok(None | Some(_)) => {},
+    |         ^^^^^^   ^^        ^^^^^^^
+    |         |        |         |
+    |         |        |         Error[E0408]: variable `None` is not bound in all patterns
+    |         |        |         Error[E0531]: cannot find tuple struct or tuple variant `Some` in this scope
+    |         |        Error[E0531]: cannot find tuple struct or tuple variant `Ok` in this scope
+    |         Error[E0408]: variable `None` is not bound in all patterns
+    |         Error[E0531]: cannot find tuple struct or tuple variant `Err` in this scope
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:366:12
+    |
+366 |     match &Some(A) {
+    |            ^^^^ Error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
+    |
+
+error: there were 2 unmatched diagnostics
+   --> tests/ui/single_match.rs:367:28
+    |
+367 |         Some(A | B | C) => println!(),
+    |         ^^^^               ^^^^^^^ Error: cannot find macro `println` in this scope
+    |         |
+    |         Error[E0531]: cannot find tuple struct or tuple variant `Some` in this scope
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:371:12
+    |
+371 |     match &Some(A) {
+    |            ^^^^ Error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
+    |
+
+error: there were 2 unmatched diagnostics
+   --> tests/ui/single_match.rs:372:29
+    |
+372 |         &Some(A | B | C) => println!(),
+    |          ^^^^               ^^^^^^^ Error: cannot find macro `println` in this scope
+    |          |
+    |          Error[E0531]: cannot find tuple struct or tuple variant `Some` in this scope
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:376:12
+    |
+376 |     match &Some(A) {
+    |            ^^^^ Error[E0425]: cannot find function, tuple struct or tuple variant `Some` in this scope
+    |
+
+error: there were 2 unmatched diagnostics
+   --> tests/ui/single_match.rs:377:24
+    |
+377 |         Some(A | B) => println!(),
+    |         ^^^^           ^^^^^^^ Error: cannot find macro `println` in this scope
+    |         |
+    |         Error[E0531]: cannot find tuple struct or tuple variant `Some` in this scope
+    |
+
+error: there were 2 unmatched diagnostics
+   --> tests/ui/single_match.rs:378:16
+    |
+378 |         None | Some(_) => {},
+    |                ^^^^^^^
+    |                |
+    |                Error[E0408]: variable `None` is not bound in all patterns
+    |                Error[E0531]: cannot find tuple struct or tuple variant `Some` in this scope
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:383:25
+    |
+383 |   fn issue12758(s: &[u8]) {
+    |  _________________________^
+384 | |     match &s[0..3] {
+...   |
+388 | |     //~^^^^ single_match
+389 | | }
+    | |_^ Error: requires `sized` lang_item
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:385:19
+    |
+385 |         b"foo" => println!(),
+    |                   ^^^^^^^ Error: cannot find macro `println` in this scope
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:391:3
+    |
+391 | #[derive(Eq, PartialEq)]
+    |   ^^^^^^ Error: cannot find attribute `derive` in this scope
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:392:17
+    |
+392 | pub struct Data([u8; 4]);
+    |                 ^^^^^^^ Error: requires `sized` lang_item
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:394:13
+    |
+394 | const DATA: Data = Data([1, 2, 3, 4]);
+    |             ^^^^ Error: requires `sized` lang_item
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:395:18
+    |
+395 | const CONST_I32: i32 = 1;
+    |                  ^^^ Error: requires `sized` lang_item
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:397:24
+    |
+397 |   fn irrefutable_match() {
+    |  ________________________^
+398 | |     match DATA {
+...   |
+456 | |     }
+457 | | }
+    | |_^ Error: requires `sized` lang_item
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:399:17
+    |
+399 |         DATA => println!(),
+    |                 ^^^^^^^ Error: cannot find macro `println` in this scope
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:405:22
+    |
+405 |         CONST_I32 => println!(),
+    |                      ^^^^^^^ Error: cannot find macro `println` in this scope
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:433:22
+    |
+433 |         CONST_I32 => println!(),
+    |                      ^^^^^^^ Error: cannot find macro `println` in this scope
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:438:17
+    |
+438 |     let mut x = vec![1i8];
+    |                 ^^^ Error: cannot find macro `vec` in this scope
+    |
+
+error: there were 2 unmatched diagnostics
+   --> tests/ui/single_match.rs:443:20
+    |
+443 |         Some(u) => println!("{u}"),
+    |         ^^^^       ^^^^^^^ Error: cannot find macro `println` in this scope
+    |         |
+    |         Error[E0531]: cannot find tuple struct or tuple variant `Some` in this scope
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:450:9
+    |
+450 |         Some(u) => {
+    |         ^^^^ Error[E0531]: cannot find tuple struct or tuple variant `Some` in this scope
+    |
+
+error: there were 1 unmatched diagnostics
+   --> tests/ui/single_match.rs:452:13
+    |
+452 |             println!("{u}");
+    |             ^^^^^^^ Error: cannot find macro `println` in this scope
+    |
+
+FAILURES:
+    tests/ui/single_match.rs
+
+test result: FAIL. 1 failed; 1071 filtered out
+

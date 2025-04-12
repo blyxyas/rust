@@ -1,22 +1,24 @@
-
 //! Implementation of the early lint pass.
 //!
 //! The early lint pass works on AST nodes after macro expansion and name
 //! resolution, just before AST lowering. These lints are for purely
 //! syntactical lints.
 
+use rustc_data_structures::sync::FromDyn;
 use rustc_ast::ptr::P;
 use rustc_ast::visit::{self as ast_visit, Visitor, walk_list};
 use rustc_ast::{self as ast, HasAttrs};
 use rustc_data_structures::stack::ensure_sufficient_stack;
-use rustc_data_structures::sync::{DynSend, DynSync};
-use rustc_data_structures::parallel;
+use rustc_data_structures::sync::{DynSend, DynSync, is_dyn_thread_safe};
+use rustc_data_structures::marker::IntoDynSyncSend;
 use rustc_feature::Features;
 use rustc_middle::ty::{RegisteredTools, TyCtxt};
 use rustc_session::Session;
 use rustc_session::lint::{BufferedEarlyLint, LintBuffer, LintPass};
 use rustc_span::{Ident, Span};
 use tracing::debug;
+
+use rayon::prelude::*;
 
 use crate::context::{EarlyContext, LintContext, LintStore};
 use crate::passes::{EarlyLintPass, EarlyLintPassObject};
@@ -313,25 +315,32 @@ macro_rules! impl_early_lint_pass {
     ([], [$($(#[$attr:meta])* fn $f:ident($($param:ident: $arg:ty),*);)*]) => (
         impl EarlyLintPass for RuntimeCombinedEarlyLintPass<'_> {
             $(fn $f(&mut self, context: &EarlyContext<'_>, $($param: $arg),*) {
-                for pass in self.passes.iter_mut() {
-                    let passes_div = self.passes.len().div_floor(3);
-                    parallel!(
-                        {
-                            for pass_idx in 0..passes_div {
-                                self.passes[pass_idx].$f(context, $($param),*);
-                            };
-                        },
-                        {
-                                for pass_idx in 0..passes_div {
-                                    self.passes[pass_idx * 2].$f(context, $($param),*);
-                                };
-                        },
-                        {    for pass_idx in 0..passes_div {
-                                self.passes[pass_idx * 3].$f(context, $($param),*);
-                            };
-                        }
-                    )
-                }
+                let passes_div = self.passes.len().div_floor(3);
+                let (first_third, two_thirds) = self.passes.split_at_mut(passes_div);
+                let (second_third, third_third) = two_thirds.split_at_mut(passes_div);
+
+            
+
+                scope(|s|
+                        s.spawn(|| { for pass_idx in 0..passes_div { first_third[pass_idx].$f(context, $($param),*); }}),
+                        s.spawn(|| { for pass_idx in 0..passes_div { second_third[pass_idx].$f(context, $($param),*); }}),
+                        s.spawn(|| {for pass_idx in 0..passes_div { third_third[pass_idx].$f(context, $($param),*); }})
+                )
+
+                // {
+                //     for pass_idx in 0..passes_div {
+                //         self.passes[pass_idx].$f(context, $($param),*);
+                //     };
+                // },
+                // {
+                //         for pass_idx in 0..passes_div {
+                //             self.passes[pass_idx * 2].$f(context, $($param),*);
+                //         };
+                // },
+                // {    for pass_idx in 0..passes_div {
+                //         self.passes[pass_idx * 3].$f(context, $($param),*);
+                //     };
+                // }
             })*
         }
     )

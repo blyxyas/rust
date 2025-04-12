@@ -25,7 +25,7 @@ pub(super) use libc as netc;
 use super::{socket_addr_from_c, socket_addr_to_c};
 pub use crate::sys::{cvt, cvt_r};
 
-#[expect(non_camel_case_types)]
+#[allow(non_camel_case_types)]
 pub type wrlen_t = size_t;
 
 pub struct Socket(FileDesc);
