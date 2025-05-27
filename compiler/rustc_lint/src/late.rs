@@ -20,8 +20,8 @@ use rustc_session::lint::LintPass;
 use rustc_session::lint::builtin::HardwiredLints;
 use rustc_span::Span;
 use tracing::debug;
-use parking_lot::RwLock;
 
+use rustc_data_structures::sync::RwLock;
 use crate::passes::LateLintPassObject;
 use crate::{LateContext, LateLintPass, LintId, LintStore};
 
@@ -94,14 +94,14 @@ impl<'tcx, T: LateLintPass<'tcx>> hir_visit::Visitor<'tcx> for LateContextAndPas
 
     fn visit_nested_body(&mut self, body_id: hir::BodyId) {
         let old_enclosing_body = self.context.enclosing_body.replace(body_id);
-        let old_cached_typeck_results = Arc::new(self.context.cached_typeck_results.read());
+        let old_cached_typeck_results = Arc::new(self.context.cached_typeck_results);
         let context_clone = Arc::clone(&old_cached_typeck_results);
 
         // HACK(eddyb) avoid trashing `cached_typeck_results` when we're
         // nested in `visit_fn`, which may have already resulted in them
         // being queried.
         if old_enclosing_body != Some(body_id) {
-            let write_lock = self.context.cached_typeck_results.write();
+            let mut write_lock = self.context.cached_typeck_results.write();
             *write_lock = None
         };
 
@@ -111,8 +111,8 @@ impl<'tcx, T: LateLintPass<'tcx>> hir_visit::Visitor<'tcx> for LateContextAndPas
 
         // See HACK comment above.
         if old_enclosing_body != Some(body_id) {
-            let write_lock = self.context.cached_typeck_results.write();
-            *write_lock = **context_clone;
+            let mut write_lock = self.context.cached_typeck_results.write();
+            *write_lock = **context_clone.read();
         }
     }
 
@@ -143,7 +143,7 @@ impl<'tcx, T: LateLintPass<'tcx>> hir_visit::Visitor<'tcx> for LateContextAndPas
             });
         });
         self.context.enclosing_body = old_enclosing_body;
-        let write_lock = self.context.cached_typeck_results.write();
+        let mut write_lock = self.context.cached_typeck_results.write();
         *write_lock = **context_clone;
         self.context.generics = generics;
     }
@@ -201,6 +201,7 @@ impl<'tcx, T: LateLintPass<'tcx>> hir_visit::Visitor<'tcx> for LateContextAndPas
         // in order for `check_fn` to be able to use them.
         let old_enclosing_body = self.context.enclosing_body.replace(body_id);
         let old_cached_typeck_results = Arc::new(self.context.cached_typeck_results.read());
+
         let context_clone = Arc::clone(&old_cached_typeck_results);
 
         let body = self.context.tcx.hir_body(body_id);
@@ -208,9 +209,9 @@ impl<'tcx, T: LateLintPass<'tcx>> hir_visit::Visitor<'tcx> for LateContextAndPas
         hir_visit::walk_fn(self, fk, decl, body_id, id);
 
         // Restore old values
-        
+
         self.context.enclosing_body = old_enclosing_body;
-        let write_lock = self.context.cached_typeck_results.write();
+        let mut write_lock = self.context.cached_typeck_results.write();
         *write_lock = **context_clone;
     }
 
@@ -326,15 +327,28 @@ struct RuntimeCombinedLateLintPass<'a, 'tcx> {
     passes: &'a mut [LateLintPassObject<'tcx>],
 }
 
-
 struct NonPersistentLateLintPass<'tcx>(Box<dyn LateLintPass<'tcx> + 'tcx>);
 
 // We're certain that non persistent lints are ZST
-unsafe impl Send for NonPersistentLateLintPass<'tcx> {}
-unsafe impl Sync for NonPersistentLateLintPass<'tcx> {}
+unsafe impl<'tcx> Send for NonPersistentLateLintPass<'tcx> {}
+unsafe impl<'tcx> Sync for NonPersistentLateLintPass<'tcx> {}
 
 struct NonPersistentRuntimeCombinedLateLintPass<'a, 'tcx> {
     passes: &'a mut [NonPersistentLateLintPass<'tcx>],
+}
+
+#[allow(rustc::lint_pass_impl_without_macro)]
+impl<'tcx> LintPass for NonPersistentRuntimeCombinedLateLintPass<'_, 'tcx> {
+    fn name(&self) -> &'static str {
+        panic!()
+    }
+    fn get_lints(&self) -> crate::LintVec {
+        panic!()
+    }
+
+    fn persistence(&self) -> bool {
+        panic!()
+    }
 }
 
 
@@ -346,37 +360,40 @@ impl LintPass for RuntimeCombinedLateLintPass<'_, '_> {
     fn get_lints(&self) -> crate::LintVec {
         panic!()
     }
+
+    fn persistence(&self) -> bool {
+        panic!()
+    }
 }
 
 macro_rules! impl_late_lint_pass {
     ([], [$($(#[$attr:meta])* fn $f:ident($($param:ident: $arg:ty),*);)*]) => {
-        impl<'tcx> LateLintPass<'tcx> for NonPersistentRuntimeCombinedLateLintPass<'_, 'tcx> {
-            $(fn $f(&mut self, context: &LateContext<'tcx>, $($param: $arg),*) {
+        impl<'tcx> LateLintPass<'tcx> for RuntimeCombinedLateLintPass<'_, 'tcx> {
+            $(#[allow(unused)]fn $f(&mut self, context: &LateContext<'tcx>, $($param: $arg),*) {
                 // Slice all passes into the number of threads available.
-                let passes_div = self.passes.len().div_floor(3);
-                rwlock
-                scope(|scope| {
-                    let dyn_context = FromDyn::from(context);
-                    $(let $param = FromDyn::from($param);)*
-                    scope.spawn(|_| {
-                        for pass_idx in 0..passes_div {
-                            self.passes[pass_idx].$f(&dyn_context, $(*$param),*);
-                        };
-                    }
-                    );
-                    scope.spawn(|_| {
-                        for pass_idx in 0..passes_div {
-                            self.passes[pass_idx * 2].$f(&dyn_context, $(*$param),*);
-                        };
-                    }
-                    );
-                    scope.spawn(|_| {
-                        for pass_idx in 0..passes_div {
-                            self.passes[pass_idx * 3].$f(&dyn_context, $(*$param),*);
-                        };
-                    }
-                    );
-                })
+                // let passes_div = self.passes.len().div_floor(3);
+                // scope(|scope| {
+                    // let dyn_context = FromDyn::from(context);
+                    // $(let $param = FromDyn::from($param);)*
+                    // scope.spawn(|_| {
+                        // for pass_idx in 0..passes_div {
+                            // self.passes[pass_idx].$f(&dyn_context, $(*$param),*);
+                        // };
+                    // }
+                    // );
+                    // scope.spawn(|_| {
+                        // for pass_idx in 0..passes_div {
+                            // self.passes[pass_idx * 2].$f(&dyn_context, $(*$param),*);
+                        // };
+                    // }
+                    // );
+                    // scope.spawn(|_| {
+                        // for pass_idx in 0..passes_div {
+                            // self.passes[pass_idx * 3].$f(&dyn_context, $(*$param),*);
+                        // };
+                    // }
+                    // );
+                // })
                 // join(|| {
                 //     for pass_idx in 0..passes_div {
                 //         self.passes[pass_idx].$f(&context, $($param),*);
@@ -442,7 +459,7 @@ pub fn late_lint_mod<'tcx, T: LateLintPass<'tcx> + 'tcx>(
     let context = LateContext {
         tcx,
         enclosing_body: None,
-        cached_typeck_results: Cell::new(None),
+        cached_typeck_results: RwLock::new(None),
         param_env: ty::ParamEnv::empty(),
         effective_visibilities: tcx.effective_visibilities(()),
         last_node_with_lint_attrs: tcx.local_def_id_to_hir_id(module_def_id),
@@ -502,21 +519,13 @@ fn late_lint_crate<'tcx>(tcx: TyCtxt<'tcx>) {
         return;
     }
 
-    // let late_passes_arc = Arc::new(store.late_passes);
-
-    // let manager: Vec<Vec<Box<dyn LateLintPass<'tcx>>>> = store.late_passes.chunks(6).collect();
-
-    // std::thread::spawn(|| {
-
-    // });
-
     let passes: Vec<_> =
         unerased_lint_store(tcx.sess).late_passes.iter().map(|mk_pass| (mk_pass)(tcx)).collect();
 
     let context = LateContext {
         tcx,
         enclosing_body: None,
-        cached_typeck_results: Cell::new(None),
+        cached_typeck_results: RwLock::new(None),
         param_env: ty::ParamEnv::empty(),
         effective_visibilities: tcx.effective_visibilities(()),
         last_node_with_lint_attrs: hir::CRATE_HIR_ID,
@@ -526,7 +535,7 @@ fn late_lint_crate<'tcx>(tcx: TyCtxt<'tcx>) {
 
     let lints_that_dont_need_to_run = tcx.lints_that_dont_need_to_run(());
 
-    let mut filtered_passes: Vec<Box<dyn LateLintPass<'tcx>>> = passes
+    let mut filtered_passes = passes
         .into_iter()
         .filter(|pass| {
             let lints = (**pass).get_lints();
@@ -535,10 +544,12 @@ fn late_lint_crate<'tcx>(tcx: TyCtxt<'tcx>) {
             // If the pass doesn't have a single needed lint, omit it
             !lints.iter().all(|lint| lints_that_dont_need_to_run.contains(&LintId::of(lint)))
         })
-        .collect();
+        .collect::<Vec<Box<dyn LateLintPass<'tcx>>>>();
 
-    filtered_passes.push(Box::new(HardwiredLints));
-    let pass = RuntimeCombinedLateLintPass { passes: &mut filtered_passes[..] };
+    let (mut persistent_passes, _not_persist): (Vec<Box<dyn LateLintPass<'tcx>>>, Vec<Box<dyn LateLintPass<'tcx>>>) = filtered_passes.into_iter().partition(|pass| pass.persistence());
+
+    // filtered_passes.push(Box::new(HardwiredLints));
+    let pass = RuntimeCombinedLateLintPass { passes: &mut persistent_passes[..] };
     late_lint_crate_inner(tcx, context, pass);
 }
 

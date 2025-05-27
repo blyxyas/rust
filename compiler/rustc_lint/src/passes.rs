@@ -67,6 +67,10 @@ macro_rules! declare_late_lint_pass {
     )
 }
 
+
+
+
+
 // Declare the `LateLintPass` trait, which contains empty default definitions
 // for all the `check_*` methods.
 late_lint_methods!(declare_late_lint_pass, []);
@@ -89,14 +93,14 @@ macro_rules! expand_combined_late_lint_pass_methods {
     )
 }
 
-/// Combines multiple lints passes into a single lint pass, at compile time,
+/// Combines multiple lints 'passes into a single lint pass, at compile time,
 /// for maximum speed. Each `check_foo` method in `$methods` within this pass
 /// simply calls `check_foo` once per `$pass`. Compare with
 /// `LateLintPassObjects`, which is similar, but combines lint passes at
 /// runtime.
 #[macro_export]
 macro_rules! declare_combined_late_lint_pass {
-    ([$v:vis $name:ident, [$($pass:ident: $constructor:expr,)*]], $methods:tt) => (
+    ([$v:vis $name:ident ($persist: literal) [$($pass:ident: $constructor:expr,)*]], $methods:tt) => (
         #[allow(non_snake_case)]
         $v struct $name {
             $($pass: $pass,)*
@@ -126,6 +130,10 @@ macro_rules! declare_combined_late_lint_pass {
                 panic!()
             }
             fn get_lints(&self) -> LintVec {
+                panic!()
+            }
+
+            fn persistence(&self) -> bool {
                 panic!()
             }
         }
@@ -213,7 +221,7 @@ macro_rules! expand_combined_early_lint_pass_methods {
 /// runtime.
 #[macro_export]
 macro_rules! declare_combined_early_lint_pass {
-    ([$v:vis $name:ident, [$($pass:ident: $constructor:expr,)*]], $methods:tt) => (
+    ([$v:vis $name:ident ($persist: literal) [$($pass:ident: $constructor:expr,)*]], $methods:tt) => (
         #[allow(non_snake_case)]
         $v struct $name {
             $($pass: $pass,)*
@@ -243,6 +251,10 @@ macro_rules! declare_combined_early_lint_pass {
                 panic!()
             }
             fn get_lints(&self) -> LintVec {
+                panic!()
+            }
+
+            fn persistence(&self) -> bool {
                 panic!()
             }
         }

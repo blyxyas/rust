@@ -691,7 +691,7 @@ impl<'tcx> LateContext<'tcx> {
             // Drop the lock, later reaquired
             drop(read_lock);
             self.enclosing_body.map(|body| {
-                let write_lock = self.cached_typeck_results.write();
+                let mut write_lock = self.cached_typeck_results.write();
                 let typeck_results = self.tcx.typeck_body(body);
                 *write_lock = Some(typeck_results);
             });

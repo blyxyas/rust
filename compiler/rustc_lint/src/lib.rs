@@ -153,7 +153,7 @@ fn lint_mod(tcx: TyCtxt<'_>, module_def_id: LocalModDefId) {
 early_lint_methods!(
     declare_combined_early_lint_pass,
     [
-        pub BuiltinCombinedPreExpansionLintPass,
+        pub BuiltinCombinedPreExpansionLintPass (false) // NON PERSISTENT
         [
             KeywordIdents: KeywordIdents,
         ]
@@ -163,17 +163,14 @@ early_lint_methods!(
 early_lint_methods!(
     declare_combined_early_lint_pass,
     [
-        pub BuiltinCombinedEarlyLintPass,
+        pub BuiltinCombinedEarlyLintPass (false) // NON PERSISTENT
         [
-            UnusedParens: UnusedParens::default(),
             UnusedBraces: UnusedBraces,
             UnusedImportBraces: UnusedImportBraces,
             UnsafeCode: UnsafeCode,
             SpecialModuleName: SpecialModuleName,
             AnonymousParameters: AnonymousParameters,
-            EllipsisInclusiveRangePatterns: EllipsisInclusiveRangePatterns::default(),
             NonCamelCaseTypes: NonCamelCaseTypes,
-            DeprecatedAttr: DeprecatedAttr::default(),
             WhileTrue: WhileTrue,
             NonAsciiIdents: NonAsciiIdents,
             HiddenUnicodeCodepoints: HiddenUnicodeCodepoints,
@@ -187,10 +184,22 @@ early_lint_methods!(
     ]
 );
 
+early_lint_methods!(
+    declare_combined_early_lint_pass,
+    [
+        pub BuiltinPersistentCombinedEarlyLintPass (true)// PERSISTENT
+        [
+            UnusedParens: UnusedParens::default(),
+            EllipsisInclusiveRangePatterns: EllipsisInclusiveRangePatterns::default(),
+            DeprecatedAttr: DeprecatedAttr::default(),
+        ]
+    ]
+);
+
 late_lint_methods!(
     declare_combined_late_lint_pass,
     [
-        BuiltinCombinedModuleLateLintPass,
+        BuiltinCombinedModuleLateLintPass (true)
         [
             ForLoopsOverFallibles: ForLoopsOverFallibles,
             DefaultCouldBeDerived: DefaultCouldBeDerived::default(),
@@ -244,6 +253,66 @@ late_lint_methods!(
             NonLocalDefinitions: NonLocalDefinitions::default(),
             ImplTraitOvercaptures: ImplTraitOvercaptures,
             IfLetRescope: IfLetRescope::default(),
+            StaticMutRefs: StaticMutRefs,
+            UnqualifiedLocalImports: UnqualifiedLocalImports,
+        ]
+    ]
+);
+
+late_lint_methods!(
+    declare_combined_late_lint_pass,
+    [
+        NonPersistentLateLintPass (false)
+        [
+            ForLoopsOverFallibles: ForLoopsOverFallibles,
+            DerefIntoDynSupertrait: DerefIntoDynSupertrait,
+            DropForgetUseless: DropForgetUseless,
+            ImproperCTypesDeclarations: ImproperCTypesDeclarations,
+            ImproperCTypesDefinitions: ImproperCTypesDefinitions,
+            InvalidFromUtf8: InvalidFromUtf8,
+            VariantSizeDifferences: VariantSizeDifferences,
+            PathStatements: PathStatements,
+            LetUnderscore: LetUnderscore,
+            InvalidReferenceCasting: InvalidReferenceCasting,
+            // Depends on referenced function signatures in expressions
+            UnusedResults: UnusedResults,
+            UnitBindings: UnitBindings,
+            NonUpperCaseGlobals: NonUpperCaseGlobals,
+            NonShorthandFieldPatterns: NonShorthandFieldPatterns,
+            UnusedAllocation: UnusedAllocation,
+            // Depends on types used in type definitions
+            MissingCopyImplementations: MissingCopyImplementations,
+            // Depends on referenced function signatures in expressions
+            PtrNullChecks: PtrNullChecks,
+            MutableTransmutes: MutableTransmutes,
+            TypeAliasBounds: TypeAliasBounds,
+            TrivialConstraints: TrivialConstraints,
+            TypeLimits: TypeLimits::new(),
+            NonSnakeCase: NonSnakeCase,
+            InvalidNoMangleItems: InvalidNoMangleItems,
+            // Depends on effective visibilities
+            UnreachablePub: UnreachablePub,
+            ExplicitOutlivesRequirements: ExplicitOutlivesRequirements,
+            InvalidValue: InvalidValue,
+            DerefNullPtr: DerefNullPtr,
+            UnstableFeatures: UnstableFeatures,
+            UngatedAsyncFnTrackCaller: UngatedAsyncFnTrackCaller,
+            ShadowedIntoIter: ShadowedIntoIter,
+            DropTraitConstraints: DropTraitConstraints,
+            DanglingPointers: DanglingPointers,
+            NonPanicFmt: NonPanicFmt,
+            NoopMethodCall: NoopMethodCall,
+            EnumIntrinsicsNonEnums: EnumIntrinsicsNonEnums,
+            InvalidAtomicOrdering: InvalidAtomicOrdering,
+            AsmLabels: AsmLabels,
+            OpaqueHiddenInferredBound: OpaqueHiddenInferredBound,
+            MultipleSupertraitUpcastable: MultipleSupertraitUpcastable,
+            MapUnitFn: MapUnitFn,
+            MissingDebugImplementations: MissingDebugImplementations,
+            MissingDoc: MissingDoc,
+            AsyncClosureUsage: AsyncClosureUsage,
+            AsyncFnInTrait: AsyncFnInTrait,
+            ImplTraitOvercaptures: ImplTraitOvercaptures,
             StaticMutRefs: StaticMutRefs,
             UnqualifiedLocalImports: UnqualifiedLocalImports,
         ]

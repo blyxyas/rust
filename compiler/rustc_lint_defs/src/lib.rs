@@ -1020,18 +1020,23 @@ macro_rules! declare_tool_lint {
 
 pub type LintVec = Vec<&'static Lint>;
 
-pub trait LintPass<const PERSISTENT: bool = true> {
+pub trait LintPass {
     fn name(&self) -> &'static str;
     fn get_lints(&self) -> LintVec;
+    fn persistence(&self) -> bool;
 }
 
 /// Implements `LintPass for $ty` with the given list of `Lint` statics.
 #[macro_export]
 macro_rules! impl_lint_pass {
     ($ty:ty => [$($lint:expr),* $(,)?]) => {
-        impl $crate::LintPass<{ size_of::<$ty>() == 0 }> for $ty {
+        impl $crate::LintPass for $ty {
             fn name(&self) -> &'static str { stringify!($ty) }
             fn get_lints(&self) -> $crate::LintVec { vec![$($lint),*] }
+            #[inline]
+            fn persistence(&self) -> bool {
+                size_of::<$ty>() != 0
+            }
         }
         impl $ty {
             #[allow(unused)]
