@@ -66,8 +66,9 @@ pub fn parse_meta<'a>(psess: &'a ParseSess, attr: &Attribute) -> PResult<'a, Met
             AttrArgs::Empty => MetaItemKind::Word,
             AttrArgs::Delimited(DelimArgs { dspan, delim, tokens }) => {
                 check_meta_bad_delim(psess, *dspan, *delim);
-                let nmis =
-                    parse_in(psess, tokens.clone(), "meta list", |p| p.parse_meta_seq_top())?;
+                let nmis = parse_in(psess, tokens.clone(), "meta list", |p| {
+                    p.parse_meta_seq_top(attr.span.lo().0)
+                })?; // FIXME: START_POS
                 MetaItemKind::List(nmis)
             }
             AttrArgs::Eq { expr, .. } => {

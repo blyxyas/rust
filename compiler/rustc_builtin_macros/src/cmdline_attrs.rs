@@ -18,7 +18,8 @@ pub fn inject(krate: &mut ast::Crate, psess: &ParseSess, attrs: &[String]) {
                 None,
             )?;
             parse_in(psess, tokens, "<crate attribute>", |p| {
-                p.parse_attribute(InnerAttrPolicy::Permitted)
+                p.parse_attribute(InnerAttrPolicy::Permitted, 0) // inner attribute at the first
+                // byte
             })
             .map_err(|e| vec![e])
         };

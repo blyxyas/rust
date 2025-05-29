@@ -259,6 +259,7 @@ impl<'a> Parser<'a> {
                 break;
             }
         }
+
         Ok(params)
     }
 

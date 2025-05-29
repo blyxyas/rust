@@ -2,6 +2,7 @@ use std::any::Any;
 use std::ffi::{OsStr, OsString};
 use std::io::{self, BufWriter, Write};
 use std::path::{Path, PathBuf};
+use std::sync::atomic::Ordering;
 use std::sync::{Arc, LazyLock, OnceLock};
 use std::{env, fs, iter};
 
@@ -1054,6 +1055,8 @@ fn analysis(tcx: TyCtxt<'_>, (): ()) {
     run_required_analyses(tcx);
 
     let sess = tcx.sess;
+    dbg!(&sess.psess.known_lints);
+    dbg!(&sess.psess.known_lints_scope.load(Ordering::Relaxed));
 
     // Avoid overwhelming user with errors if borrow checking failed.
     // I'm not sure how helpful this is, to be honest, but it avoids a

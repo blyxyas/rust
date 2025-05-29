@@ -709,7 +709,8 @@ impl SyntaxContext {
     }
 
     #[inline]
-    pub(crate) const fn from_u32(raw: u32) -> SyntaxContext {
+    /// This function is public only for tracking lint scopes.
+    pub const fn from_u32(raw: u32) -> SyntaxContext {
         SyntaxContext(raw)
     }
 

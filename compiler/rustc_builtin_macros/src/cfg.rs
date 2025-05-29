@@ -47,7 +47,7 @@ fn parse_cfg<'a>(
         return Err(cx.dcx().create_err(errors::RequiresCfgPattern { span }));
     }
 
-    let cfg = p.parse_meta_item_inner()?;
+    let cfg = p.parse_meta_item_inner(span.lo().0)?;
 
     let _ = p.eat(exp!(Comma));
 

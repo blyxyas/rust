@@ -1,5 +1,6 @@
 use std::fmt::Write;
 use std::mem;
+use std::sync::atomic::Ordering;
 
 use ast::token::IdentIsRaw;
 use rustc_ast::ast::*;
@@ -128,8 +129,22 @@ impl<'a> Parser<'a> {
     ) -> PResult<'a, Option<Item>> {
         self.recover_vcs_conflict_marker();
         let attrs = self.parse_outer_attributes()?;
+
+        //let known_lints_scope = self.psess.known_lints_scope.load(Ordering::Relaxed);
+        //known_lints_scope.store(known_lints_scope + 1, Ordering::Relaxed);
+
+        self.update_scope(|s| s + 1);
+
         self.recover_vcs_conflict_marker();
-        self.parse_item_common(attrs, true, false, fn_parse_mode, force_collect)
+
+        let ret = self.parse_item_common(attrs, true, false, fn_parse_mode, force_collect);
+
+        //let known_lints_scope = self.psess.known_lints_scope.load(Ordering::Relaxed);
+        //known_lints_scope.store(known_lints_scope + 1, Ordering::Relaxed);
+
+        self.update_scope(|s| s - 1);
+
+        ret
     }
 
     pub(super) fn parse_item_common(
@@ -1583,89 +1598,98 @@ impl<'a> Parser<'a> {
     fn parse_enum_variant(&mut self, span: Span) -> PResult<'a, Option<Variant>> {
         self.recover_vcs_conflict_marker();
         let variant_attrs = self.parse_outer_attributes()?;
+        self.update_scope(|s| s + 1);
         self.recover_vcs_conflict_marker();
         let help = "enum variants can be `Variant`, `Variant = <integer>`, \
                     `Variant(Type, ..., TypeN)` or `Variant { fields: Types }`";
-        self.collect_tokens(None, variant_attrs, ForceCollect::No, |this, variant_attrs| {
-            let vlo = this.token.span;
+        let ret = self
+            .collect_tokens(None, variant_attrs, ForceCollect::No, |this, variant_attrs| {
+                let vlo = this.token.span;
 
-            let vis = this.parse_visibility(FollowedByType::No)?;
-            if !this.recover_nested_adt_item(kw::Enum)? {
-                return Ok((None, Trailing::No, UsePreAttrPos::No));
-            }
-            let ident = this.parse_field_ident("enum", vlo)?;
+                let vis = this.parse_visibility(FollowedByType::No)?;
+                if !this.recover_nested_adt_item(kw::Enum)? {
+                    return Ok((None, Trailing::No, UsePreAttrPos::No));
+                }
+                let ident = this.parse_field_ident("enum", vlo)?;
 
-            if this.token == token::Bang {
-                if let Err(err) = this.unexpected() {
-                    err.with_note(fluent::parse_macro_expands_to_enum_variant).emit();
+                if this.token == token::Bang {
+                    if let Err(err) = this.unexpected() {
+                        err.with_note(fluent::parse_macro_expands_to_enum_variant).emit();
+                    }
+
+                    this.bump();
+                    this.parse_delim_args()?;
+
+                    return Ok((
+                        None,
+                        Trailing::from(this.token == token::Comma),
+                        UsePreAttrPos::No,
+                    ));
                 }
 
-                this.bump();
-                this.parse_delim_args()?;
-
-                return Ok((None, Trailing::from(this.token == token::Comma), UsePreAttrPos::No));
-            }
-
-            let struct_def = if this.check(exp!(OpenBrace)) {
-                // Parse a struct variant.
-                let (fields, recovered) =
-                    match this.parse_record_struct_body("struct", ident.span, false) {
-                        Ok((fields, recovered)) => (fields, recovered),
+                let struct_def = if this.check(exp!(OpenBrace)) {
+                    // Parse a struct variant.
+                    let (fields, recovered) =
+                        match this.parse_record_struct_body("struct", ident.span, false) {
+                            Ok((fields, recovered)) => (fields, recovered),
+                            Err(mut err) => {
+                                if this.token == token::Colon {
+                                    // We handle `enum` to `struct` suggestion in the caller.
+                                    return Err(err);
+                                }
+                                this.eat_to_tokens(&[exp!(CloseBrace)]);
+                                this.bump(); // }
+                                err.span_label(span, "while parsing this enum");
+                                err.help(help);
+                                let guar = err.emit();
+                                (thin_vec![], Recovered::Yes(guar))
+                            }
+                        };
+                    VariantData::Struct { fields, recovered }
+                } else if this.check(exp!(OpenParen)) {
+                    let body = match this.parse_tuple_struct_body() {
+                        Ok(body) => body,
                         Err(mut err) => {
                             if this.token == token::Colon {
                                 // We handle `enum` to `struct` suggestion in the caller.
                                 return Err(err);
                             }
-                            this.eat_to_tokens(&[exp!(CloseBrace)]);
-                            this.bump(); // }
+                            this.eat_to_tokens(&[exp!(CloseParen)]);
+                            this.bump(); // )
                             err.span_label(span, "while parsing this enum");
                             err.help(help);
-                            let guar = err.emit();
-                            (thin_vec![], Recovered::Yes(guar))
+                            err.emit();
+                            thin_vec![]
                         }
                     };
-                VariantData::Struct { fields, recovered }
-            } else if this.check(exp!(OpenParen)) {
-                let body = match this.parse_tuple_struct_body() {
-                    Ok(body) => body,
-                    Err(mut err) => {
-                        if this.token == token::Colon {
-                            // We handle `enum` to `struct` suggestion in the caller.
-                            return Err(err);
-                        }
-                        this.eat_to_tokens(&[exp!(CloseParen)]);
-                        this.bump(); // )
-                        err.span_label(span, "while parsing this enum");
-                        err.help(help);
-                        err.emit();
-                        thin_vec![]
-                    }
+                    VariantData::Tuple(body, DUMMY_NODE_ID)
+                } else {
+                    VariantData::Unit(DUMMY_NODE_ID)
                 };
-                VariantData::Tuple(body, DUMMY_NODE_ID)
-            } else {
-                VariantData::Unit(DUMMY_NODE_ID)
-            };
 
-            let disr_expr =
-                if this.eat(exp!(Eq)) { Some(this.parse_expr_anon_const()?) } else { None };
+                let disr_expr =
+                    if this.eat(exp!(Eq)) { Some(this.parse_expr_anon_const()?) } else { None };
 
-            let vr = ast::Variant {
-                ident,
-                vis,
-                id: DUMMY_NODE_ID,
-                attrs: variant_attrs,
-                data: struct_def,
-                disr_expr,
-                span: vlo.to(this.prev_token.span),
-                is_placeholder: false,
-            };
+                let vr = ast::Variant {
+                    ident,
+                    vis,
+                    id: DUMMY_NODE_ID,
+                    attrs: variant_attrs,
+                    data: struct_def,
+                    disr_expr,
+                    span: vlo.to(this.prev_token.span),
+                    is_placeholder: false,
+                };
 
-            Ok((Some(vr), Trailing::from(this.token == token::Comma), UsePreAttrPos::No))
-        })
-        .map_err(|mut err| {
-            err.help(help);
-            err
-        })
+                Ok((Some(vr), Trailing::from(this.token == token::Comma), UsePreAttrPos::No))
+            })
+            .map_err(|mut err| {
+                err.help(help);
+                err
+            });
+
+        self.update_scope(|s| s - 1);
+        ret
     }
 
     /// Parses `struct Foo { ... }`.
@@ -1825,86 +1849,96 @@ impl<'a> Parser<'a> {
     pub(super) fn parse_tuple_struct_body(&mut self) -> PResult<'a, ThinVec<FieldDef>> {
         // This is the case where we find `struct Foo<T>(T) where T: Copy;`
         // Unit like structs are handled in parse_item_struct function
-        self.parse_paren_comma_seq(|p| {
-            let attrs = p.parse_outer_attributes()?;
-            p.collect_tokens(None, attrs, ForceCollect::No, |p, attrs| {
-                let mut snapshot = None;
-                if p.is_vcs_conflict_marker(&TokenKind::Shl, &TokenKind::Lt) {
-                    // Account for `<<<<<<<` diff markers. We can't proactively error here because
-                    // that can be a valid type start, so we snapshot and reparse only we've
-                    // encountered another parse error.
-                    snapshot = Some(p.create_snapshot_for_diagnostic());
-                }
-                let lo = p.token.span;
-                let vis = match p.parse_visibility(FollowedByType::Yes) {
-                    Ok(vis) => vis,
-                    Err(err) => {
-                        if let Some(ref mut snapshot) = snapshot {
-                            snapshot.recover_vcs_conflict_marker();
-                        }
-                        return Err(err);
+        self.update_scope(|s| s + 1);
+        let ret = self
+            .parse_paren_comma_seq(|p| {
+                let attrs = p.parse_outer_attributes()?;
+                p.collect_tokens(None, attrs, ForceCollect::No, |p, attrs| {
+                    let mut snapshot = None;
+                    if p.is_vcs_conflict_marker(&TokenKind::Shl, &TokenKind::Lt) {
+                        // Account for `<<<<<<<` diff markers. We can't proactively error here because
+                        // that can be a valid type start, so we snapshot and reparse only we've
+                        // encountered another parse error.
+                        snapshot = Some(p.create_snapshot_for_diagnostic());
                     }
-                };
-                // Unsafe fields are not supported in tuple structs, as doing so would result in a
-                // parsing ambiguity for `struct X(unsafe fn())`.
-                let ty = match p.parse_ty() {
-                    Ok(ty) => ty,
-                    Err(err) => {
-                        if let Some(ref mut snapshot) = snapshot {
-                            snapshot.recover_vcs_conflict_marker();
-                        }
-                        return Err(err);
-                    }
-                };
-                let mut default = None;
-                if p.token == token::Eq {
-                    let mut snapshot = p.create_snapshot_for_diagnostic();
-                    snapshot.bump();
-                    match snapshot.parse_expr_anon_const() {
-                        Ok(const_expr) => {
-                            let sp = ty.span.shrink_to_hi().to(const_expr.value.span);
-                            p.psess.gated_spans.gate(sym::default_field_values, sp);
-                            p.restore_snapshot(snapshot);
-                            default = Some(const_expr);
-                        }
+                    let lo = p.token.span;
+                    let vis = match p.parse_visibility(FollowedByType::Yes) {
+                        Ok(vis) => vis,
                         Err(err) => {
-                            err.cancel();
+                            if let Some(ref mut snapshot) = snapshot {
+                                snapshot.recover_vcs_conflict_marker();
+                            }
+                            return Err(err);
+                        }
+                    };
+                    // Unsafe fields are not supported in tuple structs, as doing so would result in a
+                    // parsing ambiguity for `struct X(unsafe fn())`.
+                    let ty = match p.parse_ty() {
+                        Ok(ty) => ty,
+                        Err(err) => {
+                            if let Some(ref mut snapshot) = snapshot {
+                                snapshot.recover_vcs_conflict_marker();
+                            }
+                            return Err(err);
+                        }
+                    };
+                    let mut default = None;
+                    if p.token == token::Eq {
+                        let mut snapshot = p.create_snapshot_for_diagnostic();
+                        snapshot.bump();
+                        match snapshot.parse_expr_anon_const() {
+                            Ok(const_expr) => {
+                                let sp = ty.span.shrink_to_hi().to(const_expr.value.span);
+                                p.psess.gated_spans.gate(sym::default_field_values, sp);
+                                p.restore_snapshot(snapshot);
+                                default = Some(const_expr);
+                            }
+                            Err(err) => {
+                                err.cancel();
+                            }
                         }
                     }
-                }
 
-                Ok((
-                    FieldDef {
-                        span: lo.to(ty.span),
-                        vis,
-                        safety: Safety::Default,
-                        ident: None,
-                        id: DUMMY_NODE_ID,
-                        ty,
-                        default,
-                        attrs,
-                        is_placeholder: false,
-                    },
-                    Trailing::from(p.token == token::Comma),
-                    UsePreAttrPos::No,
-                ))
+                    // self.update_scope(|s| s - 1);
+
+                    Ok((
+                        FieldDef {
+                            span: lo.to(ty.span),
+                            vis,
+                            safety: Safety::Default,
+                            ident: None,
+                            id: DUMMY_NODE_ID,
+                            ty,
+                            default,
+                            attrs,
+                            is_placeholder: false,
+                        },
+                        Trailing::from(p.token == token::Comma),
+                        UsePreAttrPos::No,
+                    ))
+                })
             })
-        })
-        .map(|(r, _)| r)
+            .map(|(r, _)| r);
+        self.update_scope(|s| s - 1);
+        ret
     }
 
     /// Parses an element of a struct declaration.
     fn parse_field_def(&mut self, adt_ty: &str) -> PResult<'a, FieldDef> {
         self.recover_vcs_conflict_marker();
         let attrs = self.parse_outer_attributes()?;
+        self.update_scope(|s| s + 1);
         self.recover_vcs_conflict_marker();
-        self.collect_tokens(None, attrs, ForceCollect::No, |this, attrs| {
+        let ret = self.collect_tokens(None, attrs, ForceCollect::No, |this, attrs| {
             let lo = this.token.span;
             let vis = this.parse_visibility(FollowedByType::No)?;
             let safety = this.parse_unsafe_field();
             this.parse_single_struct_field(adt_ty, lo, vis, safety, attrs)
                 .map(|field| (field, Trailing::No, UsePreAttrPos::No))
-        })
+        });
+
+        self.update_scope(|s| s - 1);
+        ret
     }
 
     /// Parses a structure field declaration.
@@ -2392,6 +2426,14 @@ pub(crate) struct FnParseMode {
 
 /// Parsing of functions and methods.
 impl<'a> Parser<'a> {
+    /// Do an arbitrary operation on `ParseSess`' known_lints_scope
+    /// (normally increment it by one or decrease it by one)
+    #[inline]
+    fn update_scope<F: FnOnce(usize) -> usize>(&mut self, f: F) {
+        let current_scope = self.psess.known_lints_scope.load(Ordering::Relaxed);
+        self.psess.known_lints_scope.store(f(current_scope), Ordering::Relaxed);
+    }
+
     /// Parse a function starting from the front matter (`const ...`) to the body `{ ... }` or `;`.
     fn parse_fn(
         &mut self,
@@ -2930,8 +2972,10 @@ impl<'a> Parser<'a> {
         recover_arg_parse: bool,
     ) -> PResult<'a, Param> {
         let lo = self.token.span;
+
         let attrs = self.parse_outer_attributes()?;
-        self.collect_tokens(None, attrs, ForceCollect::No, |this, attrs| {
+        self.update_scope(|s| s + 1);
+        let ret = self.collect_tokens(None, attrs, ForceCollect::No, |this, attrs| {
             // Possibly parse `self`. Recover if we parsed it and it wasn't allowed here.
             if let Some(mut param) = this.parse_self_param()? {
                 param.attrs = attrs;
@@ -3013,7 +3057,9 @@ impl<'a> Parser<'a> {
                 Trailing::No,
                 UsePreAttrPos::No,
             ))
-        })
+        });
+        self.update_scope(|s| s - 1);
+        ret
     }
 
     /// Returns the parsed optional self parameter and whether a self shortcut was used.

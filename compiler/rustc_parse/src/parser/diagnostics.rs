@@ -865,7 +865,8 @@ impl<'a> Parser<'a> {
                 && let [segment] = &attr_kind.item.path.segments[..]
                 && segment.ident.name == sym::cfg
                 && let Some(args_span) = attr_kind.item.args.span()
-                && let next_attr = match snapshot.parse_attribute(InnerAttrPolicy::Forbidden(None))
+                && let next_attr = match snapshot
+                    .parse_attribute(InnerAttrPolicy::Forbidden(None), attr_span.lo().0)
                 {
                     Ok(next_attr) => next_attr,
                     Err(inner_err) => {

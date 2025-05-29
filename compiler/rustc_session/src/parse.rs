@@ -3,6 +3,7 @@
 
 use std::str;
 use std::sync::Arc;
+use std::sync::atomic::AtomicUsize;
 
 use rustc_ast::attr::AttrIdGenerator;
 use rustc_ast::node_id::NodeId;
@@ -217,6 +218,8 @@ pub struct ParseSess {
     pub bad_unicode_identifiers: Lock<FxIndexMap<Symbol, Vec<Span>>>,
     source_map: Arc<SourceMap>,
     pub buffered_lints: Lock<Vec<BufferedEarlyLint>>,
+    pub known_lints: Lock<FxIndexMap<Span, (bool, Symbol)>>,
+    pub known_lints_scope: AtomicUsize,
     /// Contains the spans of block expressions that could have been incomplete based on the
     /// operation token that followed it, but that the parser cannot identify without further
     /// analysis.
@@ -260,6 +263,8 @@ impl ParseSess {
             bad_unicode_identifiers: Lock::new(Default::default()),
             source_map,
             buffered_lints: Lock::new(vec![]),
+            known_lints: Lock::new(FxIndexMap::default()),
+            known_lints_scope: AtomicUsize::new(0),
             ambiguous_block_expr_parse: Lock::new(Default::default()),
             gated_spans: GatedSpans::default(),
             symbol_gallery: SymbolGallery::default(),

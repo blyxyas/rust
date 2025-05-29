@@ -174,7 +174,13 @@ impl<'a> Parser<'a> {
                 self.collect_tokens_no_attrs(|this| this.parse_path(PathStyle::Type))?
             ))),
             NonterminalKind::Meta => {
-                Ok(ParseNtResult::Meta(P(self.parse_attr_item(ForceCollect::Yes)?)))
+                Ok(ParseNtResult::Meta(P(
+                    self.parse_attr_item(ForceCollect::Yes, self.token.span.lo().0)?
+                ))) // FIXME WE
+                // MAYBE
+                // SHOULD USE
+                // A
+                // START_POS
             }
             NonterminalKind::Vis => {
                 Ok(ParseNtResult::Vis(P(self
