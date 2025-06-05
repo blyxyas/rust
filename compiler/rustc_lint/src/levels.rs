@@ -4,8 +4,8 @@ use rustc_data_structures::fx::{FxHashSet, FxIndexMap};
 use rustc_data_structures::unord::UnordSet;
 use rustc_errors::{Diag, LintDiagnostic, MultiSpan};
 use rustc_feature::{Features, GateIssue};
-use rustc_hir::HirId;
-use rustc_hir::intravisit::{self, Visitor};
+use rustc_hir::{HirId, Mod, def_id::LocalDefId, FnDecl, BodyId, Expr};
+use rustc_hir::intravisit::{self, Visitor, FnKind};
 use rustc_index::IndexVec;
 use rustc_middle::bug;
 use rustc_middle::hir::nested_filter;
@@ -23,6 +23,7 @@ use rustc_session::lint::builtin::{
 use rustc_session::lint::{Level, Lint, LintExpectationId, LintId};
 use rustc_span::{DUMMY_SP, Span, Symbol, sym};
 use tracing::{debug, instrument};
+// use smallvec::SmallVec;
 use {rustc_ast as ast, rustc_hir as hir};
 
 use crate::builtin::MISSING_DOCS;
@@ -39,6 +40,8 @@ use crate::lints::{
     RenamedLintFromCommandLine, RenamedLintSuggestion, UnknownLint, UnknownLintFromCommandLine,
     UnknownLintSuggestion,
 };
+
+use std::ops::ControlFlow;
 
 /// Collection of lint levels for the whole crate.
 /// This is used by AST-based lints, which do not
@@ -116,7 +119,96 @@ impl LintLevelSets {
     }
 }
 
+#[allow(unreachable_code)]
 fn lints_that_dont_need_to_run(tcx: TyCtxt<'_>, (): ()) -> UnordSet<LintId> {
+    let _dont_need_to_run: Vec<i32> = Vec::new();
+    let _root_map = tcx.shallow_lint_levels_on(hir::CRATE_OWNER_ID);
+
+    let _store = unerased_lint_store(&tcx.sess);
+
+    struct V<'tcx> { tcx: TyCtxt<'tcx>, target_span: Span, _target_scope: usize, current_scope: usize, stmt_expr_attributes: bool}
+    impl<'v> intravisit::Visitor<'v> for V<'v> {
+        type Result = ControlFlow<HirId>;
+        type NestedFilter = rustc_middle::hir::nested_filter::All;
+
+        fn maybe_tcx(&mut self) -> Self::MaybeTyCtxt {
+            self.tcx
+        }
+
+        fn visit_mod(&mut self, m: &'v Mod<'_>, s: Span, _n: HirId) -> ControlFlow<HirId> {
+            if s.overlaps_or_adjacent(self.target_span) {
+                dbg!("THERE'S A TARGETED_SPAN IN THIS MOD", &self.target_span, &s);
+                self.current_scope += 1;
+                intravisit::walk_mod(self, m)?;
+            };
+            ControlFlow::Continue(())
+        }
+
+        fn visit_fn(&mut self, _fk: FnKind<'v>, _fd: &'v FnDecl<'v>, _body_id: BodyId, s: Span, _def_id: LocalDefId) -> ControlFlow<HirId> {
+            // We are guaranteed to stop at the first item
+            if s.lo() >= self.target_span.lo() {
+                dbg!(&s, &self.target_span);
+
+                if s.overlaps_or_adjacent(self.target_span) {
+                    dbg!("FFFFFFFFFF");
+                    // The attribute is inside this function
+                    intravisit::walk_fn(self, _fk, _fd, _body_id, _def_id)?;
+                } else {
+                    // The attribute is applying to the whole function
+                    dbg!("@@@@");
+                    return ControlFlow::Break(self.tcx.local_def_id_to_hir_id(_def_id));
+                    // return ControlFlow::Break(());
+                }
+            }
+            ControlFlow::Continue(())
+        }
+
+        // NOTE: Make sure that, as more items can have attributes, remove them from this list
+
+        fn visit_expr(&mut self, expr: &'v Expr<'v>) -> ControlFlow<HirId> {
+            dbg!("!!!!!!!!!!!!!!!!!!");
+            if !self.stmt_expr_attributes {
+                return ControlFlow::Continue(());
+            } else {
+                if expr.span.lo() > self.target_span.lo() {
+                    // First expression with a higher span found!
+                    panic!("@");
+                    return ControlFlow::Break(expr.hir_id);
+                }
+            }
+            ControlFlow::Continue(())
+        }
+
+        // Usually for inner attributes
+        fn visit_attribute(&mut self, attribute: &'v rustc_hir::Attribute) -> ControlFlow<HirId> {
+            dbg!("@@@@@@@@@@@@@@@");
+            if attribute.span().hi() == self.target_span.hi() {
+                dbg!(attribute.style());
+                panic!("@");
+                return ControlFlow::Break(rustc_hir::hir_id::CRATE_HIR_ID);
+            }
+            ControlFlow::Continue(())
+        }
+    }
+
+    let known_lints = tcx.sess.psess.known_lints.lock();
+    // Avoid overhead of checking for features in every cycle
+
+    for (span, (_to_run, _lint_name)) in known_lints.iter() {
+        let mut v = V {tcx, target_span: *span, _target_scope: 0, current_scope: 0, stmt_expr_attributes: tcx.features().stmt_expr_attributes()};
+
+        dbg!(&span);
+        if let ControlFlow::Break(x) = tcx.hir_walk_toplevel_module(&mut v) {
+            dbg!("TARGETED:", tcx.hir_span(x));
+        } else {
+            dbg!("TARGETED_NOT_FOUND:", span);
+        }
+    }
+
+    return Default::default();
+
+    /////////////////////////////////////////////// FIXME: REMOVE THIS BELOW
+
     let store = unerased_lint_store(&tcx.sess);
     let root_map = tcx.shallow_lint_levels_on(hir::CRATE_OWNER_ID);
 
@@ -124,26 +216,26 @@ fn lints_that_dont_need_to_run(tcx: TyCtxt<'_>, (): ()) -> UnordSet<LintId> {
         .get_lints()
         .into_iter()
         .filter(|lint| {
-            // Lints that show up in future-compat reports must always be run.
-            let has_future_breakage =
-                lint.future_incompatible.is_some_and(|fut| fut.reason.has_future_breakage());
-            !has_future_breakage && !lint.eval_always
-        })
-        .filter(|lint| {
-            let lint_level =
-                root_map.lint_level_id_at_node(tcx, LintId::of(lint), hir::CRATE_HIR_ID);
-            // Only include lints that are allowed at crate root or by default.
-            matches!(lint_level.level, Level::Allow)
-                || (matches!(lint_level.src, LintLevelSource::Default)
-                    && lint.default_level(tcx.sess.edition()) == Level::Allow)
-        })
-        .map(|lint| LintId::of(*lint))
-        .collect();
+           // Lints that show up in future-compat reports must always be run.
+           let has_future_breakage =
+               lint.future_incompatible.is_some_and(|fut| fut.reason.has_future_breakage());
+           !has_future_breakage && !lint.eval_always
+       })
+       .filter(|lint| {
+           let lint_level =
+               root_map.lint_level_id_at_node(tcx, LintId::of(lint), hir::CRATE_HIR_ID);
+           // Only include lints that are allowed at crate root or by default.
+          matches!(lint_level.level, Level::Allow)
+              || (matches!(lint_level.src, LintLevelSource::Default)
+                  && lint.default_level(tcx.sess.edition()) == Level::Allow)
+      })
+     .map(|lint| LintId::of(*lint))
+     .collect();
 
     for owner in tcx.hir_crate_items(()).owners() {
         let map = tcx.shallow_lint_levels_on(owner);
 
-        // All lints that appear with a non-allow level must be run.
+       // All lints that appear with a non-allow level must be run.
         for (_, specs) in map.specs.iter() {
             for (lint, level_and_source) in specs.iter() {
                 if !matches!(level_and_source.level, Level::Allow) {
@@ -153,7 +245,7 @@ fn lints_that_dont_need_to_run(tcx: TyCtxt<'_>, (): ()) -> UnordSet<LintId> {
         }
     }
 
-    dont_need_to_run.into()
+    Default::default()
 }
 
 #[instrument(level = "trace", skip(tcx), ret)]

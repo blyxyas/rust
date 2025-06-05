@@ -293,7 +293,7 @@ impl<'a> Parser<'a> {
     ///     PATH
     ///     PATH `=` UNSUFFIXED_LIT
     /// The delimiters or `=` are still put into the resulting token stream.
-    pub fn parse_attr_item(&mut self, force_collect: ForceCollect, start_pos: u32) -> PResult<'a, ast::AttrItem> {
+    pub fn parse_attr_item(&mut self, force_collect: ForceCollect, _start_pos: u32 /* FIXME: Remove this */) -> PResult<'a, ast::AttrItem> {
         if let Some(item) = self.eat_metavar_seq_with_matcher(
             |mv_kind| matches!(mv_kind, MetaVarKind::Meta { .. }),
             |this| this.parse_attr_item(force_collect, start_pos),
@@ -325,7 +325,7 @@ impl<'a> Parser<'a> {
                     let Some(from_tokens) = MetaItemKind::list_from_tokens(delim_args.tokens.clone()) else { todo!() };
                 for metaitem in from_tokens {
                     let Some(metaitem_name) = metaitem.name() else {continue;};
-                    known_lints.insert(metaitem.span().with_lo(BytePos(start_pos)).with_ctxt(SyntaxContext::from_u32(self.psess.known_lints_scope.load(Ordering::Relaxed) as u32 /* FIXME */)), (to_run, metaitem_name));
+                    known_lints.insert(metaitem.span().with_ctxt(SyntaxContext::from_u32(self.psess.known_lints_scope.load(Ordering::Relaxed) as u32 /* FIXME */)), (to_run, metaitem_name));
                     }
                 };
 

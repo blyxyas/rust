@@ -355,6 +355,7 @@ pub fn late_lint_mod<'tcx, T: LateLintPass<'tcx> + 'tcx>(
     // `RuntimeCombinedLateLintPass`.
     let store = unerased_lint_store(tcx.sess);
 
+
     if store.late_module_passes.is_empty() {
         late_lint_mod_inner(tcx, module_def_id, context, builtin_lints);
     } else {
