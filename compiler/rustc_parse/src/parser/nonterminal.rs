@@ -175,12 +175,8 @@ impl<'a> Parser<'a> {
             ))),
             NonterminalKind::Meta => {
                 Ok(ParseNtResult::Meta(P(
-                    self.parse_attr_item(ForceCollect::Yes, self.token.span.lo().0)?
-                ))) // FIXME WE
-                // MAYBE
-                // SHOULD USE
-                // A
-                // START_POS
+                    self.parse_attr_item(ForceCollect::Yes, false)?
+                )))
             }
             NonterminalKind::Vis => {
                 Ok(ParseNtResult::Vis(P(self

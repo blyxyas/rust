@@ -19,7 +19,7 @@ use std::sync::Arc;
 
 use rustc_ast as ast;
 use rustc_ast::tokenstream::TokenStream;
-use rustc_ast::{AttrItem, Attribute, MetaItemInner, token};
+use rustc_ast::{AttrItem, Attribute, MetaItemInner, AttrStyle, token};
 use rustc_ast_pretty::pprust;
 use rustc_errors::{Diag, EmissionGuarantee, FatalError, PResult, pluralize};
 use rustc_session::parse::ParseSess;
@@ -229,9 +229,8 @@ pub fn parse_cfg_attr(
         {
             crate::validate_attr::check_cfg_attr_bad_delim(psess, dspan, delim);
             match parse_in(psess, tokens.clone(), "`cfg_attr` input", |p| {
-                p.parse_cfg_attr(cfg_attr.span.lo().0)
+                p.parse_cfg_attr(cfg_attr.style() == AttrStyle::Inner)
             }) {
-                // START_POS?????
                 Ok(r) => return Some(r),
                 Err(e) => {
                     e.with_help(format!("the valid syntax is `{CFG_ATTR_GRAMMAR_HELP}`"))

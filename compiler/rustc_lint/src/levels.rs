@@ -189,6 +189,14 @@ fn lints_that_dont_need_to_run(tcx: TyCtxt<'_>, (): ()) -> UnordSet<LintId> {
             }
             ControlFlow::Continue(())
         }
+
+        fn visit_associated_item_kind(
+            &mut self,
+            kind: &'v AssocItemKind
+        ) -> ControlFlow<HirId> {
+            // Miau
+            ControlFlow::Continue(())
+        }
     }
 
     let known_lints = tcx.sess.psess.known_lints.lock();
@@ -196,6 +204,11 @@ fn lints_that_dont_need_to_run(tcx: TyCtxt<'_>, (): ()) -> UnordSet<LintId> {
 
     for (span, (_to_run, _lint_name)) in known_lints.iter() {
         let mut v = V {tcx, target_span: *span, _target_scope: 0, current_scope: 0, stmt_expr_attributes: tcx.features().stmt_expr_attributes()};
+
+        if span.is_empty() {
+            dbg!("TARGETED: CRATE");
+            continue;
+        }
 
         dbg!(&span);
         if let ControlFlow::Break(x) = tcx.hir_walk_toplevel_module(&mut v) {

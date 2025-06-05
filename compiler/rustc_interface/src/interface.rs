@@ -71,7 +71,7 @@ pub(crate) fn parse_cfg(dcx: DiagCtxtHandle<'_>, cfgs: Vec<String>) -> Cfg {
             }
 
             match new_parser_from_source_str(&psess, filename, s.to_string()) {
-                Ok(mut parser) => match parser.parse_meta_item(AllowLeadingUnsafe::No, 0) {
+                Ok(mut parser) => match parser.parse_meta_item(AllowLeadingUnsafe::No, true) { // temporary????
                     Ok(meta_item) if parser.token == token::Eof => {
                         if meta_item.path.segments.len() != 1 {
                             error!("argument key must be an identifier");
@@ -178,7 +178,7 @@ pub(crate) fn parse_check_cfg(dcx: DiagCtxtHandle<'_>, specs: Vec<String>) -> Ch
         };
 
         let meta_item =
-            match parser.parse_meta_item(AllowLeadingUnsafe::No, parser.token.span.lo().0) {
+            match parser.parse_meta_item(AllowLeadingUnsafe::No, true) { /* temporary? */
                 Ok(meta_item) if parser.token == token::Eof => meta_item,
                 Ok(..) => expected_error(),
                 Err(err) => {

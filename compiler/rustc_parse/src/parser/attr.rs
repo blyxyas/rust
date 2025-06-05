@@ -18,7 +18,7 @@ use super::{
 use crate::{errors, exp, fluent_generated as fluent};
 
 // Public for rustfmt usage
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum InnerAttrPolicy {
     Permitted,
     Forbidden(Option<InnerAttrForbiddenReason>),
@@ -49,7 +49,6 @@ impl<'a> Parser<'a> {
         let mut outer_attrs = ast::AttrVec::new();
         let mut just_parsed_doc_comment = false;
         let start_pos = self.num_bump_calls;
-
         loop {
             let attr = if self.check(exp!(Pound)) {
                 let prev_outer_attr_sp = outer_attrs.last().map(|attr: &Attribute| attr.span);
@@ -65,7 +64,7 @@ impl<'a> Parser<'a> {
                 };
                 let inner_parse_policy = InnerAttrPolicy::Forbidden(inner_error_reason);
                 just_parsed_doc_comment = false;
-                Some(self.parse_attribute(inner_parse_policy, start_pos)?)
+                Some(self.parse_attribute(inner_parse_policy)?)
             } else if let token::DocComment(comment_kind, attr_style, data) = self.token.kind {
                 if attr_style != ast::AttrStyle::Outer {
                     let span = self.token.span;
@@ -124,7 +123,6 @@ impl<'a> Parser<'a> {
     pub fn parse_attribute(
         &mut self,
         inner_parse_policy: InnerAttrPolicy,
-        _start_pos: u32, // FIXME WIP: REMOVE THIS LATER
     ) -> PResult<'a, ast::Attribute> {
         debug!(
             "parse_attribute: inner_parse_policy={:?} self.token={:?}",
@@ -156,7 +154,7 @@ impl<'a> Parser<'a> {
                 );
             }
             bracket_res?;
-            let item = this.parse_attr_item(ForceCollect::No, lo.lo().0)?;
+            let item = this.parse_attr_item(ForceCollect::No, style == ast::AttrStyle::Inner)?;
             this.expect(exp!(CloseBracket))?;
             let attr_sp = lo.to(this.prev_token.span);
 
@@ -194,7 +192,7 @@ impl<'a> Parser<'a> {
         loop {
             // skip any other attributes, we want the item
             if snapshot.token == token::Pound {
-                if let Err(err) = snapshot.parse_attribute(InnerAttrPolicy::Permitted, span.lo().0) {
+                if let Err(err) = snapshot.parse_attribute(InnerAttrPolicy::Permitted) {
                     err.cancel();
                     return Some(replacement_span);
                 }
@@ -293,15 +291,15 @@ impl<'a> Parser<'a> {
     ///     PATH
     ///     PATH `=` UNSUFFIXED_LIT
     /// The delimiters or `=` are still put into the resulting token stream.
-    pub fn parse_attr_item(&mut self, force_collect: ForceCollect, _start_pos: u32 /* FIXME: Remove this */) -> PResult<'a, ast::AttrItem> {
+    pub fn parse_attr_item(&mut self, force_collect: ForceCollect, inner_policy: bool) -> PResult<'a, ast::AttrItem> {
         if let Some(item) = self.eat_metavar_seq_with_matcher(
             |mv_kind| matches!(mv_kind, MetaVarKind::Meta { .. }),
-            |this| this.parse_attr_item(force_collect, start_pos),
+            |this| this.parse_attr_item(force_collect, inner_policy),
         ) {
             return Ok(item);
         }
-
         let mut known_lints = FxIndexMap::default();
+
         // Attr items don't have attributes.
         let ret = self.collect_tokens(None, AttrWrapper::empty(), force_collect, |this, _empty_attrs| {
             let is_unsafe = this.eat_keyword(exp!(Unsafe));
@@ -325,7 +323,13 @@ impl<'a> Parser<'a> {
                     let Some(from_tokens) = MetaItemKind::list_from_tokens(delim_args.tokens.clone()) else { todo!() };
                 for metaitem in from_tokens {
                     let Some(metaitem_name) = metaitem.name() else {continue;};
-                    known_lints.insert(metaitem.span().with_ctxt(SyntaxContext::from_u32(self.psess.known_lints_scope.load(Ordering::Relaxed) as u32 /* FIXME */)), (to_run, metaitem_name));
+                    let mut metaitem_span = metaitem.span().with_ctxt(SyntaxContext::from_u32(self.psess.known_lints_scope.load(Ordering::Relaxed) as u32 /* FIXME */));
+
+                    if inner_policy {
+                        metaitem_span = metaitem_span.shrink_to_lo();
+                    };
+
+                    known_lints.insert(metaitem_span, (to_run, metaitem_name));
                     }
                 };
 
@@ -339,6 +343,7 @@ impl<'a> Parser<'a> {
                     save_lint(true);
                 }
             };
+
             if is_unsafe {
                 this.expect(exp!(CloseParen))?;
             }
@@ -361,11 +366,11 @@ impl<'a> Parser<'a> {
     /// Matches `inner_attrs*`.
     pub fn parse_inner_attributes(&mut self) -> PResult<'a, ast::AttrVec> {
         let mut attrs = ast::AttrVec::new();
+        let start_pos = self.num_bump_calls;
         loop {
-            let start_pos = self.num_bump_calls;
             // Only try to parse if it is an inner attribute (has `!`).
             let attr = if self.check(exp!(Pound)) && self.look_ahead(1, |t| t == &token::Bang) {
-                Some(self.parse_attribute(InnerAttrPolicy::Permitted, start_pos)?)
+                Some(self.parse_attribute(InnerAttrPolicy::Permitted)?)
             } else if let token::DocComment(comment_kind, attr_style, data) = self.token.kind {
                 if attr_style == ast::AttrStyle::Inner {
                     self.bump();
@@ -414,16 +419,16 @@ impl<'a> Parser<'a> {
     /// Parses `cfg_attr(pred, attr_item_list)` where `attr_item_list` is comma-delimited.
     pub fn parse_cfg_attr(
         &mut self,
-        start_pos: u32
+        inner_policy: bool,
     ) -> PResult<'a, (ast::MetaItemInner, Vec<(ast::AttrItem, Span)>)> {
-        let cfg_predicate = self.parse_meta_item_inner(start_pos)?;
+        let cfg_predicate = self.parse_meta_item_inner(inner_policy.clone())?;
         self.expect(exp!(Comma))?;
 
         // Presumably, the majority of the time there will only be one attr.
         let mut expanded_attrs = Vec::with_capacity(1);
         while self.token != token::Eof {
             let lo = self.token.span;
-            let item = self.parse_attr_item(ForceCollect::Yes, cfg_predicate.span().lo().0)?;
+            let item = self.parse_attr_item(ForceCollect::Yes, inner_policy.clone())?;
             expanded_attrs.push((item, lo.to(self.prev_token.span)));
             if !self.eat(exp!(Comma)) {
                 break;
@@ -434,11 +439,11 @@ impl<'a> Parser<'a> {
     }
 
     /// Matches `COMMASEP(meta_item_inner)`.
-    pub(crate) fn parse_meta_seq_top(&mut self, start_pos: u32) -> PResult<'a, ThinVec<ast::MetaItemInner>> {
+    pub(crate) fn parse_meta_seq_top(&mut self, inner_policy: bool) -> PResult<'a, ThinVec<ast::MetaItemInner>> {
         // Presumably, the majority of the time there will only be one attr.
         let mut nmis = ThinVec::with_capacity(1);
         while self.token != token::Eof {
-            nmis.push(self.parse_meta_item_inner(start_pos)?);
+            nmis.push(self.parse_meta_item_inner(inner_policy.clone())?);
             if !self.eat(exp!(Comma)) {
                 break;
             }
@@ -455,13 +460,13 @@ impl<'a> Parser<'a> {
     pub fn parse_meta_item(
         &mut self,
         unsafe_allowed: AllowLeadingUnsafe,
-        start_pos: u32,
+        inner_policy: bool
     ) -> PResult<'a, ast::MetaItem> {
         if let Some(MetaVarKind::Meta { has_meta_form }) = self.token.is_metavar_seq() {
             return if has_meta_form {
                 let attr_item = self
                     .eat_metavar_seq(MetaVarKind::Meta { has_meta_form: true }, |this| {
-                        this.parse_attr_item(ForceCollect::No, start_pos)
+                        this.parse_attr_item(ForceCollect::No, inner_policy.clone())
                     })
                     .unwrap();
                 Ok(attr_item.meta(attr_item.path.span).unwrap())
@@ -486,7 +491,7 @@ impl<'a> Parser<'a> {
         };
 
         let path = self.parse_path(PathStyle::Mod)?;
-        let kind = self.parse_meta_item_kind(start_pos)?;
+        let kind = self.parse_meta_item_kind(inner_policy.clone())?;
         if is_unsafe {
             self.expect(exp!(CloseParen))?;
         }
@@ -495,11 +500,11 @@ impl<'a> Parser<'a> {
         Ok(ast::MetaItem { unsafety, path, kind, span })
     }
 
-    pub(crate) fn parse_meta_item_kind(&mut self, start_pos: u32) -> PResult<'a, ast::MetaItemKind> {
+    pub(crate) fn parse_meta_item_kind(&mut self, inner_policy: bool) -> PResult<'a, ast::MetaItemKind> {
         Ok(if self.eat(exp!(Eq)) {
             ast::MetaItemKind::NameValue(self.parse_unsuffixed_meta_item_lit()?)
         } else if self.check(exp!(OpenParen)) {
-            let (list, _) = self.parse_paren_comma_seq(|p| p.parse_meta_item_inner(start_pos))?;
+            let (list, _) = self.parse_paren_comma_seq(|p| p.parse_meta_item_inner(inner_policy.clone()))?;
             ast::MetaItemKind::List(list)
         } else {
             ast::MetaItemKind::Word
@@ -511,13 +516,13 @@ impl<'a> Parser<'a> {
     /// ```ebnf
     /// MetaItemInner = UNSUFFIXED_LIT | MetaItem ;
     /// ```
-    pub fn parse_meta_item_inner(&mut self, start_pos: u32) -> PResult<'a, ast::MetaItemInner> {
+    pub fn parse_meta_item_inner(&mut self, inner_policy: bool) -> PResult<'a, ast::MetaItemInner> {
         match self.parse_unsuffixed_meta_item_lit() {
             Ok(lit) => return Ok(ast::MetaItemInner::Lit(lit)),
             Err(err) => err.cancel(), // we provide a better error below
         }
 
-        match self.parse_meta_item(AllowLeadingUnsafe::No, start_pos) {
+        match self.parse_meta_item(AllowLeadingUnsafe::No, inner_policy.clone()) {
             Ok(mi) => return Ok(ast::MetaItemInner::MetaItem(mi)),
             Err(err) => err.cancel(), // we provide a better error below
         }
