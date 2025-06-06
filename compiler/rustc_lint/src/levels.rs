@@ -4,7 +4,7 @@ use rustc_data_structures::fx::{FxHashSet, FxIndexMap};
 use rustc_data_structures::unord::UnordSet;
 use rustc_errors::{Diag, LintDiagnostic, MultiSpan};
 use rustc_feature::{Features, GateIssue};
-use rustc_hir::{HirId, Mod, def_id::LocalDefId, FnDecl, BodyId, Expr};
+use rustc_hir::{HirId, Mod, def_id::LocalDefId, FnDecl, BodyId, Expr, Item, EnumDef};
 use rustc_hir::intravisit::{self, Visitor, FnKind};
 use rustc_index::IndexVec;
 use rustc_middle::bug;
@@ -146,11 +146,10 @@ fn lints_that_dont_need_to_run(tcx: TyCtxt<'_>, (): ()) -> UnordSet<LintId> {
 
         fn visit_fn(&mut self, _fk: FnKind<'v>, _fd: &'v FnDecl<'v>, _body_id: BodyId, s: Span, _def_id: LocalDefId) -> ControlFlow<HirId> {
             // We are guaranteed to stop at the first item
-            if s.lo() >= self.target_span.lo() {
+            if s.lo() > self.target_span.lo() {
                 dbg!(&s, &self.target_span);
 
                 if s.overlaps_or_adjacent(self.target_span) {
-                    dbg!("FFFFFFFFFF");
                     // The attribute is inside this function
                     intravisit::walk_fn(self, _fk, _fd, _body_id, _def_id)?;
                 } else {
@@ -159,7 +158,22 @@ fn lints_that_dont_need_to_run(tcx: TyCtxt<'_>, (): ()) -> UnordSet<LintId> {
                     return ControlFlow::Break(self.tcx.local_def_id_to_hir_id(_def_id));
                     // return ControlFlow::Break(());
                 }
+            } else if s.overlaps_or_adjacent(self.target_span)
+                && let intravisit::FnKind::Method(_, fnsig) = _fk {
+                if fnsig.span.lo() > self.target_span.lo() {
+                    dbg!("FN SIG FOUND", &fnsig.span);
+                    if fnsig.span.overlaps_or_adjacent(self.target_span) {
+                        intravisit::walk_fn(self, _fk, _fd, _body_id, _def_id)?;
+                    } else {
+                        return ControlFlow::Break(self.tcx.local_def_id_to_hir_id(_def_id))
+                    }
+                } else {
+                    bug!("@@@@@@@@ the fuck happened");
+                }
+            } else {
+                return ControlFlow::Continue(());
             }
+
             ControlFlow::Continue(())
         }
 
@@ -170,10 +184,12 @@ fn lints_that_dont_need_to_run(tcx: TyCtxt<'_>, (): ()) -> UnordSet<LintId> {
             if !self.stmt_expr_attributes {
                 return ControlFlow::Continue(());
             } else {
-                if expr.span.lo() > self.target_span.lo() {
+                if expr.span.lo() >= self.target_span.lo() {
                     // First expression with a higher span found!
                     panic!("@");
                     return ControlFlow::Break(expr.hir_id);
+                } else if expr.span.overlaps_or_adjacent(self.target_span) {
+                    intravisit::walk_expr(self, expr)?
                 }
             }
             ControlFlow::Continue(())
@@ -184,31 +200,80 @@ fn lints_that_dont_need_to_run(tcx: TyCtxt<'_>, (): ()) -> UnordSet<LintId> {
             dbg!("@@@@@@@@@@@@@@@");
             if attribute.span().hi() == self.target_span.hi() {
                 dbg!(attribute.style());
-                panic!("@");
                 return ControlFlow::Break(rustc_hir::hir_id::CRATE_HIR_ID);
             }
             ControlFlow::Continue(())
         }
 
-        fn visit_associated_item_kind(
-            &mut self,
-            kind: &'v AssocItemKind
+        fn visit_impl_item(
+            &mut self, ii: &'v rustc_hir::ImplItem<'v>
         ) -> ControlFlow<HirId> {
-            // Miau
+            if ii.span.lo() >= self.target_span.lo() {
+                return ControlFlow::Break(ii.hir_id());
+            } else if ii.span.overlaps_or_adjacent(self.target_span) {
+                intravisit::walk_impl_item(self, ii)?;
+            };
+
             ControlFlow::Continue(())
         }
+
+        fn visit_item(&mut self, i: &'v Item<'v>) -> ControlFlow<HirId> {
+            if i.is_struct_or_union() {
+                dbg!("@@@@@@@@@@@@@@@@@@@", "!!!!!!!!!!!!!!!!!!", i.span, self.target_span);
+            }
+            if i.span.lo() >= self.target_span.lo() {
+                return ControlFlow::Break(i.hir_id());
+            } else if i.span.overlaps_or_adjacent(self.target_span) {
+                intravisit::walk_item(self, i)?;
+            }
+
+            ControlFlow::Continue(())
+        }
+
+        fn visit_use(&mut self, path: &'v hir::UsePath<'v>, hir_id: HirId) -> ControlFlow<HirId> {
+            if path.span.lo() >= self.target_span.lo() {
+                return ControlFlow::Break(hir_id);
+            }
+            // No need to recurse, attributes cannot be on paths alone
+            ControlFlow::Continue(())
+        }
+
+        fn visit_enum_def(&mut self, e: &'v EnumDef<'v>) -> ControlFlow<HirId> {
+            for variant in e.variants {
+                if variant.span.lo() >= self.target_span.lo() {
+                    return ControlFlow::Break(variant.hir_id);
+                } else if variant.span.overlaps_or_adjacent(self.target_span) {
+                    intravisit::walk_enum_def(self, e)?;
+                }
+            }
+            ControlFlow::Continue(())
+        }
+
+        fn visit_trait_item_ref(&mut self, ti: &'v hir::TraitItemRef) -> ControlFlow<HirId> {
+            if ti.span.lo() > self.target_span.lo() {
+                return ControlFlow::Break(ti.id.hir_id())
+            } else if ti.span.overlaps_or_adjacent(self.target_span) {
+                intravisit::walk_trait_item_ref(self, ti)?;
+            }
+            ControlFlow::Continue(())
+        }
+
+//      fn visit_fn_decl(&mut self, fd: &'v FnDecl<'v>) -> ControlFlow<HirId> {
+
+  //      }
     }
 
     let known_lints = tcx.sess.psess.known_lints.lock();
     // Avoid overhead of checking for features in every cycle
 
     for (span, (_to_run, _lint_name)) in known_lints.iter() {
-        let mut v = V {tcx, target_span: *span, _target_scope: 0, current_scope: 0, stmt_expr_attributes: tcx.features().stmt_expr_attributes()};
 
         if span.is_empty() {
-            dbg!("TARGETED: CRATE");
+            dbg!("TARGETED: CRATE", &span);
             continue;
         }
+
+        let mut v = V {tcx, target_span: *span, _target_scope: 0, current_scope: 0, stmt_expr_attributes: tcx.features().stmt_expr_attributes()};
 
         dbg!(&span);
         if let ControlFlow::Break(x) = tcx.hir_walk_toplevel_module(&mut v) {
