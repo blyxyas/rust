@@ -146,6 +146,7 @@ fn lints_that_dont_need_to_run(tcx: TyCtxt<'_>, (): ()) -> UnordSet<LintId> {
 
         fn visit_fn(&mut self, _fk: FnKind<'v>, _fd: &'v FnDecl<'v>, _body_id: BodyId, s: Span, _def_id: LocalDefId) -> ControlFlow<HirId> {
             // We are guaranteed to stop at the first item
+            dbg!(&s, self.target_span);
             if s.lo() > self.target_span.lo() {
                 dbg!(&s, &self.target_span);
 
@@ -168,6 +169,7 @@ fn lints_that_dont_need_to_run(tcx: TyCtxt<'_>, (): ()) -> UnordSet<LintId> {
                         return ControlFlow::Break(self.tcx.local_def_id_to_hir_id(_def_id))
                     }
                 } else {
+                    dbg!(&s, &fnsig.span, &self.target_span);b
                     bug!("@@@@@@@@ the fuck happened");
                 }
             } else {
@@ -218,12 +220,10 @@ fn lints_that_dont_need_to_run(tcx: TyCtxt<'_>, (): ()) -> UnordSet<LintId> {
         }
 
         fn visit_item(&mut self, i: &'v Item<'v>) -> ControlFlow<HirId> {
-            if i.is_struct_or_union() {
-                dbg!("@@@@@@@@@@@@@@@@@@@", "!!!!!!!!!!!!!!!!!!", i.span, self.target_span);
-            }
-            if i.span.lo() >= self.target_span.lo() {
+            if i.span.lo() > self.target_span.lo() {
                 return ControlFlow::Break(i.hir_id());
             } else if i.span.overlaps_or_adjacent(self.target_span) {
+
                 intravisit::walk_item(self, i)?;
             }
 
@@ -231,7 +231,7 @@ fn lints_that_dont_need_to_run(tcx: TyCtxt<'_>, (): ()) -> UnordSet<LintId> {
         }
 
         fn visit_use(&mut self, path: &'v hir::UsePath<'v>, hir_id: HirId) -> ControlFlow<HirId> {
-            if path.span.lo() >= self.target_span.lo() {
+            if path.span.lo() > self.target_span.lo() {
                 return ControlFlow::Break(hir_id);
             }
             // No need to recurse, attributes cannot be on paths alone
@@ -249,11 +249,20 @@ fn lints_that_dont_need_to_run(tcx: TyCtxt<'_>, (): ()) -> UnordSet<LintId> {
             ControlFlow::Continue(())
         }
 
-        fn visit_trait_item_ref(&mut self, ti: &'v hir::TraitItemRef) -> ControlFlow<HirId> {
+        fn visit_trait_item(&mut self, ti: &'v hir::TraitItem<'v>) -> ControlFlow<HirId> {
             if ti.span.lo() > self.target_span.lo() {
-                return ControlFlow::Break(ti.id.hir_id())
+                return ControlFlow::Break(ti.hir_id())
             } else if ti.span.overlaps_or_adjacent(self.target_span) {
-                intravisit::walk_trait_item_ref(self, ti)?;
+                intravisit::walk_trait_item(self, ti)?;
+            }
+            ControlFlow::Continue(())
+        }
+
+        fn visit_block(&mut self, block: &'v hir::Block<'v>) -> ControlFlow<HirId> {
+            if block.span.lo() > self.target_span.lo() {
+                return ControlFlow::Break(block.hir_id);
+            } else if block.span.overlaps_or_adjacent(self.target_span) {
+                intravisit::walk_block(self, block)?;
             }
             ControlFlow::Continue(())
         }
