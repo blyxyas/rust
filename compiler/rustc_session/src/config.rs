@@ -574,14 +574,14 @@ pub enum DebugInfo {
 
 #[derive(Clone, Copy, Debug, PartialEq, PartialOrd, Hash)]
 pub enum TargetStage {
-    Parse       = 0, // Get the AST
+    Parse = 0,       // Get the AST
     MacroExpand = 1, // Macro expansion
-    AnalyzeAst  = 2, // Early linting
-    ProcessHir  = 3, // Get HIR
-    AnalyzeHir  = 4, // Late linting
-    ProcessMir  = 5, // Get MIR
+    AnalyzeAst = 2,  // Early linting
+    ProcessHir = 3,  // Get HIR
+    AnalyzeHir = 4,  // Late linting
+    ProcessMir = 5,  // Get MIR
     Borrowcheck = 6, // Borrowcheck, CTFE, MIR linting
-    EmitBin     = 7, // Send codegen to LLVM and actually produce a binary
+    EmitBin = 7,     // Send codegen to LLVM and actually produce a binary
 }
 
 impl Default for TargetStage {
@@ -595,14 +595,14 @@ impl TryFrom<&str> for TargetStage {
     type Error = ();
     fn try_from(value: &str) -> Result<Self, ()> {
         Ok(match value {
-            "emit-bin"     => Self::EmitBin,
-            "borrowcheck"  => Self::Borrowcheck,
-            "process-mir"  => Self::ProcessMir,
-            "analyze-hir"  => Self::AnalyzeHir,
-            "process-hir"  => Self::ProcessHir,
+            "emit-bin" => Self::EmitBin,
+            "borrowcheck" => Self::Borrowcheck,
+            "process-mir" => Self::ProcessMir,
+            "analyze-hir" => Self::AnalyzeHir,
+            "process-hir" => Self::ProcessHir,
             "macro-expand" => Self::MacroExpand,
-            "analyze-ast"  => Self::AnalyzeAst,
-            "parse"        => Self::Parse,
+            "analyze-ast" => Self::AnalyzeAst,
+            "parse" => Self::Parse,
             _ => return Err(()),
         })
     }
@@ -1954,7 +1954,7 @@ pub fn rustc_optgroups() -> Vec<RustcOptGroup> {
             "",
             "target-stage",
             "Direct rustc to go only up to a certain stage of compilation",
-            "<parse|analyze-ast|macro-expand|process-hir|analyze-hir|process-mir|borrowcheck|emit-bin>"
+            "<parse|analyze-ast|macro-expand|process-hir|analyze-hir|process-mir|borrowcheck|emit-bin>",
         ),
         opt(
             Stable,
@@ -2415,14 +2415,19 @@ pub fn parse_target_triple(early_dcx: &EarlyDiagCtxt, matches: &getopts::Matches
 fn parse_target_stage(
     early_dcx: &EarlyDiagCtxt,
     matches: &getopts::Matches,
-    unstable_opts: &UnstableOptions) -> TargetStage {
+    unstable_opts: &UnstableOptions,
+) -> TargetStage {
     let mut target_stage = None;
     for arg in matches.opt_strs("target-stage") {
         if !unstable_opts.unstable_options {
-            early_dcx.early_fatal("the `-Z unstable-options` flag must be used to enable the `--target-stage` option");
+            early_dcx.early_fatal(
+                "the `-Z unstable-options` flag must be used to enable the `--target-stage` option",
+            );
         }
         if let Ok(maybe_greater_stage) = TargetStage::try_from(arg.as_str()) {
-            if target_stage.is_some_and(|target_stage| target_stage < maybe_greater_stage) || target_stage.is_none() {
+            if target_stage.is_some_and(|target_stage| target_stage < maybe_greater_stage)
+                || target_stage.is_none()
+            {
                 target_stage = Some(maybe_greater_stage);
             }
         } else {
