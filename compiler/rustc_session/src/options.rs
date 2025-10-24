@@ -341,6 +341,8 @@ top_level_options!(
 
         target_triple: TargetTuple [TRACKED],
 
+        target_stage: TargetStage [TRACKED_NO_CRATE_HASH],
+
         /// Effective logical environment used by `env!`/`option_env!` macros
         logical_env: FxIndexMap<String, String> [TRACKED],
 

@@ -572,6 +572,42 @@ pub enum DebugInfo {
     Full,
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, PartialOrd, Hash)]
+pub enum TargetStage {
+    Parse       = 0, // Get the AST
+    MacroExpand = 1, // Macro expansion
+    AnalyzeAst  = 2, // Early linting
+    ProcessHir  = 3, // Get HIR
+    AnalyzeHir  = 4, // Late linting
+    ProcessMir  = 5, // Get MIR
+    Borrowcheck = 6, // Borrowcheck, CTFE, MIR linting
+    EmitBin     = 7, // Send codegen to LLVM and actually produce a binary
+}
+
+impl Default for TargetStage {
+    fn default() -> Self {
+        Self::EmitBin // For now, EmitBin is generally our default stage
+    }
+}
+
+impl TryFrom<&str> for TargetStage {
+    // Self::Error only means that we got an unknown --target-stage value
+    type Error = ();
+    fn try_from(value: &str) -> Result<Self, ()> {
+        Ok(match value {
+            "emit-bin"     => Self::EmitBin,
+            "borrowcheck"  => Self::Borrowcheck,
+            "process-mir"  => Self::ProcessMir,
+            "analyze-hir"  => Self::AnalyzeHir,
+            "process-hir"  => Self::ProcessHir,
+            "macro-expand" => Self::MacroExpand,
+            "analyze-ast"  => Self::AnalyzeAst,
+            "parse"        => Self::Parse,
+            _ => return Err(()),
+        })
+    }
+}
+
 #[derive(Clone, Copy, Debug, PartialEq, Hash)]
 pub enum DebugInfoCompression {
     None,
@@ -1439,6 +1475,7 @@ impl Default for Options {
             search_paths: vec![],
             sysroot: Sysroot::new(None),
             target_triple: TargetTuple::from_tuple(host_tuple()),
+            target_stage: TargetStage::default(),
             test: false,
             incremental: None,
             untracked_state_hash: Default::default(),
@@ -1912,6 +1949,14 @@ pub fn rustc_optgroups() -> Vec<RustcOptGroup> {
             "<WIDTH>",
         ),
         opt(
+            Unstable,
+            Multi,
+            "",
+            "target-stage",
+            "Direct rustc to go only up to a certain stage of compilation",
+            "<parse|analyze-ast|macro-expand|process-hir|analyze-hir|process-mir|borrowcheck|emit-bin>"
+        ),
+        opt(
             Stable,
             Multi,
             "",
@@ -2367,6 +2412,29 @@ pub fn parse_target_triple(early_dcx: &EarlyDiagCtxt, matches: &getopts::Matches
     }
 }
 
+fn parse_target_stage(
+    early_dcx: &EarlyDiagCtxt,
+    matches: &getopts::Matches,
+    unstable_opts: &UnstableOptions) -> TargetStage {
+    let mut target_stage = None;
+    for arg in matches.opt_strs("target-stage") {
+        if !unstable_opts.unstable_options {
+            early_dcx.early_fatal("the `-Z unstable-options` flag must be used to enable the `--target-stage` option");
+        }
+        if let Ok(maybe_greater_stage) = TargetStage::try_from(arg.as_str()) {
+            if target_stage.is_some_and(|target_stage| target_stage < maybe_greater_stage) || target_stage.is_none() {
+                target_stage = Some(maybe_greater_stage);
+            }
+        } else {
+            early_dcx.early_fatal("@@@@@ FIXME unrecongized option for target-stage????")
+        }
+    }
+
+    dbg!(target_stage);
+
+    TargetStage::default()
+}
+
 fn parse_opt_level(
     early_dcx: &EarlyDiagCtxt,
     matches: &getopts::Matches,
@@ -2797,6 +2865,7 @@ pub fn build_session_options(early_dcx: &mut EarlyDiagCtxt, matches: &getopts::M
     let libs = parse_native_libs(early_dcx, &unstable_opts, unstable_features, matches);
 
     let test = matches.opt_present("test");
+    let target_stage = parse_target_stage(early_dcx, matches, &unstable_opts);
 
     if !cg.remark.is_empty() && debuginfo == DebugInfo::None {
         early_dcx.early_warn("-C remark requires \"-C debuginfo=n\" to show source locations");
@@ -2891,6 +2960,7 @@ pub fn build_session_options(early_dcx: &mut EarlyDiagCtxt, matches: &getopts::M
         search_paths,
         sysroot,
         target_triple,
+        target_stage,
         test,
         incremental,
         untracked_state_hash: Default::default(),
@@ -3217,7 +3287,7 @@ pub(crate) mod dep_tracking {
         LtoCli, MirStripDebugInfo, NextSolverConfig, Offload, OomStrategy, OptLevel, OutFileName,
         OutputType, OutputTypes, PatchableFunctionEntry, Polonius, RemapPathScopeComponents,
         ResolveDocLinks, SourceFileHashAlgorithm, SplitDwarfKind, SwitchWithOptPath,
-        SymbolManglingVersion, WasiExecModel,
+        SymbolManglingVersion, TargetStage, WasiExecModel,
     };
     use crate::lint;
     use crate::utils::NativeLib;
@@ -3296,6 +3366,7 @@ pub(crate) mod dep_tracking {
         CFGuard,
         CFProtection,
         TargetTuple,
+        TargetStage,
         Edition,
         LinkerPluginLto,
         ResolveDocLinks,

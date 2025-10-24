@@ -363,6 +363,7 @@ pub fn run_compiler(at_args: &[String], callbacks: &mut (dyn Callbacks + Send)) 
                 return early_exit();
             }
 
+            // vv Eventually no_analysis will be removed
             if sess.opts.unstable_opts.no_analysis {
                 return early_exit();
             }
@@ -1622,3 +1623,5 @@ pub fn main() -> ! {
 
     process::exit(exit_code)
 }
+
+

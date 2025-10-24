@@ -1508,6 +1508,7 @@ impl EarlyDiagCtxt {
 
     #[allow(rustc::untranslatable_diagnostic)]
     #[allow(rustc::diagnostic_outside_of_impl)]
+    #[track_caller]
     pub fn early_fatal(&self, msg: impl Into<DiagMessage>) -> ! {
         self.dcx.handle().fatal(msg)
     }
