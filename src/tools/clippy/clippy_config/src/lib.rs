@@ -14,12 +14,12 @@
 )]
 #![deny(clippy::derive_deserialize_allowing_unknown)]
 
-extern crate rustc_data_structures;
-extern crate rustc_errors;
-extern crate rustc_hir;
-extern crate rustc_middle;
-extern crate rustc_session;
-extern crate rustc_span;
+// use rustc_data_structures;
+// use rustc_errors;
+// use rustc_hir;
+// use rustc_middle;
+// use rustc_session;
+// use rustc_span;
 
 mod conf;
 mod metadata;

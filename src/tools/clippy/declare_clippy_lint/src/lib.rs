@@ -1,11 +1,11 @@
-#![feature(macro_metavar_expr_concat, rustc_private)]
+#![feature(macro_metavar_expr_concat)]
 
-extern crate rustc_lint;
+use rustc_lint;
 
 use rustc_lint::{Lint, LintId, LintStore};
 
 // Needed by `declare_clippy_lint!`.
-pub extern crate rustc_session;
+pub use rustc_session;
 
 #[derive(Default)]
 pub struct LintListBuilder {

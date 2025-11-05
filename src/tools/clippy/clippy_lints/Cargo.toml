@@ -23,6 +23,30 @@ unicode-script = { version = "0.5", default-features = false }
 semver = "1.0"
 url = "2.2"
 
+rustc_abi = { path = "../../../../compiler/rustc_abi" }
+rustc_arena = { path = "../../../../compiler/rustc_arena" }
+rustc_ast = { path = "../../../../compiler/rustc_ast" }
+rustc_ast_pretty = { path = "../../../../compiler/rustc_ast_pretty" }
+rustc_data_structures = { path = "../../../../compiler/rustc_data_structures" }
+rustc_driver = { path = "../../../../compiler/rustc_driver" }
+rustc_errors = { path = "../../../../compiler/rustc_errors" }
+rustc_hir = { path = "../../../../compiler/rustc_hir" }
+rustc_hir_analysis = { path = "../../../../compiler/rustc_hir_analysis" }
+rustc_hir_pretty = { path = "../../../../compiler/rustc_hir_pretty" }
+rustc_hir_typeck = { path = "../../../../compiler/rustc_hir_typeck" }
+rustc_index = { path = "../../../../compiler/rustc_index" }
+rustc_infer = { path = "../../../../compiler/rustc_infer" }
+rustc_lexer = { path = "../../../../compiler/rustc_lexer" }
+rustc_lint = { path = "../../../../compiler/rustc_lint" }
+rustc_middle = { path = "../../../../compiler/rustc_middle" }
+rustc_parse = { path = "../../../../compiler/rustc_parse" }
+rustc_parse_format = { path = "../../../../compiler/rustc_parse_format" }
+rustc_resolve = { path = "../../../../compiler/rustc_resolve" }
+rustc_session = { path = "../../../../compiler/rustc_session" }
+rustc_span = { path = "../../../../compiler/rustc_span" }
+rustc_target = { path = "../../../../compiler/rustc_target" }
+rustc_trait_selection = { path = "../../../../compiler/rustc_trait_selection" }
+
 [dependencies.toml]
 version = "0.9.7"
 default-features = false
@@ -35,7 +59,3 @@ walkdir = "2.3"
 [lints.rust.unexpected_cfgs]
 level = "warn"
 check-cfg = ['cfg(bootstrap)']
-
-[package.metadata.rust-analyzer]
-# This crate uses #[feature(rustc_private)]
-rustc_private = true

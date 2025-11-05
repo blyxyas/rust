@@ -2,7 +2,6 @@
 #![feature(if_let_guard)]
 #![feature(macro_metavar_expr)]
 #![feature(never_type)]
-#![feature(rustc_private)]
 #![feature(assert_matches)]
 #![feature(unwrap_infallible)]
 #![feature(array_windows)]
@@ -25,29 +24,25 @@
 
 // FIXME: switch to something more ergonomic here, once available.
 // (Currently there is no way to opt into sysroot crates without `extern crate`.)
-extern crate rustc_abi;
-extern crate rustc_ast;
-extern crate rustc_attr_parsing;
-extern crate rustc_const_eval;
-extern crate rustc_data_structures;
-#[expect(
-    unused_extern_crates,
-    reason = "The `rustc_driver` crate seems to be required in order to use the `rust_ast` crate."
-)]
-extern crate rustc_driver;
-extern crate rustc_errors;
-extern crate rustc_hir;
-extern crate rustc_hir_analysis;
-extern crate rustc_hir_typeck;
-extern crate rustc_index;
-extern crate rustc_infer;
-extern crate rustc_lexer;
-extern crate rustc_lint;
-extern crate rustc_middle;
-extern crate rustc_mir_dataflow;
-extern crate rustc_session;
-extern crate rustc_span;
-extern crate rustc_trait_selection;
+use rustc_abi;
+use rustc_ast;
+// use rustc_attr_parsing;
+// use rustc_const_eval;
+use rustc_data_structures;
+// use rustc_driver;
+// use rustc_errors;
+use rustc_hir;
+// use rustc_hir_analysis;
+// use rustc_hir_typeck;
+// use rustc_index;
+// use rustc_infer;
+use rustc_lexer;
+use rustc_lint;
+use rustc_middle;
+// use rustc_mir_dataflow;
+// use rustc_session;
+use rustc_span;
+use rustc_trait_selection;
 
 pub mod ast_utils;
 pub mod attrs;

@@ -5,6 +5,6 @@ edition = "2024"
 repository = "https://github.com/rust-lang/rust-clippy"
 license = "MIT OR Apache-2.0"
 
-[package.metadata.rust-analyzer]
-# This crate uses #[feature(rustc_private)]
-rustc_private = true
+[dependencies]
+rustc_lint = { path = "../../../../compiler/rustc_lint"}
+rustc_session = { path = "../../../../compiler/rustc_session"}

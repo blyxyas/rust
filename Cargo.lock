@@ -585,6 +585,10 @@ dependencies = [
  "itertools",
  "pulldown-cmark",
  "regex",
+ "rustc_driver",
+ "rustc_interface",
+ "rustc_session",
+ "rustc_span",
  "rustc_tools_util 0.4.2",
  "serde",
  "serde_json",
@@ -601,6 +605,12 @@ version = "0.1.92"
 dependencies = [
  "clippy_utils",
  "itertools",
+ "rustc_data_structures",
+ "rustc_errors",
+ "rustc_hir",
+ "rustc_middle",
+ "rustc_session",
+ "rustc_span",
  "serde",
  "toml 0.7.8",
  "walkdir",
@@ -630,6 +640,29 @@ dependencies = [
  "itertools",
  "quine-mc_cluskey",
  "regex-syntax 0.8.5",
+ "rustc_abi",
+ "rustc_arena",
+ "rustc_ast",
+ "rustc_ast_pretty",
+ "rustc_data_structures",
+ "rustc_driver",
+ "rustc_errors",
+ "rustc_hir",
+ "rustc_hir_analysis",
+ "rustc_hir_pretty",
+ "rustc_hir_typeck",
+ "rustc_index",
+ "rustc_infer",
+ "rustc_lexer",
+ "rustc_lint",
+ "rustc_middle",
+ "rustc_parse",
+ "rustc_parse_format",
+ "rustc_resolve",
+ "rustc_session",
+ "rustc_span",
+ "rustc_target",
+ "rustc_trait_selection",
  "semver",
  "serde",
  "toml 0.9.7",
@@ -648,6 +681,10 @@ dependencies = [
  "itertools",
  "regex",
  "rustc-semver",
+ "rustc_driver",
+ "rustc_interface",
+ "rustc_session",
+ "rustc_span",
 ]
 
 [[package]]
@@ -656,7 +693,26 @@ version = "0.1.92"
 dependencies = [
  "arrayvec",
  "itertools",
+ "rustc_abi",
  "rustc_apfloat",
+ "rustc_ast",
+ "rustc_attr_parsing",
+ "rustc_const_eval",
+ "rustc_data_structures",
+ "rustc_driver",
+ "rustc_errors",
+ "rustc_hir",
+ "rustc_hir_analysis",
+ "rustc_hir_typeck",
+ "rustc_index",
+ "rustc_infer",
+ "rustc_lexer",
+ "rustc_lint",
+ "rustc_middle",
+ "rustc_mir_dataflow",
+ "rustc_session",
+ "rustc_span",
+ "rustc_trait_selection",
  "serde",
 ]
 
@@ -1057,6 +1113,10 @@ dependencies = [
 [[package]]
 name = "declare_clippy_lint"
 version = "0.1.92"
+dependencies = [
+ "rustc_lint",
+ "rustc_session",
+]
 
 [[package]]
 name = "derive-where"
