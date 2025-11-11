@@ -6,6 +6,7 @@ edition = "2024"
 [dependencies]
 # tidy-alphabetical-start
 bitflags = "2.4.1"
+clippy_lints = { path = "../../src/tools/clippy/clippy_lints", optional = true }
 rustc_abi = { path = "../rustc_abi" }
 rustc_ast = { path = "../rustc_ast" }
 rustc_ast_pretty = { path = "../rustc_ast_pretty" }
@@ -28,3 +29,6 @@ smallvec = { version = "1.8.1", features = ["union", "may_dangle"] }
 tracing = "0.1"
 unicode-security = "0.1.0"
 # tidy-alphabetical-end
+
+[features]
+clippy_lints = ["dep:clippy_lints"]

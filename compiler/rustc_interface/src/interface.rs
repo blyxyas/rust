@@ -500,7 +500,7 @@ pub fn run_compiler<R: Send>(config: Config, f: impl FnOnce(&Compiler) -> R + Se
             // Even though the session holds the lint store, we can't build the
             // lint store until after the session exists. And we wait until now
             // so that `register_lints` sees the fully initialized session.
-            let mut lint_store = rustc_lint::new_lint_store(sess.enable_internal_lints());
+            let mut lint_store = rustc_lint::new_lint_store(sess.enable_internal_lints(), sess.opts);
             if let Some(register_lints) = config.register_lints.as_deref() {
                 register_lints(&sess, &mut lint_store);
             }

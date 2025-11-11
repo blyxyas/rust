@@ -80,4 +80,5 @@ rustc_randomized_layouts = [
     'rustc_index/rustc_randomized_layouts',
     'rustc_middle/rustc_randomized_layouts'
 ]
+clippy_lints = ["rustc_hir_typeck/clippy_lints", "rustc_lint/clippy_lints"]
 # tidy-alphabetical-end

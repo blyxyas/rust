@@ -20,7 +20,7 @@ rustc_ast = { path = "../../../../compiler/rustc_ast" }
 rustc_attr_parsing = { path = "../../../../compiler/rustc_attr_parsing" }
 rustc_const_eval = { path = "../../../../compiler/rustc_const_eval" }
 rustc_data_structures = { path = "../../../../compiler/rustc_data_structures" }
-rustc_driver = { path = "../../../../compiler/rustc_driver" }
+rustc_driver = { path = "../../../../compiler/rustc_driver"}
 rustc_errors = { path = "../../../../compiler/rustc_errors" }
 rustc_hir = { path = "../../../../compiler/rustc_hir" }
 rustc_hir_analysis = { path = "../../../../compiler/rustc_hir_analysis" }
@@ -28,7 +28,7 @@ rustc_hir_typeck = { path = "../../../../compiler/rustc_hir_typeck" }
 rustc_index = { path = "../../../../compiler/rustc_index" }
 rustc_infer = { path = "../../../../compiler/rustc_infer" }
 rustc_lexer = { path = "../../../../compiler/rustc_lexer" }
-rustc_lint = { path = "../../../../compiler/rustc_lint" }
+rustc_lint = { path = "../../../../compiler/rustc_lint", default-features = false}
 rustc_middle = { path = "../../../../compiler/rustc_middle" }
 rustc_mir_dataflow = { path = "../../../../compiler/rustc_mir_dataflow" }
 rustc_session = { path = "../../../../compiler/rustc_session" }

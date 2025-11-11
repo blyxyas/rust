@@ -15,3 +15,7 @@ rustc_driver_impl = { path = "../rustc_driver_impl" }
 # tidy-alphabetical-start
 rustc_windows_rc = { path = "../rustc_windows_rc" }
 # tidy-alphabetical-end
+
+[features]
+default = ["clippy_lints"]
+clippy_lints = [ "rustc_driver_impl/clippy_lints" ]

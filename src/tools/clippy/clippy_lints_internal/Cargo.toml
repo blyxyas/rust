@@ -10,7 +10,7 @@ itertools = "0.12"
 regex = { version = "1.5" }
 rustc-semver = "1.1"
 
-rustc_driver = { path = "../../../../compiler/rustc_driver"}
+rustc_driver = { path = "../../../../compiler/rustc_driver", features = []}
 rustc_interface = { path = "../../../../compiler/rustc_interface"}
 rustc_session = { path = "../../../../compiler/rustc_session"}
 rustc_span = { path = "../../../../compiler/rustc_span"}

@@ -136,6 +136,7 @@ pub use passes::{EarlyLintPass, LateLintPass};
 pub use rustc_errors::BufferedEarlyLint;
 pub use rustc_session::lint::Level::{self, *};
 pub use rustc_session::lint::{FutureIncompatibleInfo, Lint, LintId, LintPass, LintVec};
+use rustc_session::config::Options;
 
 rustc_fluent_macro::fluent_messages! { "../messages.ftl" }
 
@@ -250,12 +251,16 @@ late_lint_methods!(
     ]
 );
 
-pub fn new_lint_store(internal_lints: bool) -> LintStore {
+pub fn new_lint_store(internal_lints: bool, opts: Options) -> LintStore {
     let mut lint_store = LintStore::new();
 
     register_builtins(&mut lint_store);
     if internal_lints {
         register_internals(&mut lint_store);
+    }
+
+    if lint_opts.any(|lint_name| lint_name.start_with("clippy")) {
+        register_clippy_lints(&mut lint_store)
     }
 
     lint_store
@@ -681,6 +686,10 @@ fn register_internals(store: &mut LintStore) {
             LintId::of(IMPLICIT_SYSROOT_CRATE_IMPORT),
         ],
     );
+}
+
+fn register_clippy(store: &mut LintStore, opts: Options) {
+    use clippy_lints;
 }
 
 #[cfg(test)]
