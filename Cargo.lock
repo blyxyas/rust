@@ -603,7 +603,6 @@ dependencies = [
 name = "clippy_config"
 version = "0.1.92"
 dependencies = [
- "clippy_utils",
  "itertools",
  "rustc_data_structures",
  "rustc_errors",
@@ -707,7 +706,6 @@ dependencies = [
  "rustc_index",
  "rustc_infer",
  "rustc_lexer",
- "rustc_lint",
  "rustc_middle",
  "rustc_mir_dataflow",
  "rustc_session",

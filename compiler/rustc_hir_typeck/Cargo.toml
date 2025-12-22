@@ -29,4 +29,8 @@ tracing = "0.1"
 # tidy-alphabetical-end
 
 [features]
+default = ["clippy_lints"]
+clippy_lints = ["rustc_lint/clippy_lints"]
+
+[target.'cfg(FROM_CLIPPY_LINTS)'.features]
 clippy_lints = ["rustc_lint/clippy_lints"]
