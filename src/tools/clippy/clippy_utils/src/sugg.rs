@@ -833,7 +833,7 @@ impl<'tcx> DerefDelegate<'_, 'tcx> {
     /// - create the ending part of suggestion
     /// - concatenate starting and ending parts
     /// - potentially remove needless borrowing
-    pub fn finish(&mut self) -> String {
+    fn finish(&mut self) -> String {
         let end_span = Span::new(self.next_pos, self.closure_span.hi(), self.closure_span.ctxt(), None);
         let end_snip = snippet_with_applicability(self.cx, end_span, "..", &mut self.applicability);
         let sugg = format!("{}{end_snip}", self.suggestion_start);

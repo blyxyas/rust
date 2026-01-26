@@ -14,14 +14,14 @@ pub(super) struct PossibleOriginVisitor<'a, 'tcx> {
 }
 
 impl<'a, 'tcx> PossibleOriginVisitor<'a, 'tcx> {
-    pub fn new(body: &'a mir::Body<'tcx>) -> Self {
+    pub(super) fn new(body: &'a mir::Body<'tcx>) -> Self {
         Self {
             possible_origin: TransitiveRelation::default(),
             body,
         }
     }
 
-    pub fn into_map(self, cx: &LateContext<'tcx>) -> FxHashMap<mir::Local, DenseBitSet<mir::Local>> {
+    pub(super) fn into_map(self, cx: &LateContext<'tcx>) -> FxHashMap<mir::Local, DenseBitSet<mir::Local>> {
         let mut map = FxHashMap::default();
         for row in (1..self.body.local_decls.len()).map(mir::Local::from_usize) {
             if is_copy(cx, self.body.local_decls[row].ty) {

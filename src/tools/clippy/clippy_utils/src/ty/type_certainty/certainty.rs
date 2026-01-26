@@ -2,7 +2,7 @@ use rustc_hir::def_id::DefId;
 use std::fmt::Debug;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum Certainty {
+pub(super) enum Certainty {
     /// Determining the type requires contextual information.
     Uncertain,
 
@@ -15,11 +15,11 @@ pub enum Certainty {
     Contradiction,
 }
 
-pub trait Meet {
+pub(super) trait Meet {
     fn meet(self, other: Self) -> Self;
 }
 
-pub trait TryJoin: Sized {
+trait TryJoin: Sized {
     fn try_join(self, other: Self) -> Option<Self>;
 }
 
@@ -57,7 +57,7 @@ impl Certainty {
     /// Join two `Certainty`s preserving their `DefId`s (if any). Generally speaking, this method
     /// should be used only when `self` and `other` refer directly to types. Otherwise,
     /// `join_clearing_def_ids` should be used.
-    pub fn join(self, other: Self) -> Self {
+    pub(super) fn join(self, other: Self) -> Self {
         match (self, other) {
             (Certainty::Contradiction, _) | (_, Certainty::Contradiction) => Certainty::Contradiction,
 
@@ -79,11 +79,11 @@ impl Certainty {
     /// Join two `Certainty`s after clearing their `DefId`s. This method should be used when `self`
     /// or `other` do not necessarily refer to types, e.g., when they are aggregations of other
     /// `Certainty`s.
-    pub fn join_clearing_def_ids(self, other: Self) -> Self {
+    pub(super) fn join_clearing_def_ids(self, other: Self) -> Self {
         self.clear_def_id().join(other.clear_def_id())
     }
 
-    pub fn clear_def_id(self) -> Certainty {
+    pub(super) fn clear_def_id(self) -> Certainty {
         if matches!(self, Certainty::Certain(_)) {
             Certainty::Certain(None)
         } else {
@@ -91,7 +91,7 @@ impl Certainty {
         }
     }
 
-    pub fn with_def_id(self, def_id: DefId) -> Certainty {
+    pub(super) fn with_def_id(self, def_id: DefId) -> Certainty {
         if matches!(self, Certainty::Certain(_)) {
             Certainty::Certain(Some(def_id))
         } else {
@@ -99,24 +99,24 @@ impl Certainty {
         }
     }
 
-    pub fn to_def_id(self) -> Option<DefId> {
+    pub(super) fn to_def_id(self) -> Option<DefId> {
         match self {
             Certainty::Certain(inner) => inner,
             _ => None,
         }
     }
 
-    pub fn is_certain(self) -> bool {
+    pub(super) fn is_certain(self) -> bool {
         matches!(self, Self::Certain(_))
     }
 }
 
 /// Think: `iter.all(/* is certain */)`
-pub fn meet(iter: impl Iterator<Item = Certainty>) -> Certainty {
+pub(super) fn meet(iter: impl Iterator<Item = Certainty>) -> Certainty {
     iter.fold(Certainty::Certain(None), Certainty::meet)
 }
 
 /// Think: `iter.any(/* is certain */)`
-pub fn join(iter: impl Iterator<Item = Certainty>) -> Certainty {
+pub(super) fn join(iter: impl Iterator<Item = Certainty>) -> Certainty {
     iter.fold(Certainty::Uncertain, Certainty::join)
 }
