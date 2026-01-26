@@ -16,6 +16,7 @@ rustc_hir = { path = "../../../../compiler/rustc_hir" }
 rustc_middle = { path = "../../../../compiler/rustc_middle" }
 rustc_session = { path = "../../../../compiler/rustc_session" }
 rustc_span = { path = "../../../../compiler/rustc_span" }
+clippy_utils = { path = "../clippy_utils" }
 
 [dev-dependencies]
 walkdir = "2.3"

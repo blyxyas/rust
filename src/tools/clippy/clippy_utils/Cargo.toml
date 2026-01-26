@@ -17,10 +17,10 @@ rustc_apfloat = "0.2.0"
 serde = { version = "1.0", features = ["derive"] }
 rustc_abi = { path = "../../../../compiler/rustc_abi" }
 rustc_ast = { path = "../../../../compiler/rustc_ast" }
+rustc_lint = { path = "../../../../compiler/rustc_lint" }
 rustc_attr_parsing = { path = "../../../../compiler/rustc_attr_parsing" }
 rustc_const_eval = { path = "../../../../compiler/rustc_const_eval" }
 rustc_data_structures = { path = "../../../../compiler/rustc_data_structures" }
-rustc_driver = { path = "../../../../compiler/rustc_driver"}
 rustc_errors = { path = "../../../../compiler/rustc_errors" }
 rustc_hir = { path = "../../../../compiler/rustc_hir" }
 rustc_hir_analysis = { path = "../../../../compiler/rustc_hir_analysis" }

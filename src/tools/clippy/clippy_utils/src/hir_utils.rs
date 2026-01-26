@@ -27,7 +27,7 @@ type SpanlessEqCallback<'a> = dyn FnMut(&Expr<'_>, &Expr<'_>) -> bool + 'a;
 
 /// Determines how paths are hashed and compared for equality.
 #[derive(Copy, Clone, Debug, Default)]
-pub enum PathCheck {
+enum PathCheck {
     /// Paths must match exactly and are hashed by their exact HIR tree.
     ///
     /// Thus, `std::iter::Iterator` and `Iterator` are not considered equal even though they refer
@@ -754,7 +754,7 @@ pub fn both<X>(l: Option<&X>, r: Option<&X>, mut eq_fn: impl FnMut(&X, &X) -> bo
 }
 
 /// Checks if the two `Option`s are both `Some` and pass the predicate function.
-pub fn both_some_and<X, Y>(l: Option<X>, r: Option<Y>, mut pred: impl FnMut(X, Y) -> bool) -> bool {
+fn both_some_and<X, Y>(l: Option<X>, r: Option<Y>, mut pred: impl FnMut(X, Y) -> bool) -> bool {
     l.is_some_and(|l| r.is_some_and(|r| pred(l, r)))
 }
 

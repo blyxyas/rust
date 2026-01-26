@@ -24,8 +24,7 @@
 
 // FIXME: switch to something more ergonomic here, once available.
 // (Currently there is no way to opt into sysroot crates without `extern crate`.)
-use rustc_abi;
-use rustc_ast;
+use {rustc_abi, rustc_ast};
 // use rustc_attr_parsing;
 // use rustc_const_eval;
 use rustc_data_structures;
@@ -36,13 +35,10 @@ use rustc_hir;
 // use rustc_hir_typeck;
 // use rustc_index;
 // use rustc_infer;
-use rustc_lexer;
-use rustc_lint;
-use rustc_middle;
+use {rustc_lexer, rustc_lint, rustc_middle};
 // use rustc_mir_dataflow;
 // use rustc_session;
-use rustc_span;
-use rustc_trait_selection;
+use {rustc_span, rustc_trait_selection};
 
 pub mod ast_utils;
 pub mod attrs;
