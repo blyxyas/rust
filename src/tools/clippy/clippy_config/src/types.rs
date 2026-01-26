@@ -1,5 +1,5 @@
 use clippy_utils::paths::{PathNS, find_crates, lookup_path};
-use rustc_data_structures::fx::FxHashMap;
+use rustc_data_structures::fx::{FxHashMap, FxHashSet};
 use rustc_errors::{Applicability, Diag};
 use rustc_hir::PrimTy;
 use rustc_hir::def::DefKind;
@@ -8,7 +8,6 @@ use rustc_middle::ty::TyCtxt;
 use rustc_span::{Span, Symbol};
 use serde::de::{self, Deserializer, Visitor};
 use serde::{Deserialize, Serialize, ser};
-use std::collections::HashMap;
 use std::fmt;
 
 #[derive(Debug, Deserialize)]
@@ -102,7 +101,7 @@ impl<const REPLACEMENT_ALLOWED: bool> DisallowedPath<REPLACEMENT_ALLOWED> {
 }
 
 impl DisallowedPathEnum {
-    pub fn path(&self) -> &str {
+    pub(super) fn path(&self) -> &str {
         let (Self::Simple(path) | Self::WithReason { path, .. }) = self;
 
         path
@@ -311,7 +310,7 @@ impl<'de> Deserialize<'de> for SourceItemOrdering {
         D: Deserializer<'de>,
     {
         let items = Vec::<SourceItemOrderingCategory>::deserialize(deserializer)?;
-        let mut items_set = std::collections::HashSet::new();
+        let mut items_set = FxHashSet::default();
 
         for item in &items {
             if items_set.contains(item) {
@@ -389,15 +388,15 @@ impl SourceItemOrderingModuleItemKind {
 #[derive(Clone)]
 pub struct SourceItemOrderingModuleItemGroupings {
     groups: Vec<(String, Vec<SourceItemOrderingModuleItemKind>)>,
-    lut: HashMap<SourceItemOrderingModuleItemKind, usize>,
-    back_lut: HashMap<SourceItemOrderingModuleItemKind, String>,
+    lut: FxHashMap<SourceItemOrderingModuleItemKind, usize>,
+    back_lut: FxHashMap<SourceItemOrderingModuleItemKind, String>,
 }
 
 impl SourceItemOrderingModuleItemGroupings {
     fn build_lut(
         groups: &[(String, Vec<SourceItemOrderingModuleItemKind>)],
-    ) -> HashMap<SourceItemOrderingModuleItemKind, usize> {
-        let mut lut = HashMap::new();
+    ) -> FxHashMap<SourceItemOrderingModuleItemKind, usize> {
+        let mut lut = FxHashMap::default();
         for (group_index, (_, items)) in groups.iter().enumerate() {
             for item in items {
                 lut.insert(item.clone(), group_index);
@@ -408,8 +407,8 @@ impl SourceItemOrderingModuleItemGroupings {
 
     fn build_back_lut(
         groups: &[(String, Vec<SourceItemOrderingModuleItemKind>)],
-    ) -> HashMap<SourceItemOrderingModuleItemKind, String> {
-        let mut lut = HashMap::new();
+    ) -> FxHashMap<SourceItemOrderingModuleItemKind, String> {
+        let mut lut = FxHashMap::default();
         for (group_name, items) in groups {
             for item in items {
                 lut.insert(item.clone(), group_name.clone());
@@ -452,6 +451,8 @@ impl core::fmt::Debug for SourceItemOrderingModuleItemGroupings {
 }
 
 impl<'de> Deserialize<'de> for SourceItemOrderingModuleItemGroupings {
+    #[allow(rustc::potential_query_instability)]
+    // SEE FIXME COMMENT BELOW, THIS COMMENT SHOULD BE REMOVED IN THE REVIEW PROCESS
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
@@ -462,6 +463,7 @@ impl<'de> Deserialize<'de> for SourceItemOrderingModuleItemGroupings {
         let back_lut = Self::build_back_lut(&groups);
 
         let mut expected_items = SourceItemOrderingModuleItemKind::all_variants();
+        // FIXME: Is this fine? Reviewer help needed
         for item in lut.keys() {
             expected_items.retain(|i| i != item);
         }

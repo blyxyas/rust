@@ -7,13 +7,13 @@ use crate::types::{
 };
 use clippy_utils::msrvs::Msrv;
 use itertools::Itertools;
+use rustc_data_structures::fx::FxHashMap;
 use rustc_errors::Applicability;
 use rustc_session::Session;
 use rustc_span::edit_distance::edit_distance;
 use rustc_span::{BytePos, Pos, SourceFile, Span, SyntaxContext};
 use serde::de::{IgnoredAny, IntoDeserializer, MapAccess, Visitor};
 use serde::{Deserialize, Deserializer, Serialize};
-use std::collections::HashMap;
 use std::fmt::{Debug, Display, Formatter};
 use std::ops::Range;
 use std::path::PathBuf;
@@ -83,7 +83,7 @@ const DEFAULT_SOURCE_ITEM_ORDERING: &[SourceItemOrderingCategory] = {
 #[derive(Default)]
 struct TryConf {
     conf: Conf,
-    value_spans: HashMap<String, Range<usize>>,
+    value_spans: FxHashMap<String, Range<usize>>,
     errors: Vec<ConfError>,
     warnings: Vec<ConfError>,
 }
@@ -92,7 +92,7 @@ impl TryConf {
     fn from_toml_error(file: &SourceFile, error: &toml::de::Error) -> Self {
         Self {
             conf: Conf::default(),
-            value_spans: HashMap::default(),
+            value_spans: FxHashMap::default(),
             errors: vec![ConfError::from_toml(file, error)],
             warnings: vec![],
         }
@@ -261,7 +261,7 @@ macro_rules! define_Conf {
             }
 
             fn visit_map<V>(self, mut map: V) -> Result<Self::Value, V::Error> where V: MapAccess<'de> {
-                let mut value_spans = HashMap::new();
+                let mut value_spans = FxHashMap::default();
                 let mut errors = Vec::new();
                 let mut warnings = Vec::new();
 
