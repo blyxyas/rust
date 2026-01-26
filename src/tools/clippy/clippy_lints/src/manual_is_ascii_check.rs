@@ -59,12 +59,12 @@ declare_clippy_lint! {
 }
 impl_lint_pass!(ManualIsAsciiCheck => [MANUAL_IS_ASCII_CHECK]);
 
-pub struct ManualIsAsciiCheck {
+pub(crate) struct ManualIsAsciiCheck {
     msrv: Msrv,
 }
 
 impl ManualIsAsciiCheck {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self { msrv: conf.msrv }
     }
 }

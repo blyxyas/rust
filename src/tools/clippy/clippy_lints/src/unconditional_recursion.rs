@@ -72,7 +72,7 @@ declare_clippy_lint! {
 }
 
 #[derive(Default)]
-pub struct UnconditionalRecursion {
+pub(crate) struct UnconditionalRecursion {
     /// The key is the `DefId` of the type implementing the `Default` trait and the value is the
     /// `DefId` of the return call.
     default_impl_for_type: FxHashMap<DefId, DefId>,

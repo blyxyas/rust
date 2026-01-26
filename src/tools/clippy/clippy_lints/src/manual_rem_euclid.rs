@@ -35,12 +35,12 @@ declare_clippy_lint! {
     "manually reimplementing `rem_euclid`"
 }
 
-pub struct ManualRemEuclid {
+pub(crate) struct ManualRemEuclid {
     msrv: Msrv,
 }
 
 impl ManualRemEuclid {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self { msrv: conf.msrv }
     }
 }

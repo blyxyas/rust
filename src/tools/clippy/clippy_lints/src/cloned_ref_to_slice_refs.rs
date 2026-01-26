@@ -44,11 +44,11 @@ declare_clippy_lint! {
     "cloning a reference for slice references"
 }
 
-pub struct ClonedRefToSliceRefs<'a> {
+pub(crate) struct ClonedRefToSliceRefs<'a> {
     msrv: &'a Msrv,
 }
 impl<'a> ClonedRefToSliceRefs<'a> {
-    pub fn new(conf: &'a Conf) -> Self {
+    pub(crate) fn new(conf: &'a Conf) -> Self {
         Self { msrv: &conf.msrv }
     }
 }

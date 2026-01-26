@@ -813,12 +813,12 @@ declare_clippy_lint! {
     "casting a primitive method pointer to any integer type"
 }
 
-pub struct Casts {
+pub(crate) struct Casts {
     msrv: Msrv,
 }
 
 impl Casts {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self { msrv: conf.msrv }
     }
 }

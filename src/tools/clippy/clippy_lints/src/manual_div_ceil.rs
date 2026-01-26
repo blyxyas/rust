@@ -39,13 +39,13 @@ declare_clippy_lint! {
     "manually reimplementing `div_ceil`"
 }
 
-pub struct ManualDivCeil {
+pub(crate) struct ManualDivCeil {
     msrv: Msrv,
 }
 
 impl ManualDivCeil {
     #[must_use]
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self { msrv: conf.msrv }
     }
 }

@@ -149,7 +149,7 @@ impl_lint_pass!(Dereferencing<'_> => [
 ]);
 
 #[derive(Default)]
-pub struct Dereferencing<'tcx> {
+pub(crate) struct Dereferencing<'tcx> {
     state: Option<(State, StateData<'tcx>)>,
 
     // While parsing a `deref` method call in ufcs form, the path to the function is itself an

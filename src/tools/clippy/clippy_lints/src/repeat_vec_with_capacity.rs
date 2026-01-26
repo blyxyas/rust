@@ -12,12 +12,12 @@ use rustc_lint::{LateContext, LateLintPass};
 use rustc_session::impl_lint_pass;
 use rustc_span::{Span, sym};
 
-pub struct RepeatVecWithCapacity {
+pub(crate) struct RepeatVecWithCapacity {
     msrv: Msrv,
 }
 
 impl RepeatVecWithCapacity {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self { msrv: conf.msrv }
     }
 }

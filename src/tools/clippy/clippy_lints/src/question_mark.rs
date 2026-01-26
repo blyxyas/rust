@@ -51,7 +51,7 @@ declare_clippy_lint! {
     "checks for expressions that could be replaced by the `?` operator"
 }
 
-pub struct QuestionMark {
+pub(crate) struct QuestionMark {
     pub(crate) msrv: Msrv,
     pub(crate) matches_behaviour: MatchLintBehaviour,
     /// Keeps track of how many try blocks we are in at any point during linting.
@@ -68,7 +68,7 @@ pub struct QuestionMark {
 impl_lint_pass!(QuestionMark => [QUESTION_MARK, MANUAL_LET_ELSE]);
 
 impl QuestionMark {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self {
             msrv: conf.msrv,
             matches_behaviour: conf.matches_for_let_else,

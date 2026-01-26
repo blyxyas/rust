@@ -9,12 +9,12 @@ use rustc_lint::{LateContext, LateLintPass};
 use rustc_session::impl_lint_pass;
 use rustc_span::Symbol;
 
-pub struct LinesFilterMapOk {
+pub(crate) struct LinesFilterMapOk {
     msrv: Msrv,
 }
 
 impl LinesFilterMapOk {
-    pub fn new(conf: &Conf) -> Self {
+    pub(crate) fn new(conf: &Conf) -> Self {
         Self { msrv: conf.msrv }
     }
 }

@@ -1006,13 +1006,13 @@ declare_clippy_lint! {
     "find manual implementations of `.ok()` or `.err()` on `Result`"
 }
 
-pub struct Matches {
+pub(crate) struct Matches {
     msrv: Msrv,
     infallible_destructuring_match_linted: bool,
 }
 
 impl Matches {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self {
             msrv: conf.msrv,
             infallible_destructuring_match_linted: false,

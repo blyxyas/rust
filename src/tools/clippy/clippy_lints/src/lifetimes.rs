@@ -124,12 +124,12 @@ declare_clippy_lint! {
     "unused lifetimes in function definitions"
 }
 
-pub struct Lifetimes {
+pub(crate) struct Lifetimes {
     msrv: Msrv,
 }
 
 impl Lifetimes {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self { msrv: conf.msrv }
     }
 }

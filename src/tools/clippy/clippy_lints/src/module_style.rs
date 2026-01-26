@@ -67,14 +67,14 @@ declare_clippy_lint! {
 
 impl_lint_pass!(ModStyle => [MOD_MODULE_FILES, SELF_NAMED_MODULE_FILES]);
 
-pub struct ModState {
+pub(crate) struct ModState {
     contains_external: bool,
     has_path_attr: bool,
     mod_file: Arc<SourceFile>,
 }
 
 #[derive(Default)]
-pub struct ModStyle {
+pub(crate) struct ModStyle {
     working_dir: Option<PathBuf>,
     module_stack: Vec<ModState>,
 }

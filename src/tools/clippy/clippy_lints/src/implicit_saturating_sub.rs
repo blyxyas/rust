@@ -75,14 +75,14 @@ declare_clippy_lint! {
     "Check if a variable is smaller than another one and still subtract from it even if smaller"
 }
 
-pub struct ImplicitSaturatingSub {
+pub(crate) struct ImplicitSaturatingSub {
     msrv: Msrv,
 }
 
 impl_lint_pass!(ImplicitSaturatingSub => [IMPLICIT_SATURATING_SUB, INVERTED_SATURATING_SUB]);
 
 impl ImplicitSaturatingSub {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self { msrv: conf.msrv }
     }
 }

@@ -26,9 +26,9 @@ declare_clippy_lint! {
     /// ```rust,ignore
     /// // lib.rs
     /// pub mod a {
-    ///     pub struct X;
+    ///     pub(crate) struct X;
     ///     impl X {
-    ///         pub fn run(&self) {
+    ///         pub(crate) fn run(&self) {
     ///             if true {
     ///                 // etc...
     ///             }
@@ -45,9 +45,9 @@ declare_clippy_lint! {
     ///     }
     /// }
     ///
-    /// pub struct X;
+    /// pub(crate) struct X;
     /// impl X {
-    ///     pub fn run(&self) {
+    ///     pub(crate) fn run(&self) {
     ///         private_run(self);
     ///     }
     /// }
@@ -63,20 +63,20 @@ declare_clippy_lint! {
 }
 impl_lint_pass!(ExcessiveNesting => [EXCESSIVE_NESTING]);
 
-pub struct ExcessiveNesting {
+pub(crate) struct ExcessiveNesting {
     pub excessive_nesting_threshold: u64,
     pub nodes: NodeSet,
 }
 
 impl ExcessiveNesting {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self {
             excessive_nesting_threshold: conf.excessive_nesting_threshold,
             nodes: NodeSet::default(),
         }
     }
 
-    pub fn check_node_id(&self, cx: &EarlyContext<'_>, span: Span, node_id: NodeId) {
+    pub(crate) fn check_node_id(&self, cx: &EarlyContext<'_>, span: Span, node_id: NodeId) {
         if self.nodes.contains(&node_id) {
             span_lint_and_help(
                 cx,

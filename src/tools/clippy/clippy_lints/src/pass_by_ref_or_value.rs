@@ -101,14 +101,14 @@ declare_clippy_lint! {
     "functions taking large arguments by value"
 }
 
-pub struct PassByRefOrValue {
+pub(crate) struct PassByRefOrValue {
     ref_min_size: u64,
     value_max_size: u64,
     avoid_breaking_exported_api: bool,
 }
 
 impl PassByRefOrValue {
-    pub fn new(tcx: TyCtxt<'_>, conf: &'static Conf) -> Self {
+    pub(crate) fn new(tcx: TyCtxt<'_>, conf: &'static Conf) -> Self {
         let ref_min_size = conf
             .trivial_copy_size_limit
             .unwrap_or_else(|| u64::from(tcx.sess.target.pointer_width / 8));

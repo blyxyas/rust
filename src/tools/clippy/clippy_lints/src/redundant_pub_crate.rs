@@ -27,7 +27,7 @@ declare_clippy_lint! {
     /// private visibility
     /// ```no_run
     /// mod internal {
-    ///     pub fn internal_fn() { }
+    ///     pub(crate) fn internal_fn() { }
     /// }
     /// ```
     #[clippy::version = "1.44.0"]
@@ -37,7 +37,7 @@ declare_clippy_lint! {
 }
 
 #[derive(Default)]
-pub struct RedundantPubCrate {
+pub(crate) struct RedundantPubCrate {
     is_exported: Vec<bool>,
 }
 

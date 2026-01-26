@@ -74,7 +74,7 @@ declare_clippy_lint! {
 }
 
 #[derive(Default)]
-pub struct NoEffect {
+pub(crate) struct NoEffect {
     underscore_bindings: HirIdMap<Span>,
     local_bindings: Vec<Vec<HirId>>,
 }

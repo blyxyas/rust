@@ -198,7 +198,7 @@ enum IndexEntry<'hir> {
 }
 
 impl<'hir> IndexEntry<'hir> {
-    pub fn slice(&self) -> &'hir Expr<'hir> {
+    pub(crate) fn slice(&self) -> &'hir Expr<'hir> {
         match self {
             IndexEntry::StrayAssert { slice, .. }
             | IndexEntry::AssertWithIndex { slice, .. }
@@ -206,7 +206,7 @@ impl<'hir> IndexEntry<'hir> {
         }
     }
 
-    pub fn index_spans(&self) -> Option<&[Span]> {
+    pub(crate) fn index_spans(&self) -> Option<&[Span]> {
         match self {
             IndexEntry::StrayAssert { .. } => None,
             IndexEntry::AssertWithIndex { indexes, .. } | IndexEntry::IndexWithoutAssert { indexes, .. } => {

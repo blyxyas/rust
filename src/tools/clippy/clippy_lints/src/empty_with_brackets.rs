@@ -83,7 +83,7 @@ enum Usage {
 }
 
 #[derive(Default)]
-pub struct EmptyWithBrackets {
+pub(crate) struct EmptyWithBrackets {
     // Value holds `Usage::Used` if the empty tuple variant was used as a function
     empty_tuple_enum_variants: FxIndexMap<LocalDefId, Usage>,
 }

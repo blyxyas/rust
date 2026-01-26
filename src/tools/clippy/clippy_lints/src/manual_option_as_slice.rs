@@ -41,12 +41,12 @@ declare_clippy_lint! {
     "manual `Option::as_slice`"
 }
 
-pub struct ManualOptionAsSlice {
+pub(crate) struct ManualOptionAsSlice {
     msrv: Msrv,
 }
 
 impl ManualOptionAsSlice {
-    pub fn new(conf: &Conf) -> Self {
+    pub(crate) fn new(conf: &Conf) -> Self {
         Self { msrv: conf.msrv }
     }
 }

@@ -293,7 +293,7 @@ impl Params {
 }
 
 #[derive(Default)]
-pub struct OnlyUsedInRecursion {
+pub(crate) struct OnlyUsedInRecursion {
     /// Track the top-level body entered. Needed to delay reporting when entering nested bodies.
     entered_body: Option<HirId>,
     params: Params,

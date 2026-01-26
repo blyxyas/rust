@@ -114,7 +114,7 @@ enum RegexKind {
 }
 
 #[derive(Default)]
-pub struct Regex {
+pub(crate) struct Regex {
     definitions: DefIdMap<RegexKind>,
     loop_stack: Vec<(OwnerId, Span)>,
 }

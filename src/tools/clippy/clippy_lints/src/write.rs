@@ -238,14 +238,14 @@ declare_clippy_lint! {
     "writing a literal with a format string"
 }
 
-pub struct Write {
+pub(crate) struct Write {
     format_args: FormatArgsStorage,
     in_debug_impl: bool,
     allow_print_in_tests: bool,
 }
 
 impl Write {
-    pub fn new(conf: &'static Conf, format_args: FormatArgsStorage) -> Self {
+    pub(crate) fn new(conf: &'static Conf, format_args: FormatArgsStorage) -> Self {
         Self {
             format_args,
             in_debug_impl: false,

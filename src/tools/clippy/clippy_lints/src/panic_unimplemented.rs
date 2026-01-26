@@ -8,12 +8,12 @@ use rustc_lint::{LateContext, LateLintPass};
 use rustc_session::impl_lint_pass;
 use rustc_span::sym;
 
-pub struct PanicUnimplemented {
+pub(crate) struct PanicUnimplemented {
     allow_panic_in_tests: bool,
 }
 
 impl PanicUnimplemented {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self {
             allow_panic_in_tests: conf.allow_panic_in_tests,
         }

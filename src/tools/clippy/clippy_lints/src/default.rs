@@ -70,7 +70,7 @@ declare_clippy_lint! {
 }
 
 #[derive(Default)]
-pub struct Default {
+pub(crate) struct Default {
     // Spans linted by `field_reassign_with_default`.
     reassigned_linted: FxHashSet<Span>,
 }

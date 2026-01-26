@@ -54,13 +54,13 @@ declare_clippy_lint! {
 }
 impl_lint_pass!(AbsolutePaths => [ABSOLUTE_PATHS]);
 
-pub struct AbsolutePaths {
+pub(crate) struct AbsolutePaths {
     pub absolute_paths_max_segments: u64,
     pub absolute_paths_allowed_crates: FxHashSet<Symbol>,
 }
 
 impl AbsolutePaths {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self {
             absolute_paths_max_segments: conf.absolute_paths_max_segments,
             absolute_paths_allowed_crates: conf

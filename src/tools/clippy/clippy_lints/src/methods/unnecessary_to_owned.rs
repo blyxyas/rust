@@ -24,7 +24,7 @@ use rustc_trait_selection::traits::{Obligation, ObligationCause};
 
 use super::UNNECESSARY_TO_OWNED;
 
-pub fn check<'tcx>(
+pub(crate) fn check<'tcx>(
     cx: &LateContext<'tcx>,
     expr: &'tcx Expr<'tcx>,
     method_name: Symbol,

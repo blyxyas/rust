@@ -34,7 +34,7 @@ declare_clippy_lint! {
 impl_lint_pass!(ReserveAfterInitialization => [RESERVE_AFTER_INITIALIZATION]);
 
 #[derive(Default)]
-pub struct ReserveAfterInitialization {
+pub(crate) struct ReserveAfterInitialization {
     searcher: Option<VecReserveSearcher>,
 }
 

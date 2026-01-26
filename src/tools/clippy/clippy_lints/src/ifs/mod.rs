@@ -147,12 +147,12 @@ declare_clippy_lint! {
     "`if` statement with shared code in all blocks"
 }
 
-pub struct CopyAndPaste<'tcx> {
+pub(crate) struct CopyAndPaste<'tcx> {
     interior_mut: InteriorMut<'tcx>,
 }
 
 impl<'tcx> CopyAndPaste<'tcx> {
-    pub fn new(tcx: TyCtxt<'tcx>, conf: &'static Conf) -> Self {
+    pub(crate) fn new(tcx: TyCtxt<'tcx>, conf: &'static Conf) -> Self {
         Self {
             interior_mut: InteriorMut::new(tcx, &conf.ignore_interior_mutability),
         }

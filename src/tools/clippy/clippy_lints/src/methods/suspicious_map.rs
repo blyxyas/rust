@@ -8,7 +8,7 @@ use rustc_span::sym;
 
 use super::SUSPICIOUS_MAP;
 
-pub fn check(cx: &LateContext<'_>, expr: &hir::Expr<'_>, count_recv: &hir::Expr<'_>, map_arg: &hir::Expr<'_>) {
+pub(crate) fn check(cx: &LateContext<'_>, expr: &hir::Expr<'_>, count_recv: &hir::Expr<'_>, map_arg: &hir::Expr<'_>) {
     if cx
         .ty_based_def(count_recv)
         .opt_parent(cx)

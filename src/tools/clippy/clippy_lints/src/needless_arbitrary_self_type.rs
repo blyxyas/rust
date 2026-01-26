@@ -24,7 +24,7 @@ declare_clippy_lint! {
     /// }
     ///
     /// impl ValType {
-    ///     pub fn bytes(self: Self) -> usize {
+    ///     pub(crate) fn bytes(self: Self) -> usize {
     ///         match self {
     ///             Self::I32 | Self::F32 => 4,
     ///             Self::I64 | Self::F64 => 8,
@@ -44,7 +44,7 @@ declare_clippy_lint! {
     /// }
     ///
     /// impl ValType {
-    ///     pub fn bytes(self) -> usize {
+    ///     pub(crate) fn bytes(self) -> usize {
     ///         match self {
     ///             Self::I32 | Self::F32 => 4,
     ///             Self::I64 | Self::F64 => 8,

@@ -46,18 +46,18 @@ declare_clippy_lint! {
 
 /// `MacroRefData` includes the name of the macro.
 #[derive(Debug, Clone)]
-pub struct MacroRefData {
+pub(crate) struct MacroRefData {
     name: String,
 }
 
 impl MacroRefData {
-    pub fn new(name: String) -> Self {
+    pub(crate) fn new(name: String) -> Self {
         Self { name }
     }
 }
 
 #[derive(Default)]
-pub struct MacroUseImports {
+pub(crate) struct MacroUseImports {
     /// the actual import path used and the span of the attribute above it. The value is
     /// the location, where the lint should be emitted.
     imports: Vec<(String, Span, hir::HirId)>,

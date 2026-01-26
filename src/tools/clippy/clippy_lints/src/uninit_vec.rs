@@ -126,7 +126,7 @@ struct TargetVec<'tcx> {
 }
 
 impl TargetVec<'_> {
-    pub fn has_capacity(self) -> bool {
+    pub(crate) fn has_capacity(self) -> bool {
         !matches!(self.init_kind, Some(VecInitKind::New | VecInitKind::Default))
     }
 }
@@ -138,7 +138,7 @@ enum VecLocation<'tcx> {
 }
 
 impl<'tcx> VecLocation<'tcx> {
-    pub fn eq_expr(self, cx: &LateContext<'tcx>, expr: &'tcx Expr<'tcx>) -> bool {
+    pub(crate) fn eq_expr(self, cx: &LateContext<'tcx>, expr: &'tcx Expr<'tcx>) -> bool {
         match self {
             VecLocation::Local(hir_id) => expr.res_local_id() == Some(hir_id),
             VecLocation::Expr(self_expr) => SpanlessEq::new(cx).eq_expr(self_expr, expr),

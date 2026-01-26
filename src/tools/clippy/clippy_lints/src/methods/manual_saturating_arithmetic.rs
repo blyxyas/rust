@@ -9,7 +9,7 @@ use rustc_hir::def::Res;
 use rustc_lint::LateContext;
 use rustc_middle::ty::layout::LayoutOf;
 
-pub fn check(
+pub(crate) fn check(
     cx: &LateContext<'_>,
     expr: &hir::Expr<'_>,
     arith_lhs: &hir::Expr<'_>,

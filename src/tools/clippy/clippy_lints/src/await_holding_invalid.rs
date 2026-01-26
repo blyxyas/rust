@@ -173,7 +173,7 @@ declare_clippy_lint! {
 
 impl_lint_pass!(AwaitHolding => [AWAIT_HOLDING_LOCK, AWAIT_HOLDING_REFCELL_REF, AWAIT_HOLDING_INVALID_TYPE]);
 
-pub struct AwaitHolding {
+pub(crate) struct AwaitHolding {
     def_ids: DefIdMap<(&'static str, &'static DisallowedPathWithoutReplacement)>,
 }
 

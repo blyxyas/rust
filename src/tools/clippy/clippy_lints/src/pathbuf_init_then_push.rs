@@ -45,7 +45,7 @@ declare_clippy_lint! {
 impl_lint_pass!(PathbufThenPush<'_> => [PATHBUF_INIT_THEN_PUSH]);
 
 #[derive(Default)]
-pub struct PathbufThenPush<'tcx> {
+pub(crate) struct PathbufThenPush<'tcx> {
     searcher: Option<PathbufPushSearcher<'tcx>>,
 }
 

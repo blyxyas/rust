@@ -30,6 +30,7 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::Instant;
 use std::{env, str};
 
+use clippy_lints::explain;
 use rustc_ast as ast;
 use rustc_codegen_ssa::traits::CodegenBackend;
 use rustc_codegen_ssa::{CodegenErrors, CodegenResults};
@@ -465,6 +466,9 @@ pub enum Compilation {
 
 fn handle_explain(early_dcx: &EarlyDiagCtxt, registry: Registry, code: &str, color: ColorConfig) {
     // Allow "E0123" or "0123" form.
+    if code.starts_with("clippy") {
+        explain(code);
+    }
     let upper_cased_code = code.to_ascii_uppercase();
     if let Ok(code) = upper_cased_code.strip_prefix('E').unwrap_or(&upper_cased_code).parse::<u32>()
         && code <= ErrCode::MAX_AS_U32

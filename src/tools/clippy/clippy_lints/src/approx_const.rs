@@ -62,12 +62,12 @@ const KNOWN_CONSTS: [(f64, &str, usize, Option<RustcVersion>); 19] = [
     (f64::TAU, "TAU", 3, Some(msrvs::TAU)),
 ];
 
-pub struct ApproxConstant {
+pub(crate) struct ApproxConstant {
     msrv: Msrv,
 }
 
 impl ApproxConstant {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self { msrv: conf.msrv }
     }
 }

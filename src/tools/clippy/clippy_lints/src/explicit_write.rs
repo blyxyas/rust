@@ -39,12 +39,12 @@ declare_clippy_lint! {
     "using the `write!()` family of functions instead of the `print!()` family of functions, when using the latter would work"
 }
 
-pub struct ExplicitWrite {
+pub(crate) struct ExplicitWrite {
     format_args: FormatArgsStorage,
 }
 
 impl ExplicitWrite {
-    pub fn new(format_args: FormatArgsStorage) -> Self {
+    pub(crate) fn new(format_args: FormatArgsStorage) -> Self {
         Self { format_args }
     }
 }

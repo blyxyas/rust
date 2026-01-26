@@ -124,7 +124,7 @@ declare_clippy_lint! {
     ///
     /// ### Example
     /// ```rust,ignore
-    /// pub fn foo(x: *const u8) {
+    /// pub(crate) fn foo(x: *const u8) {
     ///     println!("{}", unsafe { *x });
     /// }
     ///
@@ -216,7 +216,7 @@ declare_clippy_lint! {
     /// ### Examples
     /// ```no_run
     /// // this could be annotated with `#[must_use]`.
-    /// pub fn id<T>(t: T) -> T { t }
+    /// pub(crate) fn id<T>(t: T) -> T { t }
     /// ```
     #[clippy::version = "1.40.0"]
     pub MUST_USE_CANDIDATE,
@@ -243,14 +243,14 @@ declare_clippy_lint! {
     ///
     /// ### Examples
     /// ```no_run
-    /// pub fn read_u8() -> Result<u8, ()> { Err(()) }
+    /// pub(crate) fn read_u8() -> Result<u8, ()> { Err(()) }
     /// ```
     /// should become
     /// ```rust,should_panic
     /// use std::fmt;
     ///
     /// #[derive(Debug)]
-    /// pub struct EndOfStream;
+    /// pub(crate) struct EndOfStream;
     ///
     /// impl fmt::Display for EndOfStream {
     ///     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -260,7 +260,7 @@ declare_clippy_lint! {
     ///
     /// impl std::error::Error for EndOfStream { }
     ///
-    /// pub fn read_u8() -> Result<u8, EndOfStream> { Err(EndOfStream) }
+    /// pub(crate) fn read_u8() -> Result<u8, EndOfStream> { Err(EndOfStream) }
     ///# fn main() {
     ///#     read_u8().unwrap();
     ///# }
@@ -300,7 +300,7 @@ declare_clippy_lint! {
     /// }
     ///
     /// // The `Result` has at least 512 bytes, even in the `Ok`-case
-    /// pub fn parse() -> Result<(), ParseError> {
+    /// pub(crate) fn parse() -> Result<(), ParseError> {
     ///     Ok(())
     /// }
     /// ```
@@ -312,7 +312,7 @@ declare_clippy_lint! {
     /// }
     ///
     /// // The `Result` is slightly larger than a pointer
-    /// pub fn parse() -> Result<(), ParseError> {
+    /// pub(crate) fn parse() -> Result<(), ParseError> {
     ///     Ok(())
     /// }
     /// ```
@@ -481,7 +481,7 @@ impl EarlyLintPass for EarlyFunctions {
     }
 }
 
-pub struct Functions {
+pub(crate) struct Functions {
     too_many_arguments_threshold: u64,
     too_many_lines_threshold: u64,
     large_error_threshold: u64,
@@ -493,7 +493,7 @@ pub struct Functions {
 }
 
 impl Functions {
-    pub fn new(tcx: TyCtxt<'_>, conf: &'static Conf) -> Self {
+    pub(crate) fn new(tcx: TyCtxt<'_>, conf: &'static Conf) -> Self {
         Self {
             too_many_arguments_threshold: conf.too_many_arguments_threshold,
             too_many_lines_threshold: conf.too_many_lines_threshold,

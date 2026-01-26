@@ -79,7 +79,7 @@ fn check_duplicated_attr(
     }
 }
 
-pub fn check(cx: &EarlyContext<'_>, attrs: &[Attribute]) {
+pub(crate) fn check(cx: &EarlyContext<'_>, attrs: &[Attribute]) {
     let mut attr_paths = FxHashMap::default();
 
     for attr in attrs {

@@ -11,7 +11,7 @@ use rustc_session::impl_lint_pass;
 use rustc_span::{Span, Symbol};
 use {rustc_ast as ast, rustc_hir as hir};
 
-pub struct ArithmeticSideEffects {
+pub(crate) struct ArithmeticSideEffects {
     allowed_binary: FxHashMap<&'static str, FxHashSet<&'static str>>,
     allowed_unary: FxHashSet<&'static str>,
     // Used to check whether expressions are constants, such as in enum discriminants and consts
@@ -23,7 +23,7 @@ pub struct ArithmeticSideEffects {
 impl_lint_pass!(ArithmeticSideEffects => [ARITHMETIC_SIDE_EFFECTS]);
 
 impl ArithmeticSideEffects {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         let mut allowed_binary = FxHashMap::<&'static str, FxHashSet<&'static str>>::default();
         let mut allowed_unary = FxHashSet::<&'static str>::default();
 

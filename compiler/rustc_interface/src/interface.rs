@@ -503,7 +503,9 @@ pub fn run_compiler<R: Send>(config: Config, f: impl FnOnce(&Compiler) -> R + Se
             let mut lint_store = rustc_lint::new_lint_store(sess.enable_internal_lints());
 
             if sess.opts.lint_opts.iter().any(|e| e.0.starts_with("clippy")) {
-                clippy_lints
+                let conf_path = clippy_config::lookup_conf_file();
+                let conf = clippy_config::Conf::read(&sess, &conf_path);
+                clippy_lints::register_lint_passes(&mut lint_store, conf)
             }
 
             if let Some(register_lints) = config.register_lints.as_deref() {

@@ -61,7 +61,7 @@ declare_clippy_lint! {
     "lossy whole number float literals"
 }
 
-pub struct FloatLiteral {
+pub(crate) struct FloatLiteral {
     const_literal_digits_threshold: usize,
 }
 
@@ -70,7 +70,7 @@ impl_lint_pass!(FloatLiteral => [
 ]);
 
 impl FloatLiteral {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self {
             const_literal_digits_threshold: conf.const_literal_digits_threshold,
         }

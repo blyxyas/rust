@@ -70,14 +70,14 @@ enum Variant {
 }
 
 impl Variant {
-    pub fn lint(self) -> &'static Lint {
+    pub(crate) fn lint(self) -> &'static Lint {
         match self {
             Self::ManualIsInfinite => MANUAL_IS_INFINITE,
             Self::ManualIsFinite => MANUAL_IS_FINITE,
         }
     }
 
-    pub fn msg(self) -> &'static str {
+    pub(crate) fn msg(self) -> &'static str {
         match self {
             Self::ManualIsInfinite => "manually checking if a float is infinite",
             Self::ManualIsFinite => "manually checking if a float is finite",
@@ -85,12 +85,12 @@ impl Variant {
     }
 }
 
-pub struct ManualFloatMethods {
+pub(crate) struct ManualFloatMethods {
     msrv: Msrv,
 }
 
 impl ManualFloatMethods {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self { msrv: conf.msrv }
     }
 }

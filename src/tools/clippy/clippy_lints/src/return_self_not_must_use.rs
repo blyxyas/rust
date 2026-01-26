@@ -27,10 +27,10 @@ declare_clippy_lint! {
     ///
     /// ### Example
     /// ```no_run
-    /// pub struct Bar;
+    /// pub(crate) struct Bar;
     /// impl Bar {
     ///     // Missing attribute
-    ///     pub fn bar(&self) -> Self {
+    ///     pub(crate) fn bar(&self) -> Self {
     ///         Self
     ///     }
     /// }
@@ -40,10 +40,10 @@ declare_clippy_lint! {
     /// ```no_run
     /// # {
     /// // It's better to have the `#[must_use]` attribute on the method like this:
-    /// pub struct Bar;
+    /// pub(crate) struct Bar;
     /// impl Bar {
     ///     #[must_use]
-    ///     pub fn bar(&self) -> Self {
+    ///     pub(crate) fn bar(&self) -> Self {
     ///         Self
     ///     }
     /// }
@@ -52,9 +52,9 @@ declare_clippy_lint! {
     /// # {
     /// // Or on the type definition like this:
     /// #[must_use]
-    /// pub struct Bar;
+    /// pub(crate) struct Bar;
     /// impl Bar {
-    ///     pub fn bar(&self) -> Self {
+    ///     pub(crate) fn bar(&self) -> Self {
     ///         Self
     ///     }
     /// }

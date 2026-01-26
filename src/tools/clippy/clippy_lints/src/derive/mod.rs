@@ -132,12 +132,12 @@ declare_clippy_lint! {
     /// use serde::Deserialize;
     ///
     /// #[derive(Deserialize)]
-    /// pub struct Foo {
+    /// pub(crate) struct Foo {
     ///     // ..
     /// }
     ///
     /// impl Foo {
-    ///     pub fn new() -> Self {
+    ///     pub(crate) fn new() -> Self {
     ///         // setup here ..
     ///     }
     ///

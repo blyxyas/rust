@@ -49,12 +49,12 @@ declare_clippy_lint! {
 
 impl_lint_pass!(MultipleInherentImpl => [MULTIPLE_INHERENT_IMPL]);
 
-pub struct MultipleInherentImpl {
+pub(crate) struct MultipleInherentImpl {
     scope: InherentImplLintScope,
 }
 
 impl MultipleInherentImpl {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self {
             scope: conf.inherent_impl_lint_scope,
         }

@@ -70,12 +70,12 @@ declare_clippy_lint! {
     "finds unchecked subtraction involving 'Duration' or 'Instant'"
 }
 
-pub struct UncheckedTimeSubtraction {
+pub(crate) struct UncheckedTimeSubtraction {
     msrv: Msrv,
 }
 
 impl UncheckedTimeSubtraction {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self { msrv: conf.msrv }
     }
 }

@@ -11,7 +11,7 @@ use rustc_span::symbol::sym;
 
 use super::INEFFICIENT_TO_STRING;
 
-pub fn check(cx: &LateContext<'_>, expr: &hir::Expr<'_>, receiver: &hir::Expr<'_>, msrv: Msrv) {
+pub(crate) fn check(cx: &LateContext<'_>, expr: &hir::Expr<'_>, receiver: &hir::Expr<'_>, msrv: Msrv) {
     if let Some(to_string_meth_did) = cx.typeck_results().type_dependent_def_id(expr.hir_id)
         && cx.tcx.is_diagnostic_item(sym::to_string_method, to_string_meth_did)
         && let Some(args) = cx.typeck_results().node_args_opt(expr.hir_id)

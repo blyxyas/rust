@@ -78,7 +78,7 @@ enum Availability {
     Since(RustcVersion),
 }
 
-pub struct IncompatibleMsrv {
+pub(crate) struct IncompatibleMsrv {
     msrv: Msrv,
     availability_cache: FxHashMap<(DefId, bool), Availability>,
     check_in_tests: bool,
@@ -88,7 +88,7 @@ pub struct IncompatibleMsrv {
 impl_lint_pass!(IncompatibleMsrv => [INCOMPATIBLE_MSRV]);
 
 impl IncompatibleMsrv {
-    pub fn new(tcx: TyCtxt<'_>, conf: &'static Conf) -> Self {
+    pub(crate) fn new(tcx: TyCtxt<'_>, conf: &'static Conf) -> Self {
         Self {
             msrv: conf.msrv,
             availability_cache: FxHashMap::default(),

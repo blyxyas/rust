@@ -81,12 +81,12 @@ declare_clippy_lint! {
     "checks for functions that allocate a lot of stack space"
 }
 
-pub struct LargeStackFrames {
+pub(crate) struct LargeStackFrames {
     maximum_allowed_size: u64,
 }
 
 impl LargeStackFrames {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self {
             maximum_allowed_size: conf.stack_size_threshold,
         }
@@ -102,7 +102,7 @@ enum Space {
 }
 
 impl Space {
-    pub fn exceeds_limit(self, limit: u64) -> bool {
+    pub(crate) fn exceeds_limit(self, limit: u64) -> bool {
         match self {
             Self::Used(used) => used > limit,
             Self::Overflow => true,

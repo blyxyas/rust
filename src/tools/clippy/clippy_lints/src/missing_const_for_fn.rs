@@ -74,12 +74,12 @@ declare_clippy_lint! {
 
 impl_lint_pass!(MissingConstForFn => [MISSING_CONST_FOR_FN]);
 
-pub struct MissingConstForFn {
+pub(crate) struct MissingConstForFn {
     msrv: Msrv,
 }
 
 impl MissingConstForFn {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self { msrv: conf.msrv }
     }
 }

@@ -21,7 +21,7 @@ declare_clippy_lint! {
     /// /// Struct to hold two strings:
     /// /// 	- first		one
     /// /// 	- second	one
-    /// pub struct DoubleString {
+    /// pub(crate) struct DoubleString {
     ///    ///
     ///    /// 	- First String:
     ///    /// 		- needs to be inside here
@@ -39,7 +39,7 @@ declare_clippy_lint! {
     /// /// Struct to hold two strings:
     /// ///     - first        one
     /// ///     - second    one
-    /// pub struct DoubleString {
+    /// pub(crate) struct DoubleString {
     ///    ///
     ///    ///     - First String:
     ///    ///         - needs to be inside here

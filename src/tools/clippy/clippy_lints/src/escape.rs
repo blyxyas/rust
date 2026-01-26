@@ -13,12 +13,12 @@ use rustc_span::Span;
 use rustc_span::def_id::LocalDefId;
 use rustc_span::symbol::kw;
 
-pub struct BoxedLocal {
+pub(crate) struct BoxedLocal {
     too_large_for_stack: u64,
 }
 
 impl BoxedLocal {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self {
             too_large_for_stack: conf.too_large_for_stack,
         }

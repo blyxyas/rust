@@ -38,7 +38,7 @@ declare_clippy_lint! {
     /// # trait Serialize {};
     /// impl<K: Hash + Eq, V> Serialize for HashMap<K, V> { }
     ///
-    /// pub fn foo(map: &mut HashMap<i32, i32>) { }
+    /// pub(crate) fn foo(map: &mut HashMap<i32, i32>) { }
     /// ```
     /// could be rewritten as
     /// ```no_run
@@ -47,7 +47,7 @@ declare_clippy_lint! {
     /// # trait Serialize {};
     /// impl<K: Hash + Eq, V, S: BuildHasher> Serialize for HashMap<K, V, S> { }
     ///
-    /// pub fn foo<S: BuildHasher>(map: &mut HashMap<i32, i32, S>) { }
+    /// pub(crate) fn foo<S: BuildHasher>(map: &mut HashMap<i32, i32, S>) { }
     /// ```
     #[clippy::version = "pre 1.29.0"]
     pub IMPLICIT_HASHER,

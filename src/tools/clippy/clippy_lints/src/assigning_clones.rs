@@ -30,7 +30,7 @@ declare_clippy_lint! {
     ///     fn clone_from(&mut self, other: &Self) { todo!() }
     /// }
     ///
-    /// pub fn assign_to_ref(a: &mut Thing, b: Thing) {
+    /// pub(crate) fn assign_to_ref(a: &mut Thing, b: Thing) {
     ///     *a = b.clone();
     /// }
     /// ```
@@ -43,7 +43,7 @@ declare_clippy_lint! {
     ///     fn clone_from(&mut self, other: &Self) { todo!() }
     /// }
     ///
-    /// pub fn assign_to_ref(a: &mut Thing, b: Thing) {
+    /// pub(crate) fn assign_to_ref(a: &mut Thing, b: Thing) {
     ///     a.clone_from(&b);
     /// }
     /// ```
@@ -53,12 +53,12 @@ declare_clippy_lint! {
     "assigning the result of cloning may be inefficient"
 }
 
-pub struct AssigningClones {
+pub(crate) struct AssigningClones {
     msrv: Msrv,
 }
 
 impl AssigningClones {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self { msrv: conf.msrv }
     }
 }

@@ -92,7 +92,7 @@ pub enum MetavarState {
     ReferencedInSafe,
 }
 
-pub struct ExprMetavarsInUnsafe {
+pub(crate) struct ExprMetavarsInUnsafe {
     warn_unsafe_macro_metavars_in_private_macros: bool,
     /// A metavariable can be expanded more than once, potentially across multiple bodies, so it
     /// requires some state kept across HIR nodes to make it possible to delay a warning
@@ -111,7 +111,7 @@ pub struct ExprMetavarsInUnsafe {
 }
 
 impl ExprMetavarsInUnsafe {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self {
             warn_unsafe_macro_metavars_in_private_macros: conf.warn_unsafe_macro_metavars_in_private_macros,
             metavar_expns: BTreeMap::new(),

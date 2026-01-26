@@ -40,12 +40,12 @@ declare_clippy_lint! {
     @eval_always = true
 }
 
-pub struct CognitiveComplexity {
+pub(crate) struct CognitiveComplexity {
     limit: LimitStack,
 }
 
 impl CognitiveComplexity {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self {
             limit: LimitStack::new(conf.cognitive_complexity_threshold),
         }

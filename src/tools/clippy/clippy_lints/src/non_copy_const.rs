@@ -249,7 +249,7 @@ impl<'tcx> BorrowSource<'tcx> {
     }
 }
 
-pub struct NonCopyConst<'tcx> {
+pub(crate) struct NonCopyConst<'tcx> {
     ignore_tys: DefIdSet,
     // Cache checked types. We can recurse through a type multiple times so this
     // can be hit quite frequently.
@@ -259,7 +259,7 @@ pub struct NonCopyConst<'tcx> {
 impl_lint_pass!(NonCopyConst<'_> => [DECLARE_INTERIOR_MUTABLE_CONST, BORROW_INTERIOR_MUTABLE_CONST]);
 
 impl<'tcx> NonCopyConst<'tcx> {
-    pub fn new(tcx: TyCtxt<'tcx>, conf: &'static Conf) -> Self {
+    pub(crate) fn new(tcx: TyCtxt<'tcx>, conf: &'static Conf) -> Self {
         Self {
             ignore_tys: conf
                 .ignore_interior_mutability

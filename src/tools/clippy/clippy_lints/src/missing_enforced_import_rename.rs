@@ -46,12 +46,12 @@ declare_clippy_lint! {
     "enforce import renames"
 }
 
-pub struct ImportRename {
+pub(crate) struct ImportRename {
     renames: DefIdMap<Symbol>,
 }
 
 impl ImportRename {
-    pub fn new(tcx: TyCtxt<'_>, conf: &'static Conf) -> Self {
+    pub(crate) fn new(tcx: TyCtxt<'_>, conf: &'static Conf) -> Self {
         Self {
             renames: conf
                 .enforced_import_renames

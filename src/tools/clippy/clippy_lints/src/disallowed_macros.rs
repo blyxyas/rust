@@ -63,7 +63,7 @@ declare_clippy_lint! {
     "use of a disallowed macro"
 }
 
-pub struct DisallowedMacros {
+pub(crate) struct DisallowedMacros {
     disallowed: DefIdMap<(&'static str, &'static DisallowedPath)>,
     seen: FxHashSet<ExpnId>,
     // Track the most recently seen node that can have a `derive` attribute.
@@ -76,7 +76,7 @@ pub struct DisallowedMacros {
 }
 
 impl DisallowedMacros {
-    pub fn new(tcx: TyCtxt<'_>, conf: &'static Conf, early_macro_cache: AttrStorage) -> Self {
+    pub(crate) fn new(tcx: TyCtxt<'_>, conf: &'static Conf, early_macro_cache: AttrStorage) -> Self {
         let (disallowed, _) = create_disallowed_map(
             tcx,
             &conf.disallowed_macros,

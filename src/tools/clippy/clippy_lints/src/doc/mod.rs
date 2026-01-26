@@ -156,14 +156,14 @@ declare_clippy_lint! {
     /// ///
     /// /// Will return `Err` if `filename` does not exist or the user does not have
     /// /// permission to read it.
-    /// pub fn read(filename: String) -> io::Result<String> {
+    /// pub(crate) fn read(filename: String) -> io::Result<String> {
     ///     unimplemented!();
     /// }
     /// ```
     #[clippy::version = "1.41.0"]
     pub MISSING_ERRORS_DOC,
     pedantic,
-    "`pub fn` returns `Result` without `# Errors` in doc comment"
+    "`pub(crate) fn` returns `Result` without `# Errors` in doc comment"
 }
 
 declare_clippy_lint! {
@@ -183,7 +183,7 @@ declare_clippy_lint! {
     /// /// # Panics
     /// ///
     /// /// Will panic if y is 0
-    /// pub fn divide_by(x: i32, y: i32) -> i32 {
+    /// pub(crate) fn divide_by(x: i32, y: i32) -> i32 {
     ///     if y == 0 {
     ///         panic!("Cannot divide by 0")
     ///     } else {
@@ -197,7 +197,7 @@ declare_clippy_lint! {
     ///
     /// ```no_run
     /// # use std::num::NonZeroUsize;
-    /// pub fn will_not_panic(x: usize) {
+    /// pub(crate) fn will_not_panic(x: usize) {
     ///     #[expect(clippy::missing_panics_doc, reason = "infallible")]
     ///     let y = NonZeroUsize::new(1).unwrap();
     ///
@@ -207,7 +207,7 @@ declare_clippy_lint! {
     #[clippy::version = "1.51.0"]
     pub MISSING_PANICS_DOC,
     pedantic,
-    "`pub fn` may panic without `# Panics` in doc comment"
+    "`pub(crate) fn` may panic without `# Panics` in doc comment"
 }
 
 declare_clippy_lint! {
@@ -309,13 +309,13 @@ declare_clippy_lint! {
     /// ```no_run
     /// /// [example of a bad link](https://
     /// /// github.com/rust-lang/rust-clippy/)
-    /// pub fn do_something() {}
+    /// pub(crate) fn do_something() {}
     /// ```
     ///
     /// It shouldn't be broken across multiple lines to work:
     /// ```no_run
     /// /// [example of a good link](https://github.com/rust-lang/rust-clippy/)
-    /// pub fn do_something() {}
+    /// pub(crate) fn do_something() {}
     /// ```
     #[clippy::version = "1.90.0"]
     pub DOC_BROKEN_LINK,
@@ -338,7 +338,7 @@ declare_clippy_lint! {
     /// /// # Safety
     /// ///
     /// /// This function should not be called before the horsemen are ready.
-    /// pub fn start_apocalypse_but_safely(u: &mut Universe) {
+    /// pub(crate) fn start_apocalypse_but_safely(u: &mut Universe) {
     ///     unimplemented!();
     /// }
     /// ```
@@ -349,14 +349,14 @@ declare_clippy_lint! {
     /// ```no_run
     ///# type Universe = ();
     /// /// This function should really be documented
-    /// pub fn start_apocalypse(u: &mut Universe) {
+    /// pub(crate) fn start_apocalypse(u: &mut Universe) {
     ///     unimplemented!();
     /// }
     /// ```
     #[clippy::version = "1.67.0"]
     pub UNNECESSARY_SAFETY_DOC,
     restriction,
-    "`pub fn` or `pub trait` with `# Safety` docs"
+    "`pub(crate) fn` or `pub trait` with `# Safety` docs"
 }
 
 declare_clippy_lint! {
@@ -388,7 +388,7 @@ declare_clippy_lint! {
     /// pub mod util {
     ///     ///! This module contains utility functions.
     ///
-    ///     pub fn dummy() {}
+    ///     pub(crate) fn dummy() {}
     /// }
     /// ```
     ///
@@ -397,7 +397,7 @@ declare_clippy_lint! {
     /// pub mod util {
     ///     //! This module contains utility functions.
     ///
-    ///     pub fn dummy() {}
+    ///     pub(crate) fn dummy() {}
     /// }
     /// ```
     #[clippy::version = "1.70.0"]
@@ -670,13 +670,13 @@ declare_clippy_lint! {
     "looks like a link or footnote ref, but with no definition"
 }
 
-pub struct Documentation {
+pub(crate) struct Documentation {
     valid_idents: FxHashSet<String>,
     check_private_items: bool,
 }
 
 impl Documentation {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self {
             valid_idents: conf.doc_valid_idents.iter().cloned().collect(),
             check_private_items: conf.check_private_items,

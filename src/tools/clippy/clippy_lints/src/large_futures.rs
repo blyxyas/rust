@@ -40,12 +40,12 @@ declare_clippy_lint! {
     "large future may lead to unexpected stack overflows"
 }
 
-pub struct LargeFuture {
+pub(crate) struct LargeFuture {
     future_size_threshold: u64,
 }
 
 impl LargeFuture {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self {
             future_size_threshold: conf.future_size_threshold,
         }

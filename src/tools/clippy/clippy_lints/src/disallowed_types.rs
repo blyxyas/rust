@@ -57,13 +57,13 @@ declare_clippy_lint! {
     "use of disallowed types"
 }
 
-pub struct DisallowedTypes {
+pub(crate) struct DisallowedTypes {
     def_ids: DefIdMap<(&'static str, &'static DisallowedPath)>,
     prim_tys: FxHashMap<PrimTy, (&'static str, &'static DisallowedPath)>,
 }
 
 impl DisallowedTypes {
-    pub fn new(tcx: TyCtxt<'_>, conf: &'static Conf) -> Self {
+    pub(crate) fn new(tcx: TyCtxt<'_>, conf: &'static Conf) -> Self {
         let (def_ids, prim_tys) = create_disallowed_map(
             tcx,
             &conf.disallowed_types,
@@ -91,7 +91,7 @@ impl DisallowedTypes {
     }
 }
 
-pub fn def_kind_predicate(def_kind: DefKind) -> bool {
+pub(crate) fn def_kind_predicate(def_kind: DefKind) -> bool {
     matches!(
         def_kind,
         DefKind::Struct

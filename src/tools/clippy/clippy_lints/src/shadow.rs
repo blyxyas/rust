@@ -193,7 +193,7 @@ fn is_shadow(cx: &LateContext<'_>, owner: LocalDefId, first: ItemLocalId, second
 ///
 /// This is a version of [`is_local_used`](clippy_utils::visitors::is_local_used), used to
 /// implement the fix for <https://github.com/rust-lang/rust-clippy/issues/10780>.
-pub fn is_local_used_except<'tcx>(
+pub(crate) fn is_local_used_except<'tcx>(
     cx: &LateContext<'tcx>,
     visitable: impl Visitable<'tcx>,
     id: HirId,

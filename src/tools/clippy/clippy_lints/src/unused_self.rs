@@ -36,14 +36,14 @@ declare_clippy_lint! {
     "methods that contain a `self` argument but don't use it"
 }
 
-pub struct UnusedSelf {
+pub(crate) struct UnusedSelf {
     avoid_breaking_exported_api: bool,
 }
 
 impl_lint_pass!(UnusedSelf => [UNUSED_SELF]);
 
 impl UnusedSelf {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self {
             avoid_breaking_exported_api: conf.avoid_breaking_exported_api,
         }

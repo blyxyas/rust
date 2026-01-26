@@ -15,7 +15,8 @@
     clippy::must_use_candidate,
     rustc::diagnostic_outside_of_impl,
     rustc::untranslatable_diagnostic,
-    clippy::literal_string_with_formatting_args
+    clippy::literal_string_with_formatting_args,
+    unreachable_pub
 )]
 #![warn(
     trivial_casts,
@@ -26,8 +27,7 @@
     rustc::internal
 )]
 
-pub(crate) use rustc_span;
-pub(crate) use rustc_lint;
+pub(crate) use {rustc_lint, rustc_span};
 
 #[macro_use]
 extern crate clippy_utils;

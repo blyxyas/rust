@@ -40,12 +40,12 @@ declare_clippy_lint! {
     "unused type parameters in function definitions"
 }
 
-pub struct ExtraUnusedTypeParameters {
+pub(crate) struct ExtraUnusedTypeParameters {
     avoid_breaking_exported_api: bool,
 }
 
 impl ExtraUnusedTypeParameters {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self {
             avoid_breaking_exported_api: conf.avoid_breaking_exported_api,
         }

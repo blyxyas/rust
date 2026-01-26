@@ -44,7 +44,7 @@ pub(super) fn check_if_let<'tcx>(
 
 /// Looks for:
 /// * `matches!(expr, true)`
-pub fn check_matches_true<'tcx>(
+pub(crate) fn check_matches_true<'tcx>(
     cx: &LateContext<'tcx>,
     expr: &'tcx Expr<'_>,
     arm: &'tcx Arm<'_>,

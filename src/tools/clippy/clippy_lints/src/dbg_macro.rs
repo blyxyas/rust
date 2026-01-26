@@ -33,7 +33,7 @@ declare_clippy_lint! {
     "`dbg!` macro is intended as a debugging tool"
 }
 
-pub struct DbgMacro {
+pub(crate) struct DbgMacro {
     allow_dbg_in_tests: bool,
     /// Tracks the `dbg!` macro callsites that are already checked.
     checked_dbg_call_site: FxHashSet<Span>,
@@ -44,7 +44,7 @@ pub struct DbgMacro {
 impl_lint_pass!(DbgMacro => [DBG_MACRO]);
 
 impl DbgMacro {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         DbgMacro {
             allow_dbg_in_tests: conf.allow_dbg_in_tests,
             checked_dbg_call_site: FxHashSet::default(),

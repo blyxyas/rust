@@ -71,7 +71,7 @@ declare_clippy_lint! {
     /// ### Example
     /// ```ignore
     /// impl X {
-    ///     pub fn len(&self) -> usize {
+    ///     pub(crate) fn len(&self) -> usize {
     ///         ..
     ///     }
     /// }

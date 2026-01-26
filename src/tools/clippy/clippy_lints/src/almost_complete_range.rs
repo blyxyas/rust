@@ -30,11 +30,11 @@ declare_clippy_lint! {
 }
 impl_lint_pass!(AlmostCompleteRange => [ALMOST_COMPLETE_RANGE]);
 
-pub struct AlmostCompleteRange {
+pub(crate) struct AlmostCompleteRange {
     msrv: MsrvStack,
 }
 impl AlmostCompleteRange {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self {
             msrv: MsrvStack::new(conf.msrv),
         }

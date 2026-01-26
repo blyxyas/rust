@@ -6,7 +6,7 @@ use rustc_errors::Applicability;
 use rustc_lint::{EarlyContext, LintContext};
 
 // Separate each crate's features.
-pub fn check<'cx>(cx: &EarlyContext<'cx>, attr: &'cx Attribute) {
+pub(crate) fn check<'cx>(cx: &EarlyContext<'cx>, attr: &'cx Attribute) {
     if !attr.span.in_external_macro(cx.sess().source_map())
         && let AttrStyle::Outer = attr.style
         && let Some(ident) = attr.ident()

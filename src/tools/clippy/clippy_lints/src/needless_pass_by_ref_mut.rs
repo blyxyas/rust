@@ -51,14 +51,14 @@ declare_clippy_lint! {
     "using a `&mut` argument when it's not mutated"
 }
 
-pub struct NeedlessPassByRefMut<'tcx> {
+pub(crate) struct NeedlessPassByRefMut<'tcx> {
     avoid_breaking_exported_api: bool,
     used_fn_def_ids: FxHashSet<LocalDefId>,
     fn_def_ids_to_maybe_unused_mut: FxIndexMap<LocalDefId, Vec<rustc_hir::Ty<'tcx>>>,
 }
 
 impl NeedlessPassByRefMut<'_> {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self {
             avoid_breaking_exported_api: conf.avoid_breaking_exported_api,
             used_fn_def_ids: FxHashSet::default(),

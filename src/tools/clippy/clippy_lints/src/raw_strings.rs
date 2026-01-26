@@ -56,12 +56,12 @@ declare_clippy_lint! {
 }
 impl_lint_pass!(RawStrings => [NEEDLESS_RAW_STRINGS, NEEDLESS_RAW_STRING_HASHES]);
 
-pub struct RawStrings {
+pub(crate) struct RawStrings {
     pub allow_one_hash_in_raw_strings: bool,
 }
 
 impl RawStrings {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self {
             allow_one_hash_in_raw_strings: conf.allow_one_hash_in_raw_strings,
         }

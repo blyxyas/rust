@@ -176,7 +176,7 @@ where
     })
 }
 
-pub struct SuggInfo<'a> {
+pub(crate) struct SuggInfo<'a> {
     pub needs_brackets: bool,
     pub scrutinee_impl_copy: bool,
     pub scrutinee_str: String,
@@ -220,7 +220,7 @@ pub(super) struct SomeExpr<'tcx> {
 }
 
 impl<'tcx> SomeExpr<'tcx> {
-    pub fn new_no_negated(expr: &'tcx Expr<'tcx>, needs_unsafe_block: bool) -> Self {
+    pub(crate) fn new_no_negated(expr: &'tcx Expr<'tcx>, needs_unsafe_block: bool) -> Self {
         Self {
             expr,
             needs_unsafe_block,
@@ -228,7 +228,7 @@ impl<'tcx> SomeExpr<'tcx> {
         }
     }
 
-    pub fn to_snippet_with_context(
+    pub(crate) fn to_snippet_with_context(
         &self,
         cx: &LateContext<'tcx>,
         ctxt: SyntaxContext,

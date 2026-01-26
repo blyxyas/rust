@@ -58,12 +58,12 @@ declare_clippy_lint! {
     "large size difference between variants on an enum"
 }
 
-pub struct LargeEnumVariant {
+pub(crate) struct LargeEnumVariant {
     maximum_size_difference_allowed: u64,
 }
 
 impl LargeEnumVariant {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self {
             maximum_size_difference_allowed: conf.enum_variant_size_threshold,
         }

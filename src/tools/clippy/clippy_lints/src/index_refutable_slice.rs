@@ -53,13 +53,13 @@ declare_clippy_lint! {
     "avoid indexing on slices which could be destructed"
 }
 
-pub struct IndexRefutableSlice {
+pub(crate) struct IndexRefutableSlice {
     max_suggested_slice: u64,
     msrv: Msrv,
 }
 
 impl IndexRefutableSlice {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self {
             max_suggested_slice: conf.max_suggested_slice_pattern_length,
             msrv: conf.msrv,

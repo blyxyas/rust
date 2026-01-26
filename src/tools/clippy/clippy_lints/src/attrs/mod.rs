@@ -322,13 +322,13 @@ declare_clippy_lint! {
     /// ### Example
     /// ```no_run
     /// #[cfg(any(unix))]
-    /// pub struct Bar;
+    /// pub(crate) struct Bar;
     /// ```
     ///
     /// Use instead:
     /// ```no_run
     /// #[cfg(unix)]
-    /// pub struct Bar;
+    /// pub(crate) struct Bar;
     /// ```
     #[clippy::version = "1.71.0"]
     pub NON_MINIMAL_CFG,
@@ -398,7 +398,7 @@ declare_clippy_lint! {
     /// but they have different path symbols, for example:
     /// ```ignore
     /// #[custom_attribute]
-    /// pub fn foo() {
+    /// pub(crate) fn foo() {
     ///     #![my_crate::custom_attribute]
     /// }
     /// ```
@@ -406,7 +406,7 @@ declare_clippy_lint! {
     /// ### Example
     /// ```no_run
     /// #[cfg(linux)]
-    /// pub fn foo() {
+    /// pub(crate) fn foo() {
     ///     #![cfg(windows)]
     /// }
     /// ```
@@ -414,7 +414,7 @@ declare_clippy_lint! {
     /// ```no_run
     /// #[cfg(linux)]
     /// #[cfg(windows)]
-    /// pub fn foo() {
+    /// pub(crate) fn foo() {
     /// }
     /// ```
     #[clippy::version = "1.78.0"]
@@ -474,7 +474,7 @@ declare_clippy_lint! {
     "ignored tests without messages"
 }
 
-pub struct Attributes {
+pub(crate) struct Attributes {
     msrv: Msrv,
 }
 
@@ -484,7 +484,7 @@ impl_lint_pass!(Attributes => [
 ]);
 
 impl Attributes {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self { msrv: conf.msrv }
     }
 }
@@ -513,12 +513,12 @@ impl<'tcx> LateLintPass<'tcx> for Attributes {
     }
 }
 
-pub struct EarlyAttributes {
+pub(crate) struct EarlyAttributes {
     msrv: MsrvStack,
 }
 
 impl EarlyAttributes {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self {
             msrv: MsrvStack::new(conf.msrv),
         }
@@ -542,12 +542,12 @@ impl EarlyLintPass for EarlyAttributes {
     extract_msrv_attr!();
 }
 
-pub struct PostExpansionEarlyAttributes {
+pub(crate) struct PostExpansionEarlyAttributes {
     msrv: MsrvStack,
 }
 
 impl PostExpansionEarlyAttributes {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self {
             msrv: MsrvStack::new(conf.msrv),
         }

@@ -11,7 +11,7 @@ use std::iter;
 
 use super::MISNAMED_GETTERS;
 
-pub fn check_fn(cx: &LateContext<'_>, kind: FnKind<'_>, decl: &FnDecl<'_>, body: &Body<'_>, span: Span) {
+pub(crate) fn check_fn(cx: &LateContext<'_>, kind: FnKind<'_>, decl: &FnDecl<'_>, body: &Body<'_>, span: Span) {
     let FnKind::Method(ref ident, sig) = kind else {
         return;
     };

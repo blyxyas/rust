@@ -237,7 +237,7 @@ macro_rules! define_Conf {
 
         mod defaults {
             use super::*;
-            $(pub fn $name() -> $ty { $default })*
+            $(pub(super) fn $name() -> $ty { $default })*
         }
 
         impl Default for Conf {

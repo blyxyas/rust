@@ -96,7 +96,7 @@ struct ItemInfo {
     mod_items: Option<NodeId>,
 }
 
-pub struct EmptyLineAfter {
+pub(crate) struct EmptyLineAfter {
     items: Vec<ItemInfo>,
 }
 
@@ -106,7 +106,7 @@ impl_lint_pass!(EmptyLineAfter => [
 ]);
 
 impl EmptyLineAfter {
-    pub fn new() -> Self {
+    pub(crate) fn new() -> Self {
         Self { items: Vec::new() }
     }
 }

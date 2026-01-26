@@ -53,7 +53,7 @@ struct Modules {
 }
 
 #[derive(Default)]
-pub struct DuplicateMod {
+pub(crate) struct DuplicateMod {
     /// map from the canonicalized path to `Modules`, `BTreeMap` to make the
     /// order deterministic for tests
     modules: BTreeMap<PathBuf, Modules>,

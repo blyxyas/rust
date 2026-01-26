@@ -66,13 +66,13 @@ declare_clippy_lint! {
 }
 impl_lint_pass!(SemicolonBlock => [SEMICOLON_INSIDE_BLOCK, SEMICOLON_OUTSIDE_BLOCK]);
 
-pub struct SemicolonBlock {
+pub(crate) struct SemicolonBlock {
     semicolon_inside_block_ignore_singleline: bool,
     semicolon_outside_block_ignore_multiline: bool,
 }
 
 impl SemicolonBlock {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self {
             semicolon_inside_block_ignore_singleline: conf.semicolon_inside_block_ignore_singleline,
             semicolon_outside_block_ignore_multiline: conf.semicolon_outside_block_ignore_multiline,

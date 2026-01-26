@@ -39,13 +39,13 @@ declare_clippy_lint! {
     "capitalized acronyms are against the naming convention"
 }
 
-pub struct UpperCaseAcronyms {
+pub(crate) struct UpperCaseAcronyms {
     avoid_breaking_exported_api: bool,
     upper_case_acronyms_aggressive: bool,
 }
 
 impl UpperCaseAcronyms {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self {
             avoid_breaking_exported_api: conf.avoid_breaking_exported_api,
             upper_case_acronyms_aggressive: conf.upper_case_acronyms_aggressive,

@@ -44,7 +44,7 @@ macro_rules! note_prev_span_then_ret {
     }};
 }
 
-pub struct MissingDoc {
+pub(crate) struct MissingDoc {
     /// Whether to **only** check for missing documentation in items visible within the current
     /// crate. For example, `pub(crate)` items.
     crate_items_only: bool,
@@ -58,7 +58,7 @@ pub struct MissingDoc {
 }
 
 impl MissingDoc {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self {
             crate_items_only: conf.missing_docs_in_crate_items,
             allow_unused: conf.missing_docs_allow_unused,

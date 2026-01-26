@@ -34,12 +34,12 @@ declare_clippy_lint! {
     style,
     "checks for usage of legacy std numeric constants and methods"
 }
-pub struct LegacyNumericConstants {
+pub(crate) struct LegacyNumericConstants {
     msrv: Msrv,
 }
 
 impl LegacyNumericConstants {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self { msrv: conf.msrv }
     }
 }

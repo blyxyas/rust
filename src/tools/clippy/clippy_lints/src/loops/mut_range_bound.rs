@@ -122,7 +122,7 @@ struct BreakAfterExprVisitor {
 }
 
 impl BreakAfterExprVisitor {
-    pub fn is_found(cx: &LateContext<'_>, hir_id: HirId) -> bool {
+    pub(crate) fn is_found(cx: &LateContext<'_>, hir_id: HirId) -> bool {
         let mut visitor = BreakAfterExprVisitor {
             hir_id,
             past_expr: false,

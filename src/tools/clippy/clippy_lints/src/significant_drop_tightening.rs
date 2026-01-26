@@ -56,7 +56,7 @@ declare_clippy_lint! {
 impl_lint_pass!(SignificantDropTightening<'_> => [SIGNIFICANT_DROP_TIGHTENING]);
 
 #[derive(Default)]
-pub struct SignificantDropTightening<'tcx> {
+pub(crate) struct SignificantDropTightening<'tcx> {
     apas: FxIndexMap<HirId, AuxParamsAttr>,
     /// Auxiliary structure used to avoid having to verify the same type multiple times.
     type_cache: FxHashMap<Ty<'tcx>, bool>,

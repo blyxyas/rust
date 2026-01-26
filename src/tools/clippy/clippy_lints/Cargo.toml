@@ -17,7 +17,6 @@ declare_clippy_lint = { path = "../declare_clippy_lint" }
 itertools = "0.12"
 quine-mc_cluskey = "0.2"
 regex-syntax = "0.8"
-serde = { version = "1.0", features = ["derive"] }
 unicode-normalization = "0.1"
 unicode-script = { version = "0.5", default-features = false }
 semver = "1.0"
@@ -38,7 +37,7 @@ rustc_infer = { path = "../../../../compiler/rustc_infer" }
 rustc_lexer = { path = "../../../../compiler/rustc_lexer" }
 rustc_lint = { path = "../../../../compiler/rustc_lint"}
 rustc_middle = { path = "../../../../compiler/rustc_middle" }
-rustc_parse = { path = "../../../../compiler/rustc_parse" }
+# rustc_parse = { path = "../../../../compiler/rustc_parse" }
 rustc_parse_format = { path = "../../../../compiler/rustc_parse_format" }
 rustc_resolve = { path = "../../../../compiler/rustc_resolve" }
 rustc_session = { path = "../../../../compiler/rustc_session" }

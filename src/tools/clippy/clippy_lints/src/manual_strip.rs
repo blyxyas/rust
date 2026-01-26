@@ -50,12 +50,12 @@ declare_clippy_lint! {
     "suggests using `strip_{prefix,suffix}` over `str::{starts,ends}_with` and slicing"
 }
 
-pub struct ManualStrip {
+pub(crate) struct ManualStrip {
     msrv: Msrv,
 }
 
 impl ManualStrip {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self { msrv: conf.msrv }
     }
 }

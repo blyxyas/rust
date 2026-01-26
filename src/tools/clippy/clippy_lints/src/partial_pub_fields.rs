@@ -18,7 +18,7 @@ declare_clippy_lint! {
     ///
     /// ### Example
     /// ```no_run
-    /// pub struct Color {
+    /// pub(crate) struct Color {
     ///     pub r: u8,
     ///     pub g: u8,
     ///     b: u8,
@@ -26,7 +26,7 @@ declare_clippy_lint! {
     /// ```
     /// Use instead:
     /// ```no_run
-    /// pub struct Color {
+    /// pub(crate) struct Color {
     ///     pub r: u8,
     ///     pub g: u8,
     ///     pub b: u8,

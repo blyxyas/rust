@@ -36,7 +36,7 @@ declare_clippy_lint! {
 }
 
 #[derive(Default)]
-pub struct UnnecessarySemicolon {
+pub(crate) struct UnnecessarySemicolon {
     last_statements: Vec<(HirId, bool)>,
 }
 

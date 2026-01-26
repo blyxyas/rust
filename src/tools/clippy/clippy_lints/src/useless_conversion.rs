@@ -42,7 +42,7 @@ declare_clippy_lint! {
 }
 
 #[derive(Default)]
-pub struct UselessConversion {
+pub(crate) struct UselessConversion {
     try_desugar_arm: Vec<HirId>,
     expn_depth: u32,
 }
@@ -68,14 +68,14 @@ impl MethodOrFunction {
 /// Returns the span of the `IntoIterator` trait bound in the function pointed to by `fn_did`,
 /// iff all of the bounds also hold for the type of the `.into_iter()` receiver.
 /// ```ignore
-/// pub fn foo<I>(i: I)
+/// pub(crate) fn foo<I>(i: I)
 /// where I: IntoIterator<Item=i32> + ExactSizeIterator
 ///                                   ^^^^^^^^^^^^^^^^^ this extra bound stops us from suggesting to remove `.into_iter()` ...
 /// {
 ///     assert_eq!(i.len(), 3);
 /// }
 ///
-/// pub fn bar() {
+/// pub(crate) fn bar() {
 ///     foo([1, 2, 3].into_iter());
 ///                  ^^^^^^^^^^^^ ... here, because `[i32; 3]` is not `ExactSizeIterator`
 /// }

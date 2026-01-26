@@ -7,15 +7,15 @@ use rustc_session::impl_lint_pass;
 use rustc_span::Span;
 
 #[derive(Clone, Default)]
-pub struct AttrStorage(pub Arc<OnceLock<Vec<Span>>>);
+pub(crate) struct AttrStorage(pub Arc<OnceLock<Vec<Span>>>);
 
-pub struct AttrCollector {
+pub(crate) struct AttrCollector {
     storage: AttrStorage,
     attrs: Vec<Span>,
 }
 
 impl AttrCollector {
-    pub fn new(storage: AttrStorage) -> Self {
+    pub(crate) fn new(storage: AttrStorage) -> Self {
         Self {
             storage,
             attrs: Vec::new(),

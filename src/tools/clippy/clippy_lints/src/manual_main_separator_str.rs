@@ -34,12 +34,12 @@ declare_clippy_lint! {
     "`&std::path::MAIN_SEPARATOR.to_string()` can be replaced by `std::path::MAIN_SEPARATOR_STR`"
 }
 
-pub struct ManualMainSeparatorStr {
+pub(crate) struct ManualMainSeparatorStr {
     msrv: Msrv,
 }
 
 impl ManualMainSeparatorStr {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self { msrv: conf.msrv }
     }
 }

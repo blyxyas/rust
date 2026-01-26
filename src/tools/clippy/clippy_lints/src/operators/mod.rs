@@ -477,13 +477,13 @@ declare_clippy_lint! {
     ///
     /// ### Example
     /// ```no_run
-    /// pub fn is_roughly_equal(a: f32, b: f32) -> bool {
+    /// pub(crate) fn is_roughly_equal(a: f32, b: f32) -> bool {
     ///     (a - b) < f32::EPSILON
     /// }
     /// ```
     /// Use instead:
     /// ```no_run
-    /// pub fn is_roughly_equal(a: f32, b: f32) -> bool {
+    /// pub(crate) fn is_roughly_equal(a: f32, b: f32) -> bool {
     ///     (a - b).abs() < f32::EPSILON
     /// }
     /// ```
@@ -860,7 +860,7 @@ declare_clippy_lint! {
     "manual implementation of `.is_multiple_of()`"
 }
 
-pub struct Operators {
+pub(crate) struct Operators {
     arithmetic_context: numeric_arithmetic::Context,
     verbose_bit_mask_threshold: u64,
     modulo_arithmetic_allow_comparison_to_zero: bool,
@@ -868,7 +868,7 @@ pub struct Operators {
 }
 
 impl Operators {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self {
             arithmetic_context: numeric_arithmetic::Context::default(),
             verbose_bit_mask_threshold: conf.verbose_bit_mask_threshold,

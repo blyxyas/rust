@@ -80,12 +80,12 @@ const METHODS_WITH_NEGATION: [(Option<RustcVersion>, Symbol, Symbol); 3] = [
     (Some(msrvs::IS_NONE_OR), sym::is_some_and, sym::is_none_or),
 ];
 
-pub struct NonminimalBool {
+pub(crate) struct NonminimalBool {
     msrv: Msrv,
 }
 
 impl NonminimalBool {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self { msrv: conf.msrv }
     }
 }

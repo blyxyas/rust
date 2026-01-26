@@ -34,12 +34,12 @@ declare_clippy_lint! {
     "`try_from` could replace manual bounds checking when casting"
 }
 
-pub struct CheckedConversions {
+pub(crate) struct CheckedConversions {
     msrv: Msrv,
 }
 
 impl CheckedConversions {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self { msrv: conf.msrv }
     }
 }
@@ -125,7 +125,7 @@ fn read_le_ge<'tcx>(
 
 impl<'a> Conversion<'a> {
     /// Combine multiple conversions if the are compatible
-    pub fn combine(self, other: Self, cx: &LateContext<'_>) -> Option<Conversion<'a>> {
+    pub(crate) fn combine(self, other: Self, cx: &LateContext<'_>) -> Option<Conversion<'a>> {
         if self.is_compatible(&other, cx) {
             // Prefer a Conversion that contains a type-constraint
             Some(if self.to_type.is_some() { self } else { other })
@@ -136,7 +136,7 @@ impl<'a> Conversion<'a> {
 
     /// Checks if two conversions are compatible
     /// same type of conversion, same 'castee' and same 'to type'
-    pub fn is_compatible(&self, other: &Self, cx: &LateContext<'_>) -> bool {
+    pub(crate) fn is_compatible(&self, other: &Self, cx: &LateContext<'_>) -> bool {
         (self.cvt == other.cvt)
             && (SpanlessEq::new(cx).eq_expr(self.expr_to_cast, other.expr_to_cast))
             && (self.has_compatible_to_type(other))

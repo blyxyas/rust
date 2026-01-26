@@ -97,14 +97,14 @@ declare_clippy_lint! {
     "passing unit to a function"
 }
 
-pub struct UnitTypes {
+pub(crate) struct UnitTypes {
     format_args: FormatArgsStorage,
 }
 
 impl_lint_pass!(UnitTypes => [LET_UNIT_VALUE, UNIT_CMP, UNIT_ARG]);
 
 impl UnitTypes {
-    pub fn new(format_args: FormatArgsStorage) -> Self {
+    pub(crate) fn new(format_args: FormatArgsStorage) -> Self {
         Self { format_args }
     }
 }

@@ -39,12 +39,12 @@ declare_clippy_lint! {
     "useless use of `format!`"
 }
 
-pub struct UselessFormat {
+pub(crate) struct UselessFormat {
     format_args: FormatArgsStorage,
 }
 
 impl UselessFormat {
-    pub fn new(format_args: FormatArgsStorage) -> Self {
+    pub(crate) fn new(format_args: FormatArgsStorage) -> Self {
         Self { format_args }
     }
 }

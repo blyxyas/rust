@@ -100,13 +100,13 @@ declare_clippy_lint! {
     "lint `use _::*` statements"
 }
 
-pub struct WildcardImports {
+pub(crate) struct WildcardImports {
     warn_on_all: bool,
     allowed_segments: FxHashSet<String>,
 }
 
 impl WildcardImports {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self {
             warn_on_all: conf.warn_on_all_wildcard_imports,
             allowed_segments: conf.allowed_wildcard_imports.iter().cloned().collect(),

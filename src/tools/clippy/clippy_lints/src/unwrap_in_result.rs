@@ -79,7 +79,7 @@ struct OptionOrResultFn {
 }
 
 #[derive(Default)]
-pub struct UnwrapInResult {
+pub(crate) struct UnwrapInResult {
     fn_stack: Vec<Option<OptionOrResultFn>>,
     current_fn: Option<OptionOrResultFn>,
 }

@@ -128,7 +128,7 @@ fn get_lint_tbls<'a>(tbl: &'a DeTable<'a>) -> LintTbls<'a> {
     }
 }
 
-pub fn check(cx: &LateContext<'_>) {
+pub(crate) fn check(cx: &LateContext<'_>) {
     if let Ok(file) = cx.tcx.sess.source_map().load_file(Path::new("Cargo.toml"))
         && let Some(src) = file.src.as_deref()
         && let Ok(cargo_toml) = DeTable::parse(src)

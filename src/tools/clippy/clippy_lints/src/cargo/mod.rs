@@ -213,7 +213,7 @@ declare_clippy_lint! {
     "a lint group in `Cargo.toml` at the same priority as a lint"
 }
 
-pub struct Cargo {
+pub(crate) struct Cargo {
     allowed_duplicate_crates: FxHashSet<String>,
     ignore_publish: bool,
 }
@@ -228,7 +228,7 @@ impl_lint_pass!(Cargo => [
 ]);
 
 impl Cargo {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self {
             allowed_duplicate_crates: conf.allowed_duplicate_crates.iter().cloned().collect(),
             ignore_publish: conf.cargo_ignore_publish,

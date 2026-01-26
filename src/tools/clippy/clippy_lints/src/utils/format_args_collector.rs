@@ -11,13 +11,13 @@ use std::iter::once;
 use std::mem;
 
 /// Populates [`FormatArgsStorage`] with AST [`FormatArgs`] nodes
-pub struct FormatArgsCollector {
+pub(crate) struct FormatArgsCollector {
     format_args: FxHashMap<Span, FormatArgs>,
     storage: FormatArgsStorage,
 }
 
 impl FormatArgsCollector {
-    pub fn new(storage: FormatArgsStorage) -> Self {
+    pub(crate) fn new(storage: FormatArgsStorage) -> Self {
         Self {
             format_args: FxHashMap::default(),
             storage,

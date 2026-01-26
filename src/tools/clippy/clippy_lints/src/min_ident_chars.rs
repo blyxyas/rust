@@ -47,13 +47,13 @@ declare_clippy_lint! {
 }
 impl_lint_pass!(MinIdentChars => [MIN_IDENT_CHARS]);
 
-pub struct MinIdentChars {
+pub(crate) struct MinIdentChars {
     allowed_idents_below_min_chars: FxHashSet<String>,
     min_ident_chars_threshold: u64,
 }
 
 impl MinIdentChars {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self {
             allowed_idents_below_min_chars: conf.allowed_idents_below_min_chars.iter().cloned().collect(),
             min_ident_chars_threshold: conf.min_ident_chars_threshold,

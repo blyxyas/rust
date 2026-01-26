@@ -30,7 +30,7 @@ declare_clippy_lint! {
     ///
     /// ### Example
     /// ```no_run
-    /// pub fn a<T>(t: &T)
+    /// pub(crate) fn a<T>(t: &T)
     /// where
     ///     T: AsRef<str>,
     /// {
@@ -44,7 +44,7 @@ declare_clippy_lint! {
     /// ```
     /// Use instead:
     /// ```no_run
-    /// pub fn a<T>(t: &T)
+    /// pub(crate) fn a<T>(t: &T)
     /// where
     ///     T: AsRef<str>,
     /// {
@@ -66,13 +66,13 @@ pub enum CallState {
     Multiple,
 }
 
-pub struct SingleCallFn {
+pub(crate) struct SingleCallFn {
     avoid_breaking_exported_api: bool,
     def_id_to_usage: FxIndexMap<LocalDefId, CallState>,
 }
 
 impl SingleCallFn {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self {
             avoid_breaking_exported_api: conf.avoid_breaking_exported_api,
             def_id_to_usage: FxIndexMap::default(),

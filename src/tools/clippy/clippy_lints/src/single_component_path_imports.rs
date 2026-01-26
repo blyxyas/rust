@@ -38,7 +38,7 @@ declare_clippy_lint! {
 }
 
 #[derive(Default)]
-pub struct SingleComponentPathImports {
+pub(crate) struct SingleComponentPathImports {
     /// Buffer found usages to emit when visiting that item so that `#[allow]` works as expected
     found: NodeMap<Vec<SingleUse>>,
 }

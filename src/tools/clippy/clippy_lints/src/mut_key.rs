@@ -68,7 +68,7 @@ declare_clippy_lint! {
     "Check for mutable `Map`/`Set` key type"
 }
 
-pub struct MutableKeyType<'tcx> {
+pub(crate) struct MutableKeyType<'tcx> {
     interior_mut: InteriorMut<'tcx>,
 }
 
@@ -104,7 +104,7 @@ impl<'tcx> LateLintPass<'tcx> for MutableKeyType<'tcx> {
 }
 
 impl<'tcx> MutableKeyType<'tcx> {
-    pub fn new(tcx: TyCtxt<'tcx>, conf: &'static Conf) -> Self {
+    pub(crate) fn new(tcx: TyCtxt<'tcx>, conf: &'static Conf) -> Self {
         Self {
             interior_mut: InteriorMut::without_pointers(tcx, &conf.ignore_interior_mutability),
         }

@@ -34,12 +34,12 @@ declare_clippy_lint! {
     "Using explicit `'static` lifetime for constants or statics when elision rules would allow omitting them."
 }
 
-pub struct RedundantStaticLifetimes {
+pub(crate) struct RedundantStaticLifetimes {
     msrv: MsrvStack,
 }
 
 impl RedundantStaticLifetimes {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self {
             msrv: MsrvStack::new(conf.msrv),
         }

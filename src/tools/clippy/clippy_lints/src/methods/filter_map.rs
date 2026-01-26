@@ -105,7 +105,7 @@ enum CheckResult<'tcx> {
 }
 
 impl<'tcx> OffendingFilterExpr<'tcx> {
-    pub fn check_map_call(
+    pub(crate) fn check_map_call(
         &self,
         cx: &LateContext<'tcx>,
         map_body: &'tcx Body<'tcx>,

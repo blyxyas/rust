@@ -27,12 +27,12 @@ declare_clippy_lint! {
     ///
     /// ### Example
     /// ```no_run
-    /// pub fn foo<T>(t: T) where T: Copy, T: Clone {}
+    /// pub(crate) fn foo<T>(t: T) where T: Copy, T: Clone {}
     /// ```
     ///
     /// Use instead:
     /// ```no_run
-    /// pub fn foo<T>(t: T) where T: Copy + Clone {}
+    /// pub(crate) fn foo<T>(t: T) where T: Copy + Clone {}
     /// ```
     #[clippy::version = "1.38.0"]
     pub TYPE_REPETITION_IN_BOUNDS,
@@ -86,13 +86,13 @@ declare_clippy_lint! {
     "check if the same trait bounds are specified more than once during a generic declaration"
 }
 
-pub struct TraitBounds {
+pub(crate) struct TraitBounds {
     max_trait_bounds: u64,
     msrv: Msrv,
 }
 
 impl TraitBounds {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self {
             max_trait_bounds: conf.max_trait_bounds,
             msrv: conf.msrv,

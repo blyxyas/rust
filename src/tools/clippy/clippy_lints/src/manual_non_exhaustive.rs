@@ -62,14 +62,14 @@ declare_clippy_lint! {
     "manual implementations of the non-exhaustive pattern can be simplified using #[non_exhaustive]"
 }
 
-pub struct ManualNonExhaustive {
+pub(crate) struct ManualNonExhaustive {
     msrv: Msrv,
     constructed_enum_variants: FxHashSet<LocalDefId>,
     potential_enums: Vec<(LocalDefId, LocalDefId, Span, Span)>,
 }
 
 impl ManualNonExhaustive {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self {
             msrv: conf.msrv,
             constructed_enum_variants: FxHashSet::default(),

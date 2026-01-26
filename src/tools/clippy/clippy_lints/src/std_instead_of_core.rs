@@ -86,13 +86,13 @@ declare_clippy_lint! {
     "type is imported from alloc when available in core"
 }
 
-pub struct StdReexports {
+pub(crate) struct StdReexports {
     lint_points: Option<(Span, Vec<LintPoint>)>,
     msrv: Msrv,
 }
 
 impl StdReexports {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self {
             lint_points: Option::default(),
             msrv: conf.msrv,

@@ -72,12 +72,12 @@ declare_clippy_lint! {
     "using a single-character str where a char could be used, e.g., `_.split(\"x\")`"
 }
 
-pub struct StringPatterns {
+pub(crate) struct StringPatterns {
     msrv: Msrv,
 }
 
 impl StringPatterns {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self { msrv: conf.msrv }
     }
 }

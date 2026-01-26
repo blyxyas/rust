@@ -16,7 +16,7 @@ use rustc_span::{Symbol, sym};
 
 use super::UNNECESSARY_TO_OWNED;
 
-pub fn check(cx: &LateContext<'_>, expr: &Expr<'_>, method_name: Symbol, receiver: &Expr<'_>) -> bool {
+pub(crate) fn check(cx: &LateContext<'_>, expr: &Expr<'_>, method_name: Symbol, receiver: &Expr<'_>) -> bool {
     if let Some(parent) = get_parent_expr(cx, expr)
         && let Some(callee_def_id) = fn_def_id(cx, parent)
         && is_into_iter(cx, callee_def_id)
@@ -31,7 +31,7 @@ pub fn check(cx: &LateContext<'_>, expr: &Expr<'_>, method_name: Symbol, receive
 /// iterated-over items could be iterated over by reference. The reason why `check` above does not
 /// include this code directly is so that it can be called from
 /// `unnecessary_into_owned::check_into_iter_call_arg`.
-pub fn check_for_loop_iter(
+pub(crate) fn check_for_loop_iter(
     cx: &LateContext<'_>,
     expr: &Expr<'_>,
     method_name: Symbol,
@@ -139,6 +139,6 @@ pub fn check_for_loop_iter(
 }
 
 /// Returns true if the named method is `IntoIterator::into_iter`.
-pub fn is_into_iter(cx: &LateContext<'_>, callee_def_id: DefId) -> bool {
+pub(crate) fn is_into_iter(cx: &LateContext<'_>, callee_def_id: DefId) -> bool {
     Some(callee_def_id) == cx.tcx.lang_items().into_iter_fn()
 }

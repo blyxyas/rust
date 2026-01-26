@@ -21,14 +21,14 @@ pub(super) enum Variant {
     Some,
 }
 impl Variant {
-    pub fn variant_name(&self) -> &'static str {
+    pub(crate) fn variant_name(&self) -> &'static str {
         match self {
             Variant::Ok => "Ok",
             Variant::Some => "Some",
         }
     }
 
-    pub fn method_name(&self) -> &'static str {
+    pub(crate) fn method_name(&self) -> &'static str {
         match self {
             Variant::Ok => "is_ok_and",
             Variant::Some => "is_some_and",

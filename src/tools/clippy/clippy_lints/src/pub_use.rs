@@ -15,7 +15,7 @@ declare_clippy_lint! {
     /// ```no_run
     /// pub mod outer {
     ///     mod inner {
-    ///         pub struct Test {}
+    ///         pub(crate) struct Test {}
     ///     }
     ///     pub use inner::Test;
     /// }
@@ -25,7 +25,7 @@ declare_clippy_lint! {
     /// Use instead:
     /// ```no_run
     /// pub mod outer {
-    ///     pub struct Test {}
+    ///     pub(crate) struct Test {}
     /// }
     ///
     /// use outer::Test;

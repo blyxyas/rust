@@ -43,11 +43,11 @@ declare_clippy_lint! {
 }
 impl_lint_pass!(TupleArrayConversions => [TUPLE_ARRAY_CONVERSIONS]);
 
-pub struct TupleArrayConversions {
+pub(crate) struct TupleArrayConversions {
     msrv: Msrv,
 }
 impl TupleArrayConversions {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self { msrv: conf.msrv }
     }
 }

@@ -6,6 +6,7 @@ edition = "2024"
 [dependencies]
 # tidy-alphabetical-start
 clippy_lints = { path = "../../src/tools/clippy/clippy_lints" }
+clippy_config = { path = "../../src/tools/clippy/clippy_config" }
 rustc_ast = { path = "../rustc_ast" }
 rustc_ast_lowering = { path = "../rustc_ast_lowering" }
 rustc_ast_passes = { path = "../rustc_ast_passes" }

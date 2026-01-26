@@ -98,14 +98,14 @@ struct FormatTraitNames {
     formatter_name: Option<Symbol>,
 }
 
-pub struct FormatImpl {
+pub(crate) struct FormatImpl {
     format_args: FormatArgsStorage,
     // Whether we are inside Display or Debug trait impl - None for neither
     format_trait_impl: Option<FormatTraitNames>,
 }
 
 impl FormatImpl {
-    pub fn new(format_args: FormatArgsStorage) -> Self {
+    pub(crate) fn new(format_args: FormatArgsStorage) -> Self {
         Self {
             format_args,
             format_trait_impl: None,

@@ -44,12 +44,12 @@ declare_clippy_lint! {
     "`retain()` is simpler and the same functionalities"
 }
 
-pub struct ManualRetain {
+pub(crate) struct ManualRetain {
     msrv: Msrv,
 }
 
 impl ManualRetain {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self { msrv: conf.msrv }
     }
 }

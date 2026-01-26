@@ -88,13 +88,13 @@ declare_clippy_lint! {
     "using too many bools in function parameters"
 }
 
-pub struct ExcessiveBools {
+pub(crate) struct ExcessiveBools {
     max_struct_bools: u64,
     max_fn_params_bools: u64,
 }
 
 impl ExcessiveBools {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self {
             max_struct_bools: conf.max_struct_bools,
             max_fn_params_bools: conf.max_fn_params_bools,

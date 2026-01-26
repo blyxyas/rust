@@ -64,12 +64,12 @@ declare_clippy_lint! {
     "the order of the field init is inconsistent with the order in the struct definition"
 }
 
-pub struct InconsistentStructConstructor {
+pub(crate) struct InconsistentStructConstructor {
     check_inconsistent_struct_field_initializers: bool,
 }
 
 impl InconsistentStructConstructor {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self {
             check_inconsistent_struct_field_initializers: conf.check_inconsistent_struct_field_initializers,
         }

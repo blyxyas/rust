@@ -34,12 +34,12 @@ declare_clippy_lint! {
     "manual implementation of `size_of::<T>() * 8` can be simplified with `T::BITS`"
 }
 
-pub struct ManualBits {
+pub(crate) struct ManualBits {
     msrv: Msrv,
 }
 
 impl ManualBits {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self { msrv: conf.msrv }
     }
 }

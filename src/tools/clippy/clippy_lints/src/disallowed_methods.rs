@@ -61,12 +61,12 @@ declare_clippy_lint! {
     "use of a disallowed method call"
 }
 
-pub struct DisallowedMethods {
+pub(crate) struct DisallowedMethods {
     disallowed: DefIdMap<(&'static str, &'static DisallowedPath)>,
 }
 
 impl DisallowedMethods {
-    pub fn new(tcx: TyCtxt<'_>, conf: &'static Conf) -> Self {
+    pub(crate) fn new(tcx: TyCtxt<'_>, conf: &'static Conf) -> Self {
         let (disallowed, _) = create_disallowed_map(
             tcx,
             &conf.disallowed_methods,

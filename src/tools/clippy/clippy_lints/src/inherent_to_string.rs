@@ -17,10 +17,10 @@ declare_clippy_lint! {
     ///
     /// ### Example
     /// ```no_run
-    /// pub struct A;
+    /// pub(crate) struct A;
     ///
     /// impl A {
-    ///     pub fn to_string(&self) -> String {
+    ///     pub(crate) fn to_string(&self) -> String {
     ///         "I am A".to_string()
     ///     }
     /// }
@@ -30,7 +30,7 @@ declare_clippy_lint! {
     /// ```no_run
     /// use std::fmt;
     ///
-    /// pub struct A;
+    /// pub(crate) struct A;
     ///
     /// impl fmt::Display for A {
     ///     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -55,10 +55,10 @@ declare_clippy_lint! {
     /// ```no_run
     /// use std::fmt;
     ///
-    /// pub struct A;
+    /// pub(crate) struct A;
     ///
     /// impl A {
-    ///     pub fn to_string(&self) -> String {
+    ///     pub(crate) fn to_string(&self) -> String {
     ///         "I am A".to_string()
     ///     }
     /// }
@@ -74,7 +74,7 @@ declare_clippy_lint! {
     /// ```no_run
     /// use std::fmt;
     ///
-    /// pub struct A;
+    /// pub(crate) struct A;
     ///
     /// impl fmt::Display for A {
     ///     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {

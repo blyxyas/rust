@@ -62,7 +62,7 @@ static FUNCTION_REPLACEMENTS: &[(&str, Option<&str>)] = &[
     // add those functions into the list.
 ];
 
-pub struct NonStdLazyStatic {
+pub(crate) struct NonStdLazyStatic {
     msrv: Msrv,
     once_cell_crates: Vec<CrateNum>,
     sugg_map: FxIndexMap<DefId, Option<String>>,
@@ -72,7 +72,7 @@ pub struct NonStdLazyStatic {
 
 impl NonStdLazyStatic {
     #[must_use]
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self {
             msrv: conf.msrv,
             once_cell_crates: Vec::new(),

@@ -40,7 +40,7 @@ declare_clippy_lint! {
     "Needlessly returning a Box"
 }
 
-pub struct UnnecessaryBoxReturns {
+pub(crate) struct UnnecessaryBoxReturns {
     avoid_breaking_exported_api: bool,
     maximum_size: u64,
 }
@@ -48,7 +48,7 @@ pub struct UnnecessaryBoxReturns {
 impl_lint_pass!(UnnecessaryBoxReturns => [UNNECESSARY_BOX_RETURNS]);
 
 impl UnnecessaryBoxReturns {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self {
             avoid_breaking_exported_api: conf.avoid_breaking_exported_api,
             maximum_size: conf.unnecessary_box_size,

@@ -17,7 +17,7 @@ declare_clippy_lint! {
     /// struct Foo {}
     ///
     /// impl Foo {
-    ///     pub fn foo() -> Foo {
+    ///     pub(crate) fn foo() -> Foo {
     ///         Foo {}
     ///     }
     /// }
@@ -27,7 +27,7 @@ declare_clippy_lint! {
     /// struct Foo {}
     ///
     /// impl Foo {
-    ///     pub fn new() -> Foo {
+    ///     pub(crate) fn new() -> Foo {
     ///         Foo {}
     ///     }
     /// }

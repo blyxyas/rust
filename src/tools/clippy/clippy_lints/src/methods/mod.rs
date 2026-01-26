@@ -4140,7 +4140,7 @@ declare_clippy_lint! {
     ///
     /// ### Example
     /// ```no_run
-    /// pub fn a(x: Option<i32>) -> (bool, bool) {
+    /// pub(crate) fn a(x: Option<i32>) -> (bool, bool) {
     ///     (
     ///         x.map_or(false, |n| n == 5),
     ///         x.map_or(true, |n| n > 5),
@@ -4149,7 +4149,7 @@ declare_clippy_lint! {
     /// ```
     /// Use instead:
     /// ```no_run
-    /// pub fn a(x: Option<i32>) -> (bool, bool) {
+    /// pub(crate) fn a(x: Option<i32>) -> (bool, bool) {
     ///     (
     ///         x == Some(5),
     ///         x.is_none_or(|n| n > 5),
@@ -4666,7 +4666,7 @@ declare_clippy_lint! {
 }
 
 #[expect(clippy::struct_excessive_bools)]
-pub struct Methods {
+pub(crate) struct Methods {
     avoid_breaking_exported_api: bool,
     msrv: Msrv,
     allow_expect_in_tests: bool,
@@ -4678,7 +4678,7 @@ pub struct Methods {
 }
 
 impl Methods {
-    pub fn new(conf: &'static Conf, format_args: FormatArgsStorage) -> Self {
+    pub(crate) fn new(conf: &'static Conf, format_args: FormatArgsStorage) -> Self {
         let mut allowed_dotfiles: FxHashSet<_> = conf.allowed_dotfiles.iter().map(|s| &**s).collect();
         allowed_dotfiles.extend(DEFAULT_ALLOWED_DOTFILES);
 
@@ -4852,7 +4852,7 @@ impl_lint_pass!(Methods => [
 /// Extracts a method call name, args, and `Span` of the method name.
 /// This ensures that neither the receiver nor any of the arguments
 /// come from expansion.
-pub fn method_call<'tcx>(recv: &'tcx Expr<'tcx>) -> Option<(Symbol, &'tcx Expr<'tcx>, &'tcx [Expr<'tcx>], Span, Span)> {
+pub(crate) fn method_call<'tcx>(recv: &'tcx Expr<'tcx>) -> Option<(Symbol, &'tcx Expr<'tcx>, &'tcx [Expr<'tcx>], Span, Span)> {
     if let ExprKind::MethodCall(path, receiver, args, call_span) = recv.kind
         && !args.iter().any(|e| e.span.from_expansion())
         && !receiver.span.from_expansion()

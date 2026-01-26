@@ -52,12 +52,12 @@ declare_clippy_lint! {
     "Warns on implementations of `Into<..>` to use `From<..>`"
 }
 
-pub struct FromOverInto {
+pub(crate) struct FromOverInto {
     msrv: Msrv,
 }
 
 impl FromOverInto {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         FromOverInto { msrv: conf.msrv }
     }
 }

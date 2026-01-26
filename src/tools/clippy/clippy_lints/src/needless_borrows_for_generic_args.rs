@@ -57,7 +57,7 @@ declare_clippy_lint! {
     "taking a reference that is going to be automatically dereferenced"
 }
 
-pub struct NeedlessBorrowsForGenericArgs<'tcx> {
+pub(crate) struct NeedlessBorrowsForGenericArgs<'tcx> {
     /// Stack of (body owner, `PossibleBorrowerMap`) pairs. Used by
     /// [`needless_borrow_count`] to determine when a borrowed expression can instead
     /// be moved.
@@ -69,7 +69,7 @@ pub struct NeedlessBorrowsForGenericArgs<'tcx> {
 impl_lint_pass!(NeedlessBorrowsForGenericArgs<'_> => [NEEDLESS_BORROWS_FOR_GENERIC_ARGS]);
 
 impl NeedlessBorrowsForGenericArgs<'_> {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self {
             possible_borrowers: Vec::new(),
             msrv: conf.msrv,

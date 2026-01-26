@@ -239,7 +239,7 @@ impl_lint_pass!(FormatArgs<'_> => [
 ]);
 
 #[expect(clippy::struct_field_names)]
-pub struct FormatArgs<'tcx> {
+pub(crate) struct FormatArgs<'tcx> {
     format_args: FormatArgsStorage,
     msrv: Msrv,
     ignore_mixed: bool,
@@ -249,7 +249,7 @@ pub struct FormatArgs<'tcx> {
 }
 
 impl<'tcx> FormatArgs<'tcx> {
-    pub fn new(tcx: TyCtxt<'tcx>, conf: &'static Conf, format_args: FormatArgsStorage) -> Self {
+    pub(crate) fn new(tcx: TyCtxt<'tcx>, conf: &'static Conf, format_args: FormatArgsStorage) -> Self {
         let ty_msrv_map = make_ty_msrv_map(tcx);
         Self {
             format_args,

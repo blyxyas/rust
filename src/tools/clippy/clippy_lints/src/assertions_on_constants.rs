@@ -32,11 +32,11 @@ declare_clippy_lint! {
 }
 
 impl_lint_pass!(AssertionsOnConstants => [ASSERTIONS_ON_CONSTANTS]);
-pub struct AssertionsOnConstants {
+pub(crate) struct AssertionsOnConstants {
     msrv: Msrv,
 }
 impl AssertionsOnConstants {
-    pub fn new(conf: &Conf) -> Self {
+    pub(crate) fn new(conf: &Conf) -> Self {
         Self { msrv: conf.msrv }
     }
 }

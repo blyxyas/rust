@@ -784,12 +784,12 @@ declare_clippy_lint! {
     "using the character position yielded by `.chars().enumerate()` in a context where a byte index is expected"
 }
 
-pub struct Loops {
+pub(crate) struct Loops {
     msrv: Msrv,
     enforce_iter_loop_reborrow: bool,
 }
 impl Loops {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self {
             msrv: conf.msrv,
             enforce_iter_loop_reborrow: conf.enforce_iter_loop_reborrow,

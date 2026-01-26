@@ -91,13 +91,13 @@ declare_clippy_lint! {
     "annotating safe code with a safety comment"
 }
 
-pub struct UndocumentedUnsafeBlocks {
+pub(crate) struct UndocumentedUnsafeBlocks {
     accept_comment_above_statement: bool,
     accept_comment_above_attributes: bool,
 }
 
 impl UndocumentedUnsafeBlocks {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self {
             accept_comment_above_statement: conf.accept_comment_above_statement,
             accept_comment_above_attributes: conf.accept_comment_above_attributes,

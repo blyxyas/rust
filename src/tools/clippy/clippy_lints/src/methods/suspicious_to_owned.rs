@@ -9,7 +9,7 @@ use rustc_span::sym;
 
 use super::SUSPICIOUS_TO_OWNED;
 
-pub fn check(cx: &LateContext<'_>, expr: &hir::Expr<'_>, recv: &hir::Expr<'_>) -> bool {
+pub(crate) fn check(cx: &LateContext<'_>, expr: &hir::Expr<'_>, recv: &hir::Expr<'_>) -> bool {
     if cx
         .typeck_results()
         .type_dependent_def_id(expr.hir_id)

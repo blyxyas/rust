@@ -465,7 +465,7 @@ declare_clippy_lint! {
     "warns if a transmute call doesn't have all generics specified"
 }
 
-pub struct Transmute {
+pub(crate) struct Transmute {
     msrv: Msrv,
 }
 impl_lint_pass!(Transmute => [
@@ -486,7 +486,7 @@ impl_lint_pass!(Transmute => [
     MISSING_TRANSMUTE_ANNOTATIONS,
 ]);
 impl Transmute {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self { msrv: conf.msrv }
     }
 }

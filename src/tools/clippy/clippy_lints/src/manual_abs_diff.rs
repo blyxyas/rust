@@ -45,12 +45,12 @@ declare_clippy_lint! {
 
 impl_lint_pass!(ManualAbsDiff => [MANUAL_ABS_DIFF]);
 
-pub struct ManualAbsDiff {
+pub(crate) struct ManualAbsDiff {
     msrv: Msrv,
 }
 
 impl ManualAbsDiff {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self { msrv: conf.msrv }
     }
 }

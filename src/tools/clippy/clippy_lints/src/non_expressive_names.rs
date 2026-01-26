@@ -73,14 +73,14 @@ declare_clippy_lint! {
     "unclear name"
 }
 
-pub struct NonExpressiveNames {
+pub(crate) struct NonExpressiveNames {
     pub single_char_binding_names_threshold: u64,
 }
 
 impl_lint_pass!(NonExpressiveNames => [SIMILAR_NAMES, MANY_SINGLE_CHAR_NAMES, JUST_UNDERSCORES_AND_DIGITS]);
 
 impl NonExpressiveNames {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self {
             single_char_binding_names_threshold: conf.single_char_binding_names_threshold,
         }

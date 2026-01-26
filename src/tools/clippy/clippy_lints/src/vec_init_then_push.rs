@@ -47,7 +47,7 @@ declare_clippy_lint! {
 impl_lint_pass!(VecInitThenPush => [VEC_INIT_THEN_PUSH]);
 
 #[derive(Default)]
-pub struct VecInitThenPush {
+pub(crate) struct VecInitThenPush {
     searcher: Option<VecPushSearcher>,
 }
 

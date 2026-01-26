@@ -100,7 +100,7 @@ impl<'tcx> LateLintPass<'tcx> for MutMut {
     }
 }
 
-pub struct MutVisitor<'a, 'tcx> {
+pub(crate) struct MutVisitor<'a, 'tcx> {
     cx: &'a LateContext<'tcx>,
 }
 

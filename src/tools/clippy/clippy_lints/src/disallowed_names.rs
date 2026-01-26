@@ -26,12 +26,12 @@ declare_clippy_lint! {
     "usage of a disallowed/placeholder name"
 }
 
-pub struct DisallowedNames {
+pub(crate) struct DisallowedNames {
     disallow: FxHashSet<Symbol>,
 }
 
 impl DisallowedNames {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self {
             disallow: conf.disallowed_names.iter().map(|x| Symbol::intern(x)).collect(),
         }

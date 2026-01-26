@@ -185,7 +185,7 @@ fn find_type_name<'tcx>(cx: &LateContext<'tcx>, ty: Ty<'tcx>) -> Option<&'static
     }
 }
 
-pub fn check_match<'tcx>(
+pub(crate) fn check_match<'tcx>(
     cx: &LateContext<'tcx>,
     expr: &'tcx Expr<'tcx>,
     scrutinee: &'tcx Expr<'tcx>,
@@ -202,7 +202,7 @@ pub fn check_match<'tcx>(
     }
 }
 
-pub fn check_if_let<'tcx>(
+pub(crate) fn check_if_let<'tcx>(
     cx: &LateContext<'tcx>,
     expr: &'tcx Expr<'tcx>,
     pat: &'tcx Pat<'tcx>,

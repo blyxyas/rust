@@ -80,13 +80,13 @@ declare_clippy_lint! {
     "nested `else`-`if` expressions that can be collapsed (e.g., `else { if x { ... } }`)"
 }
 
-pub struct CollapsibleIf {
+pub(crate) struct CollapsibleIf {
     msrv: Msrv,
     lint_commented_code: bool,
 }
 
 impl CollapsibleIf {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self {
             msrv: conf.msrv,
             lint_commented_code: conf.lint_commented_code,

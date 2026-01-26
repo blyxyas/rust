@@ -40,13 +40,13 @@ struct MacroInfo {
     braces: (char, char),
 }
 
-pub struct MacroBraces {
+pub(crate) struct MacroBraces {
     macro_braces: FxHashMap<String, (char, char)>,
     done: FxHashSet<Span>,
 }
 
 impl MacroBraces {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self {
             macro_braces: macro_braces(&conf.standard_macro_braces),
             done: FxHashSet::default(),

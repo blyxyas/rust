@@ -41,12 +41,12 @@ declare_clippy_lint! {
 }
 impl_lint_pass!(ManualSliceSizeCalculation => [MANUAL_SLICE_SIZE_CALCULATION]);
 
-pub struct ManualSliceSizeCalculation {
+pub(crate) struct ManualSliceSizeCalculation {
     msrv: Msrv,
 }
 
 impl ManualSliceSizeCalculation {
-    pub fn new(conf: &Conf) -> Self {
+    pub(crate) fn new(conf: &Conf) -> Self {
         Self { msrv: conf.msrv }
     }
 }

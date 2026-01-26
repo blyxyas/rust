@@ -655,7 +655,6 @@ dependencies = [
  "rustc_lexer",
  "rustc_lint",
  "rustc_middle",
- "rustc_parse",
  "rustc_parse_format",
  "rustc_resolve",
  "rustc_session",
@@ -663,7 +662,6 @@ dependencies = [
  "rustc_target",
  "rustc_trait_selection",
  "semver",
- "serde",
  "toml 0.9.7",
  "unicode-normalization",
  "unicode-script",
@@ -4070,6 +4068,7 @@ dependencies = [
 name = "rustc_interface"
 version = "0.0.0"
 dependencies = [
+ "clippy_config",
  "clippy_lints",
  "rustc_abi",
  "rustc_ast",

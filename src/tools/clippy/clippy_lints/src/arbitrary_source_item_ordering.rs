@@ -168,7 +168,7 @@ impl_lint_pass!(ArbitrarySourceItemOrdering => [ARBITRARY_SOURCE_ITEM_ORDERING])
 
 #[derive(Debug)]
 #[expect(clippy::struct_excessive_bools, reason = "Bools are cached feature flags")]
-pub struct ArbitrarySourceItemOrdering {
+pub(crate) struct ArbitrarySourceItemOrdering {
     assoc_types_order: SourceItemOrderingTraitAssocItemKinds,
     enable_ordering_for_enum: bool,
     enable_ordering_for_impl: bool,
@@ -180,7 +180,7 @@ pub struct ArbitrarySourceItemOrdering {
 }
 
 impl ArbitrarySourceItemOrdering {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         #[allow(clippy::enum_glob_use)] // Very local glob use for legibility.
         use SourceItemOrderingCategory::*;
         Self {

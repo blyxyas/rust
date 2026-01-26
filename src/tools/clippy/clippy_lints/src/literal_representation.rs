@@ -191,7 +191,7 @@ impl WarningType {
     }
 }
 
-pub struct LiteralDigitGrouping {
+pub(crate) struct LiteralDigitGrouping {
     lint_fraction_readability: bool,
 }
 
@@ -217,7 +217,7 @@ impl EarlyLintPass for LiteralDigitGrouping {
 const UUID_GROUP_LENS: [usize; 5] = [8, 4, 4, 4, 12];
 
 impl LiteralDigitGrouping {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self {
             lint_fraction_readability: conf.unreadable_literal_lint_fractions,
         }
@@ -410,7 +410,7 @@ impl LiteralDigitGrouping {
     }
 }
 
-pub struct DecimalLiteralRepresentation {
+pub(crate) struct DecimalLiteralRepresentation {
     threshold: u64,
 }
 
@@ -427,7 +427,7 @@ impl EarlyLintPass for DecimalLiteralRepresentation {
 }
 
 impl DecimalLiteralRepresentation {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self {
             threshold: conf.literal_representation_threshold,
         }

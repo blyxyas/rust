@@ -44,7 +44,7 @@ declare_clippy_lint! {
 }
 
 #[derive(Default)]
-pub struct UnusedAsync {
+pub(crate) struct UnusedAsync {
     /// Keeps track of async functions used as values (i.e. path expressions to async functions that
     /// are not immediately called)
     async_fns_as_value: LocalDefIdSet,

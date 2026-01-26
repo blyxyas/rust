@@ -26,7 +26,7 @@ declare_clippy_lint! {
     /// ```no_run
     /// struct MySlice<'a>(&'a [u8]);
     /// impl<'a> MySlice<'a> {
-    ///     pub fn iter(&self) -> std::slice::Iter<'a, u8> {
+    ///     pub(crate) fn iter(&self) -> std::slice::Iter<'a, u8> {
     ///         self.0.iter()
     ///     }
     /// }
@@ -35,7 +35,7 @@ declare_clippy_lint! {
     /// ```no_run
     /// struct MySlice<'a>(&'a [u8]);
     /// impl<'a> MySlice<'a> {
-    ///     pub fn iter(&self) -> std::slice::Iter<'a, u8> {
+    ///     pub(crate) fn iter(&self) -> std::slice::Iter<'a, u8> {
     ///         self.0.iter()
     ///     }
     /// }
@@ -87,7 +87,7 @@ declare_clippy_lint! {
     /// ```no_run
     /// struct MySlice<'a>(&'a [u8]);
     /// impl<'a> MySlice<'a> {
-    ///     pub fn iter(&self) -> std::slice::Iter<'a, u8> {
+    ///     pub(crate) fn iter(&self) -> std::slice::Iter<'a, u8> {
     ///         self.into_iter()
     ///     }
     /// }

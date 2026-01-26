@@ -90,12 +90,12 @@ declare_clippy_lint! {
 }
 impl_lint_pass!(ManualClamp => [MANUAL_CLAMP]);
 
-pub struct ManualClamp {
+pub(crate) struct ManualClamp {
     msrv: Msrv,
 }
 
 impl ManualClamp {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self { msrv: conf.msrv }
     }
 }

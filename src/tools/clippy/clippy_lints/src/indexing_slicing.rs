@@ -94,13 +94,13 @@ declare_clippy_lint! {
 
 impl_lint_pass!(IndexingSlicing => [INDEXING_SLICING, OUT_OF_BOUNDS_INDEXING]);
 
-pub struct IndexingSlicing {
+pub(crate) struct IndexingSlicing {
     allow_indexing_slicing_in_tests: bool,
     suppress_restriction_lint_in_const: bool,
 }
 
 impl IndexingSlicing {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self {
             allow_indexing_slicing_in_tests: conf.allow_indexing_slicing_in_tests,
             suppress_restriction_lint_in_const: conf.suppress_restriction_lint_in_const,

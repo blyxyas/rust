@@ -26,7 +26,7 @@ declare_clippy_lint! {
 }
 
 #[derive(Default)]
-pub struct MainRecursion {
+pub(crate) struct MainRecursion {
     has_no_std_attr: bool,
 }
 

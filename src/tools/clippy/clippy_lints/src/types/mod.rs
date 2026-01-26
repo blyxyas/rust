@@ -391,7 +391,7 @@ declare_clippy_lint! {
     "needlessly owned Cow type"
 }
 
-pub struct Types {
+pub(crate) struct Types {
     vec_box_size_threshold: u64,
     type_complexity_threshold: u64,
     avoid_breaking_exported_api: bool,
@@ -543,7 +543,7 @@ impl<'tcx> LateLintPass<'tcx> for Types {
 }
 
 impl Types {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self {
             vec_box_size_threshold: conf.vec_box_size_threshold,
             type_complexity_threshold: conf.type_complexity_threshold,

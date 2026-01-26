@@ -282,12 +282,12 @@ fn check_replace_with_default(
     }
 }
 
-pub struct MemReplace {
+pub(crate) struct MemReplace {
     msrv: Msrv,
 }
 
 impl MemReplace {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self { msrv: conf.msrv }
     }
 }

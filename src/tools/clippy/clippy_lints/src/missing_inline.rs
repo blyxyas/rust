@@ -26,10 +26,10 @@ declare_clippy_lint! {
     ///
     /// ### Example
     /// ```no_run
-    /// pub fn foo() {} // missing #[inline]
+    /// pub(crate) fn foo() {} // missing #[inline]
     /// fn ok() {} // ok
-    /// #[inline] pub fn bar() {} // ok
-    /// #[inline(always)] pub fn baz() {} // ok
+    /// #[inline] pub(crate) fn bar() {} // ok
+    /// #[inline(always)] pub(crate) fn baz() {} // ok
     ///
     /// pub trait Bar {
     ///   fn bar(); // ok
@@ -45,10 +45,10 @@ declare_clippy_lint! {
     ///   fn bar() {} // ok - Baz is not exported
     /// }
     ///
-    /// pub struct PubBaz;
+    /// pub(crate) struct PubBaz;
     /// impl PubBaz {
     ///     fn private() {} // ok
-    ///     pub fn not_private() {} // missing #[inline]
+    ///     pub(crate) fn not_private() {} // missing #[inline]
     /// }
     ///
     /// impl Bar for PubBaz {

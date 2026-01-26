@@ -30,7 +30,7 @@ fn parse_fails_on_trailing_newline(ty: Ty<'_>) -> bool {
     matches!(ty.kind(), ty::Float(_) | ty::Bool | ty::Int(_) | ty::Uint(_))
 }
 
-pub fn check(cx: &LateContext<'_>, call: &Expr<'_>, recv: &Expr<'_>, arg: &Expr<'_>) {
+pub(crate) fn check(cx: &LateContext<'_>, call: &Expr<'_>, recv: &Expr<'_>, arg: &Expr<'_>) {
     let recv_ty = cx.typeck_results().expr_ty(recv);
     if recv_ty.is_diag_item(cx, sym::Stdin)
         && let ExprKind::Path(QPath::Resolved(_, path)) = arg.peel_borrows().kind

@@ -64,7 +64,7 @@ declare_clippy_lint! {
     /// ```no_run
     /// pub mod foo {
     ///     mod iteration {
-    ///         pub struct FooIter {}
+    ///         pub(crate) struct FooIter {}
     ///     }
     ///     pub use iteration::*; // creates the path `foo::FooIter`
     /// }
@@ -155,7 +155,7 @@ declare_clippy_lint! {
     "structs where all fields share a prefix/postfix or contain the name of the struct"
 }
 
-pub struct ItemNameRepetitions {
+pub(crate) struct ItemNameRepetitions {
     /// The module path the lint pass is in.
     modules: Vec<ModInfo>,
     enum_threshold: u64,
@@ -178,7 +178,7 @@ struct ModInfo {
 }
 
 impl ItemNameRepetitions {
-    pub fn new(conf: &'static Conf) -> Self {
+    pub(crate) fn new(conf: &'static Conf) -> Self {
         Self {
             modules: Vec::new(),
             enum_threshold: conf.enum_variant_name_threshold,
