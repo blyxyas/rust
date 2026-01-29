@@ -4070,6 +4070,7 @@ version = "0.0.0"
 dependencies = [
  "clippy_config",
  "clippy_lints",
+ "declare_clippy_lint",
  "rustc_abi",
  "rustc_ast",
  "rustc_ast_lowering",

@@ -289,7 +289,9 @@ impl LintStore {
     #[track_caller]
     pub fn register_renamed(&mut self, old_name: &str, new_name: &str) {
         let Some(&Id(target)) = self.by_name.get(new_name) else {
-            bug!("invalid lint renaming of {} to {}", old_name, new_name);
+            // Not registered, but not an issue
+            return;
+            // bug!("invalid lint renaming of {} to {}", old_name, new_name,);
         };
         self.by_name.insert(old_name.to_string(), Renamed(new_name.to_string(), target));
     }

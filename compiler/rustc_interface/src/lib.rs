@@ -3,6 +3,7 @@
 #![feature(file_buffered)]
 #![feature(iter_intersperse)]
 #![feature(try_blocks)]
+#![feature(trim_prefix_suffix)]
 // tidy-alphabetical-end
 
 mod callbacks;

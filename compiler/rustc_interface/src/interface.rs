@@ -2,6 +2,7 @@ use std::path::PathBuf;
 use std::result;
 use std::sync::Arc;
 
+use declare_clippy_lint::LintListBuilder;
 use rustc_ast::{LitKind, MetaItemKind, token};
 use rustc_codegen_ssa::traits::CodegenBackend;
 use rustc_data_structures::fx::{FxHashMap, FxHashSet};
@@ -502,8 +503,12 @@ pub fn run_compiler<R: Send>(config: Config, f: impl FnOnce(&Compiler) -> R + Se
             // so that `register_lints` sees the fully initialized session.
             let mut lint_store = rustc_lint::new_lint_store(sess.enable_internal_lints());
 
-            if sess.opts.lint_opts.iter().any(|e| e.0.starts_with("clippy")) {
+            if sess.opts.lint_opts.iter().any(|e| dbg!(&e).0.starts_with("clippy")) {
                 let conf_path = clippy_config::lookup_conf_file();
+                let mut list_builder = LintListBuilder::default();
+                let mut lint_list = Vec::with_capacity(sess.opts.lint_opts.len());
+                list_builder.insert(lint_list.as_slice());
+                list_builder.register(&mut lint_store);
                 let conf = clippy_config::Conf::read(&sess, &conf_path);
                 clippy_lints::register_lint_passes(&mut lint_store, conf)
             }
