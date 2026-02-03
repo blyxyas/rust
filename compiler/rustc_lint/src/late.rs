@@ -405,9 +405,9 @@ fn late_lint_mod_inner<'tcx, T: LateLintPass<'tcx>>(
 }
 
 fn late_lint_crate<'tcx>(tcx: TyCtxt<'tcx>) {
+    let lint_store = unerased_lint_store(tcx.sess);
     // Note: `passes` is often empty.
-    let passes: Vec<_> =
-        unerased_lint_store(tcx.sess).late_passes.iter().map(|mk_pass| (mk_pass)(tcx)).collect();
+    let passes: Vec<_> = lint_store.late_passes.iter().map(|mk_pass| (mk_pass)(tcx)).collect();
 
     if passes.is_empty() {
         return;
@@ -430,8 +430,23 @@ fn late_lint_crate<'tcx>(tcx: TyCtxt<'tcx>) {
         .into_iter()
         .filter(|pass| {
             let lints = (**pass).get_lints();
+
+            if !lint_store.from_clippy {
+                let x = lints.iter().any(|lint| {
+                    lint.name_lower().starts_with("clippy")
+                        && tcx
+                            .sess
+                            .opts
+                            .lint_opts
+                            .iter()
+                            .any(|(lint_name, _)| lint.name_lower() == *lint_name)
+                });
+                return x;
+            }
+
             // Lintless passes are always in
             lints.is_empty() ||
+            // All Clippy lints are turned off by default
             // If the pass doesn't have a single needed lint, omit it
             !lints.iter().all(|lint| lints_that_dont_need_to_run.contains(&LintId::of(lint)))
         })

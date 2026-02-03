@@ -530,6 +530,11 @@ impl<'s, P: LintLevelsProvider> LintLevelsBuilder<'s, P> {
                     continue;
                 }
 
+                if id.lint.name_lower().starts_with("clippy") {
+                    let src = LintLevelSource::CommandLine(lint_flag_val, level);
+                    self.insert(id, LevelAndSource { level, lint_id: None, src })
+                }
+
                 if self.check_gated_lint(id, DUMMY_SP, true) {
                     let src = LintLevelSource::CommandLine(lint_flag_val, level);
                     self.insert(id, LevelAndSource { level, lint_id: None, src });

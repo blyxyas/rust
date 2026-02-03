@@ -7,10 +7,7 @@
 
 // FIXME: switch to something more ergonomic here, once available.
 // (Currently there is no way to opt into sysroot crates without `extern crate`.)
-use rustc_driver;
-use  rustc_interface;
-use rustc_session;
-use rustc_span;
+use {rustc_driver, rustc_interface, rustc_session, rustc_span};
 
 // See docs in https://github.com/rust-lang/rust/blob/master/compiler/rustc/src/main.rs
 // about jemalloc.

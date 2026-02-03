@@ -60,6 +60,7 @@ pub struct LintStore {
 
     /// Map of registered lint groups to what lints they expand to.
     lint_groups: FxIndexMap<&'static str, LintGroup>,
+    pub from_clippy: bool,
 }
 
 impl DynLintStore for LintStore {
@@ -135,6 +136,7 @@ impl LintStore {
             late_module_passes: vec![],
             by_name: Default::default(),
             lint_groups: Default::default(),
+            from_clippy: false,
         }
     }
 
@@ -465,6 +467,10 @@ impl LintStore {
                 CheckLintNameResult::NoLint(None)
             }
         }
+    }
+
+    pub fn set_from_clippy(&mut self, from_clippy: bool) {
+        self.from_clippy = from_clippy;
     }
 }
 

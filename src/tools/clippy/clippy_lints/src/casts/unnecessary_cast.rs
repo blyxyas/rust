@@ -10,6 +10,7 @@ use rustc_hir::def::{DefKind, Res};
 use rustc_hir::{Expr, ExprKind, Lit, Node, Path, QPath, TyKind, UnOp};
 use rustc_lint::{LateContext, LintContext};
 use rustc_middle::ty::adjustment::Adjust;
+use rustc_middle::ty::print::with_no_trimmed_paths;
 use rustc_middle::ty::{self, FloatTy, InferTy, Ty};
 use rustc_span::{Symbol, sym};
 use std::ops::ControlFlow;
@@ -293,11 +294,13 @@ fn is_cast_from_ty_alias<'tcx>(cx: &LateContext<'tcx>, expr: impl Visitable<'tcx
                 //
                 // FIXME: This won't work if the type is given an alias through `use`, should we
                 // consider this a type alias as well?
-                if !snippet
-                    .split("->")
-                    .skip(1)
-                    .any(|s| snippet_eq_ty(s, cast_from) || s.split("where").any(|ty| snippet_eq_ty(ty, cast_from)))
-                {
+                if !snippet.split("->").skip(1).any(|s| {
+                    with_no_trimmed_paths!(snippet_eq_ty(s, cast_from))
+                        || with_no_trimmed_paths!(
+                            s.split("where")
+                                .any(|ty| with_no_trimmed_paths!(snippet_eq_ty(ty, cast_from)))
+                        )
+                }) {
                     return ControlFlow::Break(());
                 }
             // Local usage

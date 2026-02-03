@@ -860,7 +860,7 @@
 # 1 - Use a single thread for compilation of Rust code (the default)
 # N - Number of threads used for compilation of Rust code
 #
-#rust.parallel-frontend-threads = 1
+rust.parallel-frontend-threads = 12
 
 # =============================================================================
 # Distribution options

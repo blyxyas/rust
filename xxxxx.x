@@ -1,0 +1,561 @@
+Building bootstrap
+    Finished `dev` profile [unoptimized] target(s) in 0.03s
+/home/psy/git/rust/build/x86_64-unknown-linux-gnu/ci-llvm/bin/llvm-strip does not exist; skipping copy
+    Finished `release` profile [optimized + debuginfo] target(s) in 0.22s
+    Finished `release` profile [optimized + debuginfo] target(s) in 0.07s
+    Finished `release` profile [optimized + debuginfo] target(s) in 0.20s
+[compiler/rustc_interface/src/interface.rs:506:51] &e = (
+    "unexpected_cfgs",
+    Warn,
+)
+[compiler/rustc_interface/src/interface.rs:506:51] &e = (
+    "linker_messages",
+    Allow,
+)
+[compiler/rustc_interface/src/interface.rs:506:51] &e = (
+    "rust_2018_idioms",
+    Warn,
+)
+[compiler/rustc_interface/src/interface.rs:506:51] &e = (
+    "unused_lifetimes",
+    Warn,
+)
+[compiler/rustc_interface/src/interface.rs:506:51] &e = (
+    "warnings",
+    Deny,
+)
+[compiler/rustc_interface/src/interface.rs:506:51] &e = (
+    "linker_messages",
+    Allow,
+)
+[compiler/rustc_interface/src/interface.rs:506:51] &e = (
+    "rust_2018_idioms",
+    Warn,
+)
+[compiler/rustc_interface/src/interface.rs:506:51] &e = (
+    "unused_lifetimes",
+    Warn,
+)
+[compiler/rustc_interface/src/interface.rs:506:51] &e = (
+    "warnings",
+    Deny,
+)
+[compiler/rustc_interface/src/interface.rs:506:51] &e = (
+    "linker_messages",
+    Allow,
+)
+[compiler/rustc_interface/src/interface.rs:506:51] &e = (
+    "rust_2018_idioms",
+    Warn,
+)
+[compiler/rustc_interface/src/interface.rs:506:51] &e = (
+    "unused_lifetimes",
+    Warn,
+)
+[compiler/rustc_interface/src/interface.rs:506:51] &e = (
+    "warnings",
+    Deny,
+)
+[compiler/rustc_interface/src/interface.rs:506:51] &e = (
+    "unexpected_cfgs",
+    Warn,
+)
+[compiler/rustc_interface/src/interface.rs:506:51] &e = (
+    "linker_messages",
+    Allow,
+)
+[compiler/rustc_interface/src/interface.rs:506:51] &e = (
+    "rust_2018_idioms",
+    Warn,
+)
+[compiler/rustc_interface/src/interface.rs:506:51] &e = (
+    "unused_lifetimes",
+    Warn,
+)
+[compiler/rustc_interface/src/interface.rs:506:51] &e = (
+    "warnings",
+    Deny,
+)
+[compiler/rustc_interface/src/interface.rs:506:51] &e = (
+    "linker_messages",
+    Allow,
+)
+[compiler/rustc_interface/src/interface.rs:506:51] &e = (
+    "rust_2018_idioms",
+    Warn,
+)
+[compiler/rustc_interface/src/interface.rs:506:51] &e = (
+    "unused_lifetimes",
+    Warn,
+)
+[compiler/rustc_interface/src/interface.rs:506:51] &e = (
+    "warnings",
+    Deny,
+)
+   Compiling libc v0.2.177
+[compiler/rustc_interface/src/interface.rs:506:51] &e = (
+    "clippy::used_underscore_binding",
+    Allow,
+)
+
+thread 'rustc' (231891) panicked at compiler/rustc_errors/src/lib.rs:750:17:
+`trimmed_def_paths` called, diagnostics were expected but none were emitted. Use `with_no_trimmed_paths` for debugging. This happened in the following `must_produce_diag` call's backtrace:
+   0: set_must_produce_diag
+             at /home/psy/git/rust/compiler/rustc_errors/src/lib.rs:1230:58
+   1: record_trimmed_def_paths
+             at /home/psy/git/rust/compiler/rustc_session/src/session.rs:284:20
+   2: trimmed_def_paths
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/print/pretty.rs:3458:14
+   3: {closure#0}
+             at /home/psy/git/rust/compiler/rustc_query_impl/src/plumbing.rs:294:9
+   4: __rust_begin_short_backtrace<rustc_query_impl::query_impl::trimmed_def_paths::dynamic_query::{closure#2}::{closure_env#0}, rustc_middle::query::erase::Erased<[u8; 8]>>
+             at /home/psy/git/rust/compiler/rustc_query_impl/src/plumbing.rs:578:18
+   5: {closure#2}
+             at /home/psy/git/rust/compiler/rustc_query_impl/src/plumbing.rs:655:25
+   6: call_once<rustc_query_impl::query_impl::trimmed_def_paths::dynamic_query::{closure_env#2}, (rustc_middle::ty::context::TyCtxt, ())>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/core/src/ops/function.rs:250:5
+   7: compute<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 8]>>, false, false, false>
+             at /home/psy/git/rust/compiler/rustc_query_impl/src/lib.rs:122:9
+   8: {closure#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 8]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>
+             at /home/psy/git/rust/compiler/rustc_query_system/src/query/plumbing.rs:493:72
+   9: {closure#0}<rustc_query_system::query::plumbing::execute_job_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 8]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>, rustc_middle::query::erase::Erased<[u8; 8]>>
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/context/tls.rs:60:9
+  10: try_with<core::cell::Cell<*const ()>, rustc_middle::ty::context::tls::enter_context::{closure_env#0}<rustc_query_system::query::plumbing::execute_job_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 8]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>, rustc_middle::query::erase::Erased<[u8; 8]>>, rustc_middle::query::erase::Erased<[u8; 8]>>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/thread/local.rs:315:12
+  11: with<core::cell::Cell<*const ()>, rustc_middle::ty::context::tls::enter_context::{closure_env#0}<rustc_query_system::query::plumbing::execute_job_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 8]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>, rustc_middle::query::erase::Erased<[u8; 8]>>, rustc_middle::query::erase::Erased<[u8; 8]>>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/thread/local.rs:279:20
+  12: enter_context<rustc_query_system::query::plumbing::execute_job_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 8]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>, rustc_middle::query::erase::Erased<[u8; 8]>>
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/context/tls.rs:57:9
+  13: {closure#0}<rustc_middle::query::erase::Erased<[u8; 8]>, rustc_query_system::query::plumbing::execute_job_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 8]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>>
+             at /home/psy/git/rust/compiler/rustc_query_impl/src/plumbing.rs:161:13
+  14: {closure#0}<rustc_query_impl::plumbing::{impl#3}::start_query::{closure_env#0}<rustc_middle::query::erase::Erased<[u8; 8]>, rustc_query_system::query::plumbing::execute_job_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 8]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>>, rustc_middle::query::erase::Erased<[u8; 8]>>
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/context/tls.rs:112:9
+  15: {closure#0}<rustc_middle::ty::context::tls::with_related_context::{closure_env#0}<rustc_query_impl::plumbing::{impl#3}::start_query::{closure_env#0}<rustc_middle::query::erase::Erased<[u8; 8]>, rustc_query_system::query::plumbing::execute_job_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 8]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>>, rustc_middle::query::erase::Erased<[u8; 8]>>, rustc_middle::query::erase::Erased<[u8; 8]>>
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/context/tls.rs:90:36
+  16: with_context_opt<rustc_middle::ty::context::tls::with_context::{closure_env#0}<rustc_middle::ty::context::tls::with_related_context::{closure_env#0}<rustc_query_impl::plumbing::{impl#3}::start_query::{closure_env#0}<rustc_middle::query::erase::Erased<[u8; 8]>, rustc_query_system::query::plumbing::execute_job_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 8]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>>, rustc_middle::query::erase::Erased<[u8; 8]>>, rustc_middle::query::erase::Erased<[u8; 8]>>, rustc_middle::query::erase::Erased<[u8; 8]>>
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/context/tls.rs:79:18
+  17: with_context<rustc_middle::ty::context::tls::with_related_context::{closure_env#0}<rustc_query_impl::plumbing::{impl#3}::start_query::{closure_env#0}<rustc_middle::query::erase::Erased<[u8; 8]>, rustc_query_system::query::plumbing::execute_job_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 8]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>>, rustc_middle::query::erase::Erased<[u8; 8]>>, rustc_middle::query::erase::Erased<[u8; 8]>>
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/context/tls.rs:90:5
+  18: with_related_context<rustc_query_impl::plumbing::{impl#3}::start_query::{closure_env#0}<rustc_middle::query::erase::Erased<[u8; 8]>, rustc_query_system::query::plumbing::execute_job_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 8]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>>, rustc_middle::query::erase::Erased<[u8; 8]>>
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/context/tls.rs:103:5
+  19: start_query<rustc_middle::query::erase::Erased<[u8; 8]>, rustc_query_system::query::plumbing::execute_job_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 8]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>>
+             at /home/psy/git/rust/compiler/rustc_query_impl/src/plumbing.rs:147:9
+  20: execute_job_non_incr<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 8]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>
+             at /home/psy/git/rust/compiler/rustc_query_system/src/query/plumbing.rs:493:22
+  21: execute_job<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 8]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt, false>
+             at /home/psy/git/rust/compiler/rustc_query_system/src/query/plumbing.rs:429:9
+  22: try_execute_query<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 8]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt, false>
+             at /home/psy/git/rust/compiler/rustc_query_system/src/query/plumbing.rs:372:13
+  23: {closure#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 8]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>
+             at /home/psy/git/rust/compiler/rustc_query_system/src/query/plumbing.rs:814:32
+  24: maybe_grow<rustc_middle::query::erase::Erased<[u8; 8]>, rustc_query_system::query::plumbing::get_query_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 8]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>>
+             at /home/psy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/stacker-0.1.21/src/lib.rs:57:9
+  25: ensure_sufficient_stack<rustc_middle::query::erase::Erased<[u8; 8]>, rustc_query_system::query::plumbing::get_query_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 8]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>>
+             at /home/psy/git/rust/compiler/rustc_data_structures/src/stack.rs:21:5
+  26: get_query_non_incr<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 8]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>
+             at /home/psy/git/rust/compiler/rustc_query_system/src/query/plumbing.rs:814:5
+  27: __rust_end_short_backtrace
+             at /home/psy/git/rust/compiler/rustc_query_impl/src/plumbing.rs:631:26
+  28: query_get_at<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 8]>>>
+             at /home/psy/git/rust/compiler/rustc_middle/src/query/inner.rs:33:17
+  29: trimmed_def_paths
+             at /home/psy/git/rust/compiler/rustc_middle/src/query/plumbing.rs:415:31
+  30: trimmed_def_paths
+             at /home/psy/git/rust/compiler/rustc_middle/src/query/plumbing.rs:406:35
+  31: try_print_trimmed_def_path<rustc_middle::ty::print::pretty::FmtPrinter>
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/print/pretty.rs:456:46
+  32: print_def_path
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/print/pretty.rs:2220:24
+  33: {closure#0}<rustc_span::def_id::DefId>
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/print/pretty.rs:2185:50
+  34: print_string<rustc_middle::ty::print::pretty::{impl#7}::def_path_str_with_args::{closure_env#0}<rustc_span::def_id::DefId>>
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/print/pretty.rs:2122:9
+  35: def_path_str_with_args<rustc_span::def_id::DefId>
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/print/pretty.rs:2185:9
+  36: def_path_str<rustc_span::def_id::DefId>
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/print/pretty.rs:2172:14
+  37: match_libc_symbol
+             at /home/psy/git/rust/src/tools/clippy/clippy_utils/src/lib.rs:1677:57
+  38: check_expr
+             at /home/psy/git/rust/src/tools/clippy/clippy_lints/src/strlen_on_c_strings.rs:46:16
+  39: check_expr
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:328:26
+  40: {closure#0}<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:33:14
+  41: with_lint_attrs<rustc_lint::late::RuntimeCombinedLateLintPass, rustc_lint::late::{impl#1}::visit_expr::{closure#0}::{closure_env#0}<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:59:9
+  42: {closure#0}<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:165:18
+  43: maybe_grow<(), rustc_lint::late::{impl#1}::visit_expr::{closure_env#0}<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/stacker-0.1.21/src/lib.rs:57:9
+  44: ensure_sufficient_stack<(), rustc_lint::late::{impl#1}::visit_expr::{closure_env#0}<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_data_structures/src/stack.rs:21:5
+  45: visit_expr<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:164:9
+  46: walk_expr<rustc_lint::late::LateContextAndPass<rustc_lint::late::RuntimeCombinedLateLintPass>>
+  47: {closure#0}<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:167:17
+  48: with_lint_attrs<rustc_lint::late::RuntimeCombinedLateLintPass, rustc_lint::late::{impl#1}::visit_expr::{closure#0}::{closure_env#0}<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:59:9
+  49: {closure#0}<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:165:18
+  50: maybe_grow<(), rustc_lint::late::{impl#1}::visit_expr::{closure_env#0}<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/stacker-0.1.21/src/lib.rs:57:9
+  51: ensure_sufficient_stack<(), rustc_lint::late::{impl#1}::visit_expr::{closure_env#0}<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_data_structures/src/stack.rs:21:5
+  52: visit_expr<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:164:9
+  53: walk_expr<rustc_lint::late::LateContextAndPass<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_hir/src/intravisit.rs:854:32
+  54: {closure#0}<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:167:17
+  55: with_lint_attrs<rustc_lint::late::RuntimeCombinedLateLintPass, rustc_lint::late::{impl#1}::visit_expr::{closure#0}::{closure_env#0}<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:59:9
+  56: {closure#0}<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:165:18
+  57: maybe_grow<(), rustc_lint::late::{impl#1}::visit_expr::{closure_env#0}<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/stacker-0.1.21/src/lib.rs:57:9
+  58: ensure_sufficient_stack<(), rustc_lint::late::{impl#1}::visit_expr::{closure_env#0}<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_data_structures/src/stack.rs:21:5
+  59: visit_expr<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:164:9
+  60: walk_block<rustc_lint::late::LateContextAndPass<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_hir/src/intravisit.rs:695:5
+  61: <rustc_lint::late::LateContextAndPass<rustc_lint::late::RuntimeCombinedLateLintPass> as rustc_hir::intravisit::Visitor>::visit_block
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:240:9
+  62: walk_expr<rustc_lint::late::LateContextAndPass<rustc_lint::late::RuntimeCombinedLateLintPass>>
+  63: {closure#0}<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:167:17
+  64: with_lint_attrs<rustc_lint::late::RuntimeCombinedLateLintPass, rustc_lint::late::{impl#1}::visit_expr::{closure#0}::{closure_env#0}<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:59:9
+  65: {closure#0}<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:165:18
+  66: maybe_grow<(), rustc_lint::late::{impl#1}::visit_expr::{closure_env#0}<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/stacker-0.1.21/src/lib.rs:57:9
+  67: ensure_sufficient_stack<(), rustc_lint::late::{impl#1}::visit_expr::{closure_env#0}<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_data_structures/src/stack.rs:21:5
+  68: visit_expr<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:164:9
+  69: visit_body<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:120:9
+  70: visit_nested_body<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:103:14
+  71: visit_fn<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:196:9
+  72: walk_item<rustc_lint::late::LateContextAndPass<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_hir/src/intravisit.rs:558:32
+  73: {closure#0}<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:132:17
+  74: with_param_env<rustc_lint::late::RuntimeCombinedLateLintPass, rustc_lint::late::{impl#1}::visit_item::{closure#0}::{closure_env#0}<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:71:9
+  75: {closure#0}<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:130:16
+  76: with_lint_attrs<rustc_lint::late::RuntimeCombinedLateLintPass, rustc_lint::late::{impl#1}::visit_item::{closure_env#0}<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:59:9
+  77: visit_item<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:129:14
+  78: visit_nested_item<rustc_lint::late::LateContextAndPass<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_hir/src/intravisit.rs:249:29
+  79: walk_mod<rustc_lint::late::LateContextAndPass<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_hir/src/intravisit.rs:650:5
+  80: walk_item<rustc_lint::late::LateContextAndPass<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_hir/src/intravisit.rs:571:32
+  81: {closure#0}<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:132:17
+  82: with_param_env<rustc_lint::late::RuntimeCombinedLateLintPass, rustc_lint::late::{impl#1}::visit_item::{closure#0}::{closure_env#0}<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:71:9
+  83: {closure#0}<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:130:16
+  84: with_lint_attrs<rustc_lint::late::RuntimeCombinedLateLintPass, rustc_lint::late::{impl#1}::visit_item::{closure_env#0}<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:59:9
+  85: visit_item<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:129:14
+  86: visit_nested_item<rustc_lint::late::LateContextAndPass<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_hir/src/intravisit.rs:249:29
+  87: walk_mod<rustc_lint::late::LateContextAndPass<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_hir/src/intravisit.rs:650:5
+  88: walk_item<rustc_lint::late::LateContextAndPass<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_hir/src/intravisit.rs:571:32
+  89: {closure#0}<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:132:17
+  90: with_param_env<rustc_lint::late::RuntimeCombinedLateLintPass, rustc_lint::late::{impl#1}::visit_item::{closure#0}::{closure_env#0}<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:71:9
+  91: {closure#0}<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:130:16
+  92: with_lint_attrs<rustc_lint::late::RuntimeCombinedLateLintPass, rustc_lint::late::{impl#1}::visit_item::{closure_env#0}<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:59:9
+  93: visit_item<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:129:14
+  94: visit_nested_item<rustc_lint::late::LateContextAndPass<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_hir/src/intravisit.rs:249:29
+  95: walk_mod<rustc_lint::late::LateContextAndPass<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_hir/src/intravisit.rs:650:5
+  96: <rustc_middle::ty::context::TyCtxt>::hir_walk_toplevel_module::<rustc_lint::late::LateContextAndPass<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_middle/src/hir/map.rs:391:17
+  97: {closure#0}<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:472:13
+  98: with_lint_attrs<rustc_lint::late::RuntimeCombinedLateLintPass, rustc_lint::late::late_lint_crate_inner::{closure_env#0}<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:59:9
+  99: late_lint_crate_inner<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:468:8
+ 100: late_lint_crate
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:457:5
+ 101: {closure#0}
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:483:17
+ 102: run<(), rustc_lint::late::check_crate::{closure#0}::{closure_env#0}>
+             at /home/psy/git/rust/compiler/rustc_data_structures/src/profiling.rs:844:9
+ 103: time<(), rustc_lint::late::check_crate::{closure#0}::{closure_env#0}>
+             at /home/psy/git/rust/compiler/rustc_session/src/utils.rs:17:50
+ 104: {closure#0}
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:481:22
+ 105: call_once<(), rustc_lint::late::check_crate::{closure_env#0}>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/core/src/panic/unwind_safe.rs:274:9
+ 106: do_call<core::panic::unwind_safe::AssertUnwindSafe<rustc_lint::late::check_crate::{closure_env#0}>, ()>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/panicking.rs:590:40
+ 107: catch_unwind<(), core::panic::unwind_safe::AssertUnwindSafe<rustc_lint::late::check_crate::{closure_env#0}>>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/panicking.rs:553:19
+ 108: catch_unwind<core::panic::unwind_safe::AssertUnwindSafe<rustc_lint::late::check_crate::{closure_env#0}>, ()>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/panic.rs:359:14
+ 109: run<(), rustc_lint::late::check_crate::{closure_env#0}>
+             at /home/psy/git/rust/compiler/rustc_data_structures/src/sync/parallel.rs:23:9
+ 110: {closure#0}<rustc_lint::late::check_crate::{closure_env#0}, rustc_lint::late::check_crate::{closure_env#1}, (), ()>
+             at /home/psy/git/rust/compiler/rustc_data_structures/src/sync/parallel.rs:52:23
+ 111: parallel_guard<(core::option::Option<()>, core::option::Option<()>), rustc_data_structures::sync::parallel::serial_join::{closure_env#0}<rustc_lint::late::check_crate::{closure_env#0}, rustc_lint::late::check_crate::{closure_env#1}, (), ()>>
+             at /home/psy/git/rust/compiler/rustc_data_structures/src/sync/parallel.rs:39:15
+ 112: serial_join<rustc_lint::late::check_crate::{closure_env#0}, rustc_lint::late::check_crate::{closure_env#1}, (), ()>
+             at /home/psy/git/rust/compiler/rustc_data_structures/src/sync/parallel.rs:51:18
+ 113: join<rustc_lint::late::check_crate::{closure_env#0}, rustc_lint::late::check_crate::{closure_env#1}, (), ()>
+             at /home/psy/git/rust/compiler/rustc_data_structures/src/sync/parallel.rs:132:9
+ 114: check_crate
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:479:5
+ 115: {closure#0}
+             at /home/psy/git/rust/compiler/rustc_interface/src/passes.rs:1165:29
+ 116: run<(), rustc_interface::passes::analysis::{closure#0}::{closure#2}::{closure#0}::{closure#2}::{closure#1}::{closure#0}::{closure#2}::{closure_env#0}>
+             at /home/psy/git/rust/compiler/rustc_data_structures/src/profiling.rs:844:9
+ 117: time<(), rustc_interface::passes::analysis::{closure#0}::{closure#2}::{closure#0}::{closure#2}::{closure#1}::{closure#0}::{closure#2}::{closure_env#0}>
+             at /home/psy/git/rust/compiler/rustc_session/src/utils.rs:17:50
+ 118: {closure#2}
+             at /home/psy/git/rust/compiler/rustc_interface/src/passes.rs:1164:30
+ 119: call_once<(), rustc_interface::passes::analysis::{closure#0}::{closure#1}::{closure#0}::{closure#0}::{closure_env#2}>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/core/src/panic/unwind_safe.rs:274:9
+ 120: do_call<core::panic::unwind_safe::AssertUnwindSafe<rustc_interface::passes::analysis::{closure#0}::{closure#1}::{closure#0}::{closure#0}::{closure_env#2}>, ()>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/panicking.rs:590:40
+ 121: catch_unwind<(), core::panic::unwind_safe::AssertUnwindSafe<rustc_interface::passes::analysis::{closure#0}::{closure#1}::{closure#0}::{closure#0}::{closure_env#2}>>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/panicking.rs:553:19
+ 122: catch_unwind<core::panic::unwind_safe::AssertUnwindSafe<rustc_interface::passes::analysis::{closure#0}::{closure#1}::{closure#0}::{closure#0}::{closure_env#2}>, ()>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/panic.rs:359:14
+ 123: run<(), rustc_interface::passes::analysis::{closure#0}::{closure#1}::{closure#0}::{closure#0}::{closure_env#2}>
+             at /home/psy/git/rust/compiler/rustc_data_structures/src/sync/parallel.rs:23:9
+ 124: {closure#0}
+             at /home/psy/git/rust/compiler/rustc_data_structures/src/sync/parallel.rs:88:29
+ 125: parallel_guard<(), rustc_interface::passes::analysis::{closure#0}::{closure#1}::{closure#0}::{closure_env#0}>
+             at /home/psy/git/rust/compiler/rustc_data_structures/src/sync/parallel.rs:39:15
+ 126: {closure#0}
+             at /home/psy/git/rust/compiler/rustc_interface/src/passes.rs:1152:17
+ 127: call_once<(), rustc_interface::passes::analysis::{closure#0}::{closure#1}::{closure_env#0}>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/core/src/panic/unwind_safe.rs:274:9
+ 128: do_call<core::panic::unwind_safe::AssertUnwindSafe<rustc_interface::passes::analysis::{closure#0}::{closure#1}::{closure_env#0}>, ()>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/panicking.rs:590:40
+ 129: catch_unwind<(), core::panic::unwind_safe::AssertUnwindSafe<rustc_interface::passes::analysis::{closure#0}::{closure#1}::{closure_env#0}>>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/panicking.rs:553:19
+ 130: catch_unwind<core::panic::unwind_safe::AssertUnwindSafe<rustc_interface::passes::analysis::{closure#0}::{closure#1}::{closure_env#0}>, ()>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/panic.rs:359:14
+ 131: run<(), rustc_interface::passes::analysis::{closure#0}::{closure#1}::{closure_env#0}>
+             at /home/psy/git/rust/compiler/rustc_data_structures/src/sync/parallel.rs:23:9
+ 132: {closure#1}
+             at /home/psy/git/rust/compiler/rustc_data_structures/src/sync/parallel.rs:87:27
+ 133: parallel_guard<(), rustc_interface::passes::analysis::{closure#0}::{closure_env#1}>
+             at /home/psy/git/rust/compiler/rustc_data_structures/src/sync/parallel.rs:39:15
+ 134: {closure#0}
+             at /home/psy/git/rust/compiler/rustc_interface/src/passes.rs:1148:9
+ 135: run<(), rustc_interface::passes::analysis::{closure_env#0}>
+             at /home/psy/git/rust/compiler/rustc_data_structures/src/profiling.rs:844:9
+ 136: time<(), rustc_interface::passes::analysis::{closure_env#0}>
+             at /home/psy/git/rust/compiler/rustc_session/src/utils.rs:17:50
+ 137: analysis
+             at /home/psy/git/rust/compiler/rustc_interface/src/passes.rs:1147:10
+ 138: {closure#0}
+             at /home/psy/git/rust/compiler/rustc_query_impl/src/plumbing.rs:294:9
+ 139: __rust_begin_short_backtrace<rustc_query_impl::query_impl::analysis::dynamic_query::{closure#2}::{closure_env#0}, rustc_middle::query::erase::Erased<[u8; 0]>>
+             at /home/psy/git/rust/compiler/rustc_query_impl/src/plumbing.rs:578:18
+ 140: {closure#2}
+             at /home/psy/git/rust/compiler/rustc_query_impl/src/plumbing.rs:655:25
+ 141: call_once<rustc_query_impl::query_impl::analysis::dynamic_query::{closure_env#2}, (rustc_middle::ty::context::TyCtxt, ())>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/core/src/ops/function.rs:250:5
+ 142: compute<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 0]>>, false, false, false>
+             at /home/psy/git/rust/compiler/rustc_query_impl/src/lib.rs:122:9
+ 143: {closure#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 0]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>
+             at /home/psy/git/rust/compiler/rustc_query_system/src/query/plumbing.rs:493:72
+ 144: {closure#0}<rustc_query_system::query::plumbing::execute_job_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 0]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>, rustc_middle::query::erase::Erased<[u8; 0]>>
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/context/tls.rs:60:9
+ 145: try_with<core::cell::Cell<*const ()>, rustc_middle::ty::context::tls::enter_context::{closure_env#0}<rustc_query_system::query::plumbing::execute_job_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 0]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>, rustc_middle::query::erase::Erased<[u8; 0]>>, rustc_middle::query::erase::Erased<[u8; 0]>>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/thread/local.rs:315:12
+ 146: with<core::cell::Cell<*const ()>, rustc_middle::ty::context::tls::enter_context::{closure_env#0}<rustc_query_system::query::plumbing::execute_job_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 0]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>, rustc_middle::query::erase::Erased<[u8; 0]>>, rustc_middle::query::erase::Erased<[u8; 0]>>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/thread/local.rs:279:20
+ 147: enter_context<rustc_query_system::query::plumbing::execute_job_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 0]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>, rustc_middle::query::erase::Erased<[u8; 0]>>
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/context/tls.rs:57:9
+ 148: {closure#0}<rustc_middle::query::erase::Erased<[u8; 0]>, rustc_query_system::query::plumbing::execute_job_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 0]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>>
+             at /home/psy/git/rust/compiler/rustc_query_impl/src/plumbing.rs:161:13
+ 149: {closure#0}<rustc_query_impl::plumbing::{impl#3}::start_query::{closure_env#0}<rustc_middle::query::erase::Erased<[u8; 0]>, rustc_query_system::query::plumbing::execute_job_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 0]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>>, rustc_middle::query::erase::Erased<[u8; 0]>>
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/context/tls.rs:112:9
+ 150: {closure#0}<rustc_middle::ty::context::tls::with_related_context::{closure_env#0}<rustc_query_impl::plumbing::{impl#3}::start_query::{closure_env#0}<rustc_middle::query::erase::Erased<[u8; 0]>, rustc_query_system::query::plumbing::execute_job_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 0]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>>, rustc_middle::query::erase::Erased<[u8; 0]>>, rustc_middle::query::erase::Erased<[u8; 0]>>
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/context/tls.rs:90:36
+ 151: with_context_opt<rustc_middle::ty::context::tls::with_context::{closure_env#0}<rustc_middle::ty::context::tls::with_related_context::{closure_env#0}<rustc_query_impl::plumbing::{impl#3}::start_query::{closure_env#0}<rustc_middle::query::erase::Erased<[u8; 0]>, rustc_query_system::query::plumbing::execute_job_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 0]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>>, rustc_middle::query::erase::Erased<[u8; 0]>>, rustc_middle::query::erase::Erased<[u8; 0]>>, rustc_middle::query::erase::Erased<[u8; 0]>>
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/context/tls.rs:79:18
+ 152: with_context<rustc_middle::ty::context::tls::with_related_context::{closure_env#0}<rustc_query_impl::plumbing::{impl#3}::start_query::{closure_env#0}<rustc_middle::query::erase::Erased<[u8; 0]>, rustc_query_system::query::plumbing::execute_job_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 0]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>>, rustc_middle::query::erase::Erased<[u8; 0]>>, rustc_middle::query::erase::Erased<[u8; 0]>>
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/context/tls.rs:90:5
+ 153: with_related_context<rustc_query_impl::plumbing::{impl#3}::start_query::{closure_env#0}<rustc_middle::query::erase::Erased<[u8; 0]>, rustc_query_system::query::plumbing::execute_job_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 0]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>>, rustc_middle::query::erase::Erased<[u8; 0]>>
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/context/tls.rs:103:5
+ 154: start_query<rustc_middle::query::erase::Erased<[u8; 0]>, rustc_query_system::query::plumbing::execute_job_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 0]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>>
+             at /home/psy/git/rust/compiler/rustc_query_impl/src/plumbing.rs:147:9
+ 155: execute_job_non_incr<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 0]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>
+             at /home/psy/git/rust/compiler/rustc_query_system/src/query/plumbing.rs:493:22
+ 156: execute_job<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 0]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt, false>
+             at /home/psy/git/rust/compiler/rustc_query_system/src/query/plumbing.rs:429:9
+ 157: try_execute_query<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 0]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt, false>
+             at /home/psy/git/rust/compiler/rustc_query_system/src/query/plumbing.rs:372:13
+ 158: {closure#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 0]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>
+             at /home/psy/git/rust/compiler/rustc_query_system/src/query/plumbing.rs:814:32
+ 159: maybe_grow<rustc_middle::query::erase::Erased<[u8; 0]>, rustc_query_system::query::plumbing::get_query_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 0]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>>
+             at /home/psy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/stacker-0.1.21/src/lib.rs:57:9
+ 160: ensure_sufficient_stack<rustc_middle::query::erase::Erased<[u8; 0]>, rustc_query_system::query::plumbing::get_query_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 0]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>>
+             at /home/psy/git/rust/compiler/rustc_data_structures/src/stack.rs:21:5
+ 161: get_query_non_incr<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 0]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>
+             at /home/psy/git/rust/compiler/rustc_query_system/src/query/plumbing.rs:814:5
+ 162: __rust_end_short_backtrace
+             at /home/psy/git/rust/compiler/rustc_query_impl/src/plumbing.rs:631:26
+ 163: query_ensure<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 0]>>>
+             at /home/psy/git/rust/compiler/rustc_middle/src/query/inner.rs:51:9
+ 164: analysis
+             at /home/psy/git/rust/compiler/rustc_middle/src/query/plumbing.rs:173:9
+ 165: {closure#2}
+             at /home/psy/git/rust/compiler/rustc_driver_impl/src/lib.rs:371:29
+ 166: {closure#0}<core::option::Option<rustc_interface::queries::Linker>, rustc_driver_impl::run_compiler::{closure#0}::{closure_env#2}>
+             at /home/psy/git/rust/compiler/rustc_interface/src/passes.rs:1016:27
+ 167: {closure#1}<rustc_interface::passes::create_and_enter_global_ctxt::{closure#2}::{closure_env#0}<core::option::Option<rustc_interface::queries::Linker>, rustc_driver_impl::run_compiler::{closure#0}::{closure_env#2}>, core::option::Option<rustc_interface::queries::Linker>>
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/context.rs:1663:37
+ 168: {closure#0}<rustc_middle::ty::context::{impl#21}::enter::{closure_env#1}<rustc_interface::passes::create_and_enter_global_ctxt::{closure#2}::{closure_env#0}<core::option::Option<rustc_interface::queries::Linker>, rustc_driver_impl::run_compiler::{closure#0}::{closure_env#2}>, core::option::Option<rustc_interface::queries::Linker>>, core::option::Option<rustc_interface::queries::Linker>>
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/context/tls.rs:60:9
+ 169: try_with<core::cell::Cell<*const ()>, rustc_middle::ty::context::tls::enter_context::{closure_env#0}<rustc_middle::ty::context::{impl#21}::enter::{closure_env#1}<rustc_interface::passes::create_and_enter_global_ctxt::{closure#2}::{closure_env#0}<core::option::Option<rustc_interface::queries::Linker>, rustc_driver_impl::run_compiler::{closure#0}::{closure_env#2}>, core::option::Option<rustc_interface::queries::Linker>>, core::option::Option<rustc_interface::queries::Linker>>, core::option::Option<rustc_interface::queries::Linker>>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/thread/local.rs:315:12
+ 170: with<core::cell::Cell<*const ()>, rustc_middle::ty::context::tls::enter_context::{closure_env#0}<rustc_middle::ty::context::{impl#21}::enter::{closure_env#1}<rustc_interface::passes::create_and_enter_global_ctxt::{closure#2}::{closure_env#0}<core::option::Option<rustc_interface::queries::Linker>, rustc_driver_impl::run_compiler::{closure#0}::{closure_env#2}>, core::option::Option<rustc_interface::queries::Linker>>, core::option::Option<rustc_interface::queries::Linker>>, core::option::Option<rustc_interface::queries::Linker>>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/thread/local.rs:279:20
+ 171: enter_context<rustc_middle::ty::context::{impl#21}::enter::{closure_env#1}<rustc_interface::passes::create_and_enter_global_ctxt::{closure#2}::{closure_env#0}<core::option::Option<rustc_interface::queries::Linker>, rustc_driver_impl::run_compiler::{closure#0}::{closure_env#2}>, core::option::Option<rustc_interface::queries::Linker>>, core::option::Option<rustc_interface::queries::Linker>>
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/context/tls.rs:57:9
+ 172: enter<rustc_interface::passes::create_and_enter_global_ctxt::{closure#2}::{closure_env#0}<core::option::Option<rustc_interface::queries::Linker>, rustc_driver_impl::run_compiler::{closure#0}::{closure_env#2}>, core::option::Option<rustc_interface::queries::Linker>>
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/context.rs:1663:9
+ 173: create_global_ctxt<core::option::Option<rustc_interface::queries::Linker>, rustc_interface::passes::create_and_enter_global_ctxt::{closure#2}::{closure_env#0}<core::option::Option<rustc_interface::queries::Linker>, rustc_driver_impl::run_compiler::{closure#0}::{closure_env#2}>>
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/context.rs:1870:13
+ 174: {closure#2}<core::option::Option<rustc_interface::queries::Linker>, rustc_driver_impl::run_compiler::{closure#0}::{closure_env#2}>
+             at /home/psy/git/rust/compiler/rustc_interface/src/passes.rs:983:9
+ 175: call_once<rustc_interface::passes::create_and_enter_global_ctxt::{closure_env#2}<core::option::Option<rustc_interface::queries::Linker>, rustc_driver_impl::run_compiler::{closure#0}::{closure_env#2}>, (&rustc_session::session::Session, rustc_middle::ty::context::CurrentGcx, alloc::sync::Arc<rustc_data_structures::jobserver::Proxy, alloc::alloc::Global>, &std::sync::once_lock::OnceLock<rustc_middle::ty::context::GlobalCtxt>, &rustc_data_structures::sync::worker_local::WorkerLocal<rustc_middle::arena::Arena>, &rustc_data_structures::sync::worker_local::WorkerLocal<rustc_hir::Arena>, rustc_driver_impl::run_compiler::{closure#0}::{closure_env#2})>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/core/src/ops/function.rs:250:5
+ 176: call_once<(&rustc_session::session::Session, rustc_middle::ty::context::CurrentGcx, alloc::sync::Arc<rustc_data_structures::jobserver::Proxy, alloc::alloc::Global>, &std::sync::once_lock::OnceLock<rustc_middle::ty::context::GlobalCtxt>, &rustc_data_structures::sync::worker_local::WorkerLocal<rustc_middle::arena::Arena>, &rustc_data_structures::sync::worker_local::WorkerLocal<rustc_hir::Arena>, rustc_driver_impl::run_compiler::{closure#0}::{closure_env#2}), dyn core::ops::function::FnOnce<(&rustc_session::session::Session, rustc_middle::ty::context::CurrentGcx, alloc::sync::Arc<rustc_data_structures::jobserver::Proxy, alloc::alloc::Global>, &std::sync::once_lock::OnceLock<rustc_middle::ty::context::GlobalCtxt>, &rustc_data_structures::sync::worker_local::WorkerLocal<rustc_middle::arena::Arena>, &rustc_data_structures::sync::worker_local::WorkerLocal<rustc_hir::Arena>, rustc_driver_impl::run_compiler::{closure#0}::{closure_env#2}), Output=core::option::Option<rustc_interface::queries::Linker>>, alloc::alloc::Global>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/alloc/src/boxed.rs:1985:9
+ 177: create_and_enter_global_ctxt<core::option::Option<rustc_interface::queries::Linker>, rustc_driver_impl::run_compiler::{closure#0}::{closure_env#2}>
+             at /home/psy/git/rust/compiler/rustc_interface/src/passes.rs:1024:5
+ 178: {closure#0}
+             at /home/psy/git/rust/compiler/rustc_driver_impl/src/lib.rs:344:22
+ 179: {closure#2}<(), rustc_driver_impl::run_compiler::{closure_env#0}>
+             at /home/psy/git/rust/compiler/rustc_interface/src/interface.rs:547:80
+ 180: call_once<(), rustc_interface::interface::run_compiler::{closure#1}::{closure_env#2}<(), rustc_driver_impl::run_compiler::{closure_env#0}>>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/core/src/panic/unwind_safe.rs:274:9
+ 181: do_call<core::panic::unwind_safe::AssertUnwindSafe<rustc_interface::interface::run_compiler::{closure#1}::{closure_env#2}<(), rustc_driver_impl::run_compiler::{closure_env#0}>>, ()>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/panicking.rs:590:40
+ 182: catch_unwind<(), core::panic::unwind_safe::AssertUnwindSafe<rustc_interface::interface::run_compiler::{closure#1}::{closure_env#2}<(), rustc_driver_impl::run_compiler::{closure_env#0}>>>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/panicking.rs:553:19
+ 183: catch_unwind<core::panic::unwind_safe::AssertUnwindSafe<rustc_interface::interface::run_compiler::{closure#1}::{closure_env#2}<(), rustc_driver_impl::run_compiler::{closure_env#0}>>, ()>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/panic.rs:359:14
+ 184: {closure#1}<(), rustc_driver_impl::run_compiler::{closure_env#0}>
+             at /home/psy/git/rust/compiler/rustc_interface/src/interface.rs:547:23
+ 185: {closure#0}<rustc_interface::interface::run_compiler::{closure_env#1}<(), rustc_driver_impl::run_compiler::{closure_env#0}>, ()>
+             at /home/psy/git/rust/compiler/rustc_interface/src/util.rs:208:17
+ 186: {closure#0}<rustc_interface::util::run_in_thread_pool_with_globals::{closure_env#0}<rustc_interface::interface::run_compiler::{closure_env#1}<(), rustc_driver_impl::run_compiler::{closure_env#0}>, ()>, ()>
+             at /home/psy/git/rust/compiler/rustc_interface/src/util.rs:162:24
+ 187: set<rustc_span::SessionGlobals, rustc_interface::util::run_in_thread_with_globals::{closure#0}::{closure#0}::{closure_env#0}<rustc_interface::util::run_in_thread_pool_with_globals::{closure_env#0}<rustc_interface::interface::run_compiler::{closure_env#1}<(), rustc_driver_impl::run_compiler::{closure_env#0}>, ()>, ()>, ()>
+             at /home/psy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/scoped-tls-1.0.1/src/lib.rs:137:9
+ 188: create_session_globals_then<(), rustc_interface::util::run_in_thread_with_globals::{closure#0}::{closure#0}::{closure_env#0}<rustc_interface::util::run_in_thread_pool_with_globals::{closure_env#0}<rustc_interface::interface::run_compiler::{closure_env#1}<(), rustc_driver_impl::run_compiler::{closure_env#0}>, ()>, ()>>
+             at /home/psy/git/rust/compiler/rustc_span/src/lib.rs:146:21
+ 189: {closure#0}<rustc_interface::util::run_in_thread_pool_with_globals::{closure_env#0}<rustc_interface::interface::run_compiler::{closure_env#1}<(), rustc_driver_impl::run_compiler::{closure_env#0}>, ()>, ()>
+             at /home/psy/git/rust/compiler/rustc_interface/src/util.rs:158:17
+ 190: __rust_begin_short_backtrace<rustc_interface::util::run_in_thread_with_globals::{closure#0}::{closure_env#0}<rustc_interface::util::run_in_thread_pool_with_globals::{closure_env#0}<rustc_interface::interface::run_compiler::{closure_env#1}<(), rustc_driver_impl::run_compiler::{closure_env#0}>, ()>, ()>, ()>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/sys/backtrace.rs:158:18
+ 191: {closure#0}<rustc_interface::util::run_in_thread_with_globals::{closure#0}::{closure_env#0}<rustc_interface::util::run_in_thread_pool_with_globals::{closure_env#0}<rustc_interface::interface::run_compiler::{closure_env#1}<(), rustc_driver_impl::run_compiler::{closure_env#0}>, ()>, ()>, ()>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/thread/mod.rs:559:17
+ 192: call_once<(), std::thread::{impl#0}::spawn_unchecked_::{closure#1}::{closure_env#0}<rustc_interface::util::run_in_thread_with_globals::{closure#0}::{closure_env#0}<rustc_interface::util::run_in_thread_pool_with_globals::{closure_env#0}<rustc_interface::interface::run_compiler::{closure_env#1}<(), rustc_driver_impl::run_compiler::{closure_env#0}>, ()>, ()>, ()>>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/core/src/panic/unwind_safe.rs:274:9
+ 193: do_call<core::panic::unwind_safe::AssertUnwindSafe<std::thread::{impl#0}::spawn_unchecked_::{closure#1}::{closure_env#0}<rustc_interface::util::run_in_thread_with_globals::{closure#0}::{closure_env#0}<rustc_interface::util::run_in_thread_pool_with_globals::{closure_env#0}<rustc_interface::interface::run_compiler::{closure_env#1}<(), rustc_driver_impl::run_compiler::{closure_env#0}>, ()>, ()>, ()>>, ()>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/panicking.rs:590:40
+ 194: catch_unwind<(), core::panic::unwind_safe::AssertUnwindSafe<std::thread::{impl#0}::spawn_unchecked_::{closure#1}::{closure_env#0}<rustc_interface::util::run_in_thread_with_globals::{closure#0}::{closure_env#0}<rustc_interface::util::run_in_thread_pool_with_globals::{closure_env#0}<rustc_interface::interface::run_compiler::{closure_env#1}<(), rustc_driver_impl::run_compiler::{closure_env#0}>, ()>, ()>, ()>>>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/panicking.rs:553:19
+ 195: catch_unwind<core::panic::unwind_safe::AssertUnwindSafe<std::thread::{impl#0}::spawn_unchecked_::{closure#1}::{closure_env#0}<rustc_interface::util::run_in_thread_with_globals::{closure#0}::{closure_env#0}<rustc_interface::util::run_in_thread_pool_with_globals::{closure_env#0}<rustc_interface::interface::run_compiler::{closure_env#1}<(), rustc_driver_impl::run_compiler::{closure_env#0}>, ()>, ()>, ()>>, ()>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/panic.rs:359:14
+ 196: {closure#1}<rustc_interface::util::run_in_thread_with_globals::{closure#0}::{closure_env#0}<rustc_interface::util::run_in_thread_pool_with_globals::{closure_env#0}<rustc_interface::interface::run_compiler::{closure_env#1}<(), rustc_driver_impl::run_compiler::{closure_env#0}>, ()>, ()>, ()>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/thread/mod.rs:557:30
+ 197: call_once<std::thread::{impl#0}::spawn_unchecked_::{closure_env#1}<rustc_interface::util::run_in_thread_with_globals::{closure#0}::{closure_env#0}<rustc_interface::util::run_in_thread_pool_with_globals::{closure_env#0}<rustc_interface::interface::run_compiler::{closure_env#1}<(), rustc_driver_impl::run_compiler::{closure_env#0}>, ()>, ()>, ()>, ()>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/core/src/ops/function.rs:250:5
+ 198: <alloc::boxed::Box<F,A> as core::ops::function::FnOnce<Args>>::call_once
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/alloc/src/boxed.rs:1985:9
+ 199: std::sys::thread::unix::Thread::new::thread_start
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/sys/thread/unix.rs:126:17
+ 200: <unknown>
+ 201: <unknown>
+
+stack backtrace:
+   0: __rustc::rust_begin_unwind
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/panicking.rs:698:5
+   1: core::panicking::panic_fmt
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/core/src/panicking.rs:75:14
+   2: drop
+             at /home/psy/git/rust/compiler/rustc_errors/src/lib.rs:750:17
+   3: drop_in_place<rustc_errors::DiagCtxtInner>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/core/src/ptr/mod.rs:804:1
+   4: drop_in_place<core::cell::UnsafeCell<rustc_errors::DiagCtxtInner>>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/core/src/ptr/mod.rs:804:1
+   5: drop_in_place<rustc_data_structures::sync::lock::Lock<rustc_errors::DiagCtxtInner>>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/core/src/ptr/mod.rs:804:1
+   6: drop_in_place<rustc_errors::DiagCtxt>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/core/src/ptr/mod.rs:804:1
+   7: drop_in_place<rustc_session::parse::ParseSess>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/core/src/ptr/mod.rs:804:1
+   8: drop_in_place<rustc_session::session::Session>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/core/src/ptr/mod.rs:804:1
+   9: drop_in_place<rustc_interface::interface::Compiler>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/core/src/ptr/mod.rs:804:1
+  10: drop<rustc_interface::interface::Compiler>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/core/src/mem/mod.rs:961:24
+  11: {closure#3}<(), rustc_driver_impl::run_compiler::{closure_env#0}>
+             at /home/psy/git/rust/compiler/rustc_interface/src/interface.rs:575:64
+  12: run<(), rustc_interface::interface::run_compiler::{closure#1}::{closure_env#3}<(), rustc_driver_impl::run_compiler::{closure_env#0}>>
+             at /home/psy/git/rust/compiler/rustc_data_structures/src/profiling.rs:808:9
+  13: {closure#1}<(), rustc_driver_impl::run_compiler::{closure_env#0}>
+             at /home/psy/git/rust/compiler/rustc_interface/src/interface.rs:575:52
+  14: {closure#0}<rustc_interface::interface::run_compiler::{closure_env#1}<(), rustc_driver_impl::run_compiler::{closure_env#0}>, ()>
+             at /home/psy/git/rust/compiler/rustc_interface/src/util.rs:208:17
+  15: {closure#0}<rustc_interface::util::run_in_thread_pool_with_globals::{closure_env#0}<rustc_interface::interface::run_compiler::{closure_env#1}<(), rustc_driver_impl::run_compiler::{closure_env#0}>, ()>, ()>
+             at /home/psy/git/rust/compiler/rustc_interface/src/util.rs:162:24
+  16: set<rustc_span::SessionGlobals, rustc_interface::util::run_in_thread_with_globals::{closure#0}::{closure#0}::{closure_env#0}<rustc_interface::util::run_in_thread_pool_with_globals::{closure_env#0}<rustc_interface::interface::run_compiler::{closure_env#1}<(), rustc_driver_impl::run_compiler::{closure_env#0}>, ()>, ()>, ()>
+             at /home/psy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/scoped-tls-1.0.1/src/lib.rs:137:9
+  17: create_session_globals_then<(), rustc_interface::util::run_in_thread_with_globals::{closure#0}::{closure#0}::{closure_env#0}<rustc_interface::util::run_in_thread_pool_with_globals::{closure_env#0}<rustc_interface::interface::run_compiler::{closure_env#1}<(), rustc_driver_impl::run_compiler::{closure_env#0}>, ()>, ()>>
+             at /home/psy/git/rust/compiler/rustc_span/src/lib.rs:146:21
+  18: {closure#0}<rustc_interface::util::run_in_thread_pool_with_globals::{closure_env#0}<rustc_interface::interface::run_compiler::{closure_env#1}<(), rustc_driver_impl::run_compiler::{closure_env#0}>, ()>, ()>
+             at /home/psy/git/rust/compiler/rustc_interface/src/util.rs:158:17
+note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
+
+error: the compiler unexpectedly panicked. this is a bug.
+
+note: using internal features is not supported and expected to cause internal compiler errors when used incorrectly
+
+note: please attach the file at `/home/psy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libc-0.2.177/rustc-ice-2026-01-30T16_05_22-231889.txt` to your bug report
+
+note: compiler flags: --crate-type lib -C opt-level=3 -C embed-bitcode=no -C debuginfo=line-tables-only -C debug-assertions=on -C overflow-checks=off -C symbol-mangling-version=legacy -Z unstable-options -Z macro-backtrace -C split-debuginfo=off -C force-frame-pointers=true -C prefer-dynamic -C llvm-args=-import-instr-limit=10 -Z inline-mir -Z inline-mir-preserve-debug -Z mir_strip_debuginfo=locals-in-tiny-functions -C link-args=-Wl,-z,origin -C link-args=-Wl,-rpath,$ORIGIN/../lib -C embed-bitcode=yes -C lto=off -Z unstable-options -C force-frame-pointers=non-leaf -Z crate-attr=doc(html_root_url="https://doc.rust-lang.org/nightly/") -Z binary-dep-depinfo -Z force-unstable-if-unmarked
+
+note: some of the compiler flags provided by cargo are hidden
+
+query stack during panic:
+end of query stack
+error: could not compile `libc` (lib)
+
+Caused by:
+  process didn't exit successfully: `/home/psy/git/rust/build/bootstrap/debug/rustc /home/psy/git/rust/build/bootstrap/debug/rustc --crate-name libc --edition=2021 /home/psy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libc-0.2.177/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C opt-level=3 -C embed-bitcode=no -C debuginfo=line-tables-only '--allow=clippy::used_underscore_binding' --allow=unused_qualifications '--warn=clippy::unnecessary_semicolon' '--allow=clippy::unnecessary_cast' '--allow=clippy::uninlined_format_args' '--warn=clippy::ptr_as_ptr' '--allow=clippy::non_minimal_cfg' '--allow=clippy::missing_safety_doc' '--warn=clippy::map_unwrap_or' '--warn=clippy::manual_assert' '--allow=clippy::identity_op' '--warn=clippy::explicit_iter_loop' '--allow=clippy::expl_impl_clone_on_copy' -C debug-assertions=on -C overflow-checks=off --cfg 'feature="align"' --cfg 'feature="rustc-dep-of-std"' --cfg 'feature="rustc-std-workspace-core"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values("align", "const-extern-fn", "default", "extra_traits", "rustc-dep-of-std", "rustc-std-workspace-core", "std", "use_std"))' -C metadata=a046830526c5322d -C extra-filename=-5958870cb2ca4b3b --out-dir /home/psy/git/rust/build/x86_64-unknown-linux-gnu/stage1-std/x86_64-unknown-linux-gnu/release/deps --target x86_64-unknown-linux-gnu -L dependency=/home/psy/git/rust/build/x86_64-unknown-linux-gnu/stage1-std/x86_64-unknown-linux-gnu/release/deps -L dependency=/home/psy/git/rust/build/x86_64-unknown-linux-gnu/stage1-std/release/deps --extern rustc_std_workspace_core=/home/psy/git/rust/build/x86_64-unknown-linux-gnu/stage1-std/x86_64-unknown-linux-gnu/release/deps/librustc_std_workspace_core-6cbfe28b929b65af.rmeta --cap-lints allow -Csymbol-mangling-version=legacy '--check-cfg=cfg(feature,values(any()))' -Zunstable-options -Zmacro-backtrace -Csplit-debuginfo=off -Cforce-frame-pointers=true -Cprefer-dynamic -Cllvm-args=-import-instr-limit=10 -Zinline-mir -Zinline-mir-preserve-debug -Zmir_strip_debuginfo=locals-in-tiny-functions -Clink-args=-Wl,-z,origin '-Clink-args=-Wl,-rpath,$ORIGIN/../lib' -Alinker-messages -Cembed-bitcode=yes -Clto=off -Zunstable-options -Cforce-frame-pointers=non-leaf '-Zcrate-attr=doc(html_root_url="https://doc.rust-lang.org/nightly/")' -Z binary-dep-depinfo --cfg freebsd12 --cfg libc_thread_local --check-cfg 'cfg(emscripten_old_stat_abi)' --check-cfg 'cfg(espidf_time32)' --check-cfg 'cfg(freebsd10)' --check-cfg 'cfg(freebsd11)' --check-cfg 'cfg(freebsd12)' --check-cfg 'cfg(freebsd13)' --check-cfg 'cfg(freebsd14)' --check-cfg 'cfg(freebsd15)' --check-cfg 'cfg(gnu_file_offset_bits64)' --check-cfg 'cfg(gnu_time_bits64)' --check-cfg 'cfg(libc_deny_warnings)' --check-cfg 'cfg(libc_thread_local)' --check-cfg 'cfg(linux_time_bits64)' --check-cfg 'cfg(musl_v1_2_3)' --check-cfg 'cfg(target_os,values("switch","aix","ohos","hurd","rtems","visionos","nuttx","cygwin"))' --check-cfg 'cfg(target_env,values("illumos","wasi","aix","ohos","nto71_iosock","nto80"))' --check-cfg 'cfg(target_arch,values("loongarch64","mips32r6","mips64r6","csky"))'` (exit status: 101)
+Build completed unsuccessfully in 0:00:05

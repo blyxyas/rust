@@ -1,0 +1,3126 @@
+Building bootstrap
+    Finished `dev` profile [unoptimized] target(s) in 0.03s
+/home/psy/git/rust/build/x86_64-unknown-linux-gnu/ci-llvm/bin/llvm-strip does not exist; skipping copy
+   Compiling rustc_interface v0.0.0 (/home/psy/git/rust/compiler/rustc_interface)
+   Compiling rustc_driver_impl v0.0.0 (/home/psy/git/rust/compiler/rustc_driver_impl)
+   Compiling rustc_driver v0.0.0 (/home/psy/git/rust/compiler/rustc_driver)
+   Compiling rustc-main v0.0.0 (/home/psy/git/rust/compiler/rustc)
+    Finished `release` profile [optimized + debuginfo] target(s) in 26.77s
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Finished `release` profile [optimized + debuginfo] target(s) in 0.12s
+   Compiling rustc_interface v0.0.0 (/home/psy/git/rust/compiler/rustc_interface)
+   Compiling rustc_driver_impl v0.0.0 (/home/psy/git/rust/compiler/rustc_driver_impl)
+   Compiling rustc_driver v0.0.0 (/home/psy/git/rust/compiler/rustc_driver)
+   Compiling clippy v0.1.92 (/home/psy/git/rust/src/tools/clippy)
+    Finished `release` profile [optimized + debuginfo] target(s) in 10.96s
+   Compiling compiler_builtins v0.1.160 (/home/psy/git/rust/library/compiler-builtins/compiler-builtins)
+   Compiling core v0.0.0 (/home/psy/git/rust/library/core)
+[compiler/rustc_interface/src/interface.rs:506:51] &e = (
+    "unexpected_cfgs",
+    Warn,
+)
+[compiler/rustc_interface/src/interface.rs:506:51] &e = (
+    "linker_messages",
+    Allow,
+)
+[compiler/rustc_interface/src/interface.rs:506:51] &e = (
+    "rust_2018_idioms",
+    Warn,
+)
+[compiler/rustc_interface/src/interface.rs:506:51] &e = (
+    "unused_lifetimes",
+    Warn,
+)
+[compiler/rustc_interface/src/interface.rs:506:51] &e = (
+    "warnings",
+    Deny,
+)
+[compiler/rustc_interface/src/interface.rs:506:51] &e = (
+    "linker_messages",
+    Allow,
+)
+[compiler/rustc_interface/src/interface.rs:506:51] &e = (
+    "rust_2018_idioms",
+    Warn,
+)
+[compiler/rustc_interface/src/interface.rs:506:51] &e = (
+    "unused_lifetimes",
+    Warn,
+)
+[compiler/rustc_interface/src/interface.rs:506:51] &e = (
+    "warnings",
+    Deny,
+)
+   Compiling rustc-std-workspace-core v1.99.0 (/home/psy/git/rust/library/rustc-std-workspace-core)
+[compiler/rustc_interface/src/interface.rs:506:51] &e = (
+    "linker_messages",
+    Allow,
+)
+[compiler/rustc_interface/src/interface.rs:506:51] &e = (
+    "rust_2018_idioms",
+    Warn,
+)
+[compiler/rustc_interface/src/interface.rs:506:51] &e = (
+    "unused_lifetimes",
+    Warn,
+)
+[compiler/rustc_interface/src/interface.rs:506:51] &e = (
+    "warnings",
+    Deny,
+)
+   Compiling alloc v0.0.0 (/home/psy/git/rust/library/alloc)
+[compiler/rustc_interface/src/interface.rs:506:51] &e = (
+    "unexpected_cfgs",
+    Warn,
+)
+[compiler/rustc_interface/src/interface.rs:506:51] &e = (
+    "linker_messages",
+    Allow,
+)
+[compiler/rustc_interface/src/interface.rs:506:51] &e = (
+    "rust_2018_idioms",
+    Warn,
+)
+[compiler/rustc_interface/src/interface.rs:506:51] &e = (
+    "unused_lifetimes",
+    Warn,
+)
+[compiler/rustc_interface/src/interface.rs:506:51] &e = (
+    "warnings",
+    Deny,
+)
+   Compiling rustc-std-workspace-alloc v1.99.0 (/home/psy/git/rust/library/rustc-std-workspace-alloc)
+[compiler/rustc_interface/src/interface.rs:506:51] &e = (
+    "linker_messages",
+    Allow,
+)
+[compiler/rustc_interface/src/interface.rs:506:51] &e = (
+    "rust_2018_idioms",
+    Warn,
+)
+[compiler/rustc_interface/src/interface.rs:506:51] &e = (
+    "unused_lifetimes",
+    Warn,
+)
+[compiler/rustc_interface/src/interface.rs:506:51] &e = (
+    "warnings",
+    Deny,
+)
+   Compiling libc v0.2.177
+[compiler/rustc_interface/src/interface.rs:506:51] &e = (
+    "clippy::used_underscore_binding",
+    Allow,
+)
+[compiler/rustc_interface/src/interface.rs:507:25] std::env::current_exe() = Ok(
+    "/home/psy/git/rust/build/x86_64-unknown-linux-gnu/stage1/bin/rustc",
+)
+[compiler/rustc_lint/src/late.rs:442:21] lints = [
+    Lint {
+        name: "clippy::UNWRAP_USED",
+        default_level: Allow,
+        desc: "using `.unwrap()` on `Result` or `Option`, which should at least get a better message using `expect()`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::EXPECT_USED",
+        default_level: Allow,
+        desc: "using `.expect()` on `Result` or `Option`, which might be better handled",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::SHOULD_IMPLEMENT_TRAIT",
+        default_level: Warn,
+        desc: "defining a method that should be implementing a std trait",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::WRONG_SELF_CONVENTION",
+        default_level: Warn,
+        desc: "defining a method named with an established prefix (like \"into_\") that takes `self` with the wrong convention",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::OK_EXPECT",
+        default_level: Warn,
+        desc: "using `ok().expect()`, which gives worse error messages than calling `expect` directly on the Result",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::UNWRAP_OR_DEFAULT",
+        default_level: Warn,
+        desc: "using `.unwrap_or`, etc. with an argument that constructs a default value",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::MAP_UNWRAP_OR",
+        default_level: Allow,
+        desc: "using `.map(f).unwrap_or(a)` or `.map(f).unwrap_or_else(func)`, which are more succinctly expressed as `map_or(a, f)` or `map_or_else(a, f)`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::RESULT_MAP_OR_INTO_OPTION",
+        default_level: Warn,
+        desc: "using `Result.map_or(None, Some)`, which is more succinctly expressed as `ok()`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::OPTION_MAP_OR_NONE",
+        default_level: Warn,
+        desc: "using `Option.map_or(None, f)`, which is more succinctly expressed as `and_then(f)`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::BIND_INSTEAD_OF_MAP",
+        default_level: Warn,
+        desc: "using `Option.and_then(|x| Some(y))`, which is more succinctly expressed as `map(|x| y)`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::OR_FUN_CALL",
+        default_level: Allow,
+        desc: "using any `*or` method with a function call, which suggests `*or_else`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::OR_THEN_UNWRAP",
+        default_level: Warn,
+        desc: "checks for `.or(…).unwrap()` calls to Options and Results.",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::EXPECT_FUN_CALL",
+        default_level: Warn,
+        desc: "using any `expect` method with a function call",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::CHARS_NEXT_CMP",
+        default_level: Warn,
+        desc: "using `.chars().next()` to check if a string starts with a char",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::CHARS_LAST_CMP",
+        default_level: Warn,
+        desc: "using `.chars().last()` or `.chars().next_back()` to check if a string ends with a char",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::CLONE_ON_COPY",
+        default_level: Warn,
+        desc: "using `clone` on a `Copy` type",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::CLONE_ON_REF_PTR",
+        default_level: Allow,
+        desc: "using `clone` on a ref-counted pointer",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::COLLAPSIBLE_STR_REPLACE",
+        default_level: Warn,
+        desc: "collapse consecutive calls to str::replace (2 or more) into a single call",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::CONST_IS_EMPTY",
+        default_level: Warn,
+        desc: "is_empty() called on strings known at compile time",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::ITER_OVEREAGER_CLONED",
+        default_level: Warn,
+        desc: "using `cloned()` early with `Iterator::iter()` can lead to some performance inefficiencies",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::CLONED_INSTEAD_OF_COPIED",
+        default_level: Allow,
+        desc: "used `cloned` where `copied` could be used instead",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::FLAT_MAP_OPTION",
+        default_level: Allow,
+        desc: "used `flat_map` where `filter_map` could be used instead",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::INEFFICIENT_TO_STRING",
+        default_level: Allow,
+        desc: "using `to_string` on `&&T` where `T: ToString`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::NEW_RET_NO_SELF",
+        default_level: Warn,
+        desc: "not returning type containing `Self` in a `new` method",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::SINGLE_CHAR_ADD_STR",
+        default_level: Warn,
+        desc: "`push_str()` or `insert_str()` used with a single-character string literal as parameter",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::SEARCH_IS_SOME",
+        default_level: Warn,
+        desc: "using an iterator or string search followed by `is_some()` or `is_none()`, which is more succinctly expressed as a call to `any()` or `contains()` (with negation in case of `is_none()`)",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::FILTER_NEXT",
+        default_level: Warn,
+        desc: "using `filter(p).next()`, which is more succinctly expressed as `.find(p)`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::SKIP_WHILE_NEXT",
+        default_level: Warn,
+        desc: "using `skip_while(p).next()`, which is more succinctly expressed as `.find(!p)`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::FILTER_MAP_IDENTITY",
+        default_level: Warn,
+        desc: "call to `filter_map` where `flatten` is sufficient",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::MAP_IDENTITY",
+        default_level: Warn,
+        desc: "using iterator.map(|x| x)",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::MANUAL_FILTER_MAP",
+        default_level: Warn,
+        desc: "using `_.filter(_).map(_)` in a way that can be written more simply as `filter_map(_)`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::MANUAL_FIND_MAP",
+        default_level: Warn,
+        desc: "using `_.find(_).map(_)` in a way that can be written more simply as `find_map(_)`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::OPTION_FILTER_MAP",
+        default_level: Warn,
+        desc: "filtering `Option` for `Some` then force-unwrapping, which can be one type-safe operation",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::FILTER_MAP_NEXT",
+        default_level: Allow,
+        desc: "using combination of `filter_map` and `next` which can usually be written as a single method call",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::FLAT_MAP_IDENTITY",
+        default_level: Warn,
+        desc: "call to `flat_map` where `flatten` is sufficient",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::MAP_FLATTEN",
+        default_level: Warn,
+        desc: "using combinations of `flatten` and `map` which can usually be written as a single method call",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::ITERATOR_STEP_BY_ZERO",
+        default_level: Deny,
+        desc: "using `Iterator::step_by(0)`, which will panic at runtime",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::ITER_NEXT_SLICE",
+        default_level: Warn,
+        desc: "using `.iter().next()` on a sliced array, which can be shortened to just `.get()`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::ITER_COUNT",
+        default_level: Warn,
+        desc: "replace `.iter().count()` with `.len()`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::ITER_NTH",
+        default_level: Warn,
+        desc: "using `.iter().nth()` on a standard library type with O(1) element access",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::ITER_NTH_ZERO",
+        default_level: Warn,
+        desc: "replace `iter.nth(0)` with `iter.next()`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::BYTES_NTH",
+        default_level: Warn,
+        desc: "replace `.bytes().nth()` with `.as_bytes().get()`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::ITER_SKIP_NEXT",
+        default_level: Warn,
+        desc: "using `.skip(x).next()` on an iterator",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::GET_UNWRAP",
+        default_level: Allow,
+        desc: "using `.get().unwrap()` or `.get_mut().unwrap()` when using `[]` would work instead",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::GET_LAST_WITH_LEN",
+        default_level: Warn,
+        desc: "Using `x.get(x.len() - 1)` when `x.last()` is correct and simpler",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::STRING_EXTEND_CHARS",
+        default_level: Warn,
+        desc: "using `x.extend(s.chars())` where s is a `&str` or `String`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::ITER_CLONED_COLLECT",
+        default_level: Warn,
+        desc: "using `.cloned().collect()` on slice to create a `Vec`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::ITER_WITH_DRAIN",
+        default_level: Allow,
+        desc: "replace `.drain(..)` with `.into_iter()`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::TYPE_ID_ON_BOX",
+        default_level: Warn,
+        desc: "calling `.type_id()` on a boxed trait object",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::USELESS_ASREF",
+        default_level: Warn,
+        desc: "using `as_ref` where the types before and after the call are the same",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::UNNECESSARY_FOLD",
+        default_level: Warn,
+        desc: "using `fold` when a more succinct alternative exists",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::UNNECESSARY_FILTER_MAP",
+        default_level: Warn,
+        desc: "using `filter_map` when a more succinct alternative exists",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::UNNECESSARY_FIND_MAP",
+        default_level: Warn,
+        desc: "using `find_map` when a more succinct alternative exists",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::INTO_ITER_ON_REF",
+        default_level: Warn,
+        desc: "using `.into_iter()` on a reference",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::SUSPICIOUS_MAP",
+        default_level: Warn,
+        desc: "suspicious usage of map",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::UNINIT_ASSUMED_INIT",
+        default_level: Deny,
+        desc: "`MaybeUninit::uninit().assume_init()`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::MANUAL_SATURATING_ARITHMETIC",
+        default_level: Warn,
+        desc: "`.checked_add/sub(x).unwrap_or(MAX/MIN)`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::ZST_OFFSET",
+        default_level: Deny,
+        desc: "Check for offset calculations on raw pointers to zero-sized types",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::PTR_OFFSET_WITH_CAST",
+        default_level: Warn,
+        desc: "unneeded pointer offset cast",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::FILETYPE_IS_FILE",
+        default_level: Allow,
+        desc: "`FileType::is_file` is not recommended to test for readable file type",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::OPTION_AS_REF_DEREF",
+        default_level: Warn,
+        desc: "using `as_ref().map(Deref::deref)`, which is more succinctly expressed as `as_deref()`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::UNNECESSARY_LAZY_EVALUATIONS",
+        default_level: Warn,
+        desc: "using unnecessary lazy evaluation, which can be replaced with simpler eager evaluation",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::MAP_COLLECT_RESULT_UNIT",
+        default_level: Warn,
+        desc: "using `.map(_).collect::<Result<(),_>()`, which can be replaced with `try_for_each`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::FROM_ITER_INSTEAD_OF_COLLECT",
+        default_level: Allow,
+        desc: "use `.collect()` instead of `::from_iter()`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::INSPECT_FOR_EACH",
+        default_level: Warn,
+        desc: "using `.inspect().for_each()`, which can be replaced with `.for_each()`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::IMPLICIT_CLONE",
+        default_level: Allow,
+        desc: "implicitly cloning a value by invoking a function on its dereferenced type",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::SUSPICIOUS_TO_OWNED",
+        default_level: Warn,
+        desc: "calls to `to_owned` on a `Cow<'_, _>` might not do what they are expected",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::SUSPICIOUS_SPLITN",
+        default_level: Deny,
+        desc: "checks for `.splitn(0, ..)` and `.splitn(1, ..)`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::MANUAL_STR_REPEAT",
+        default_level: Warn,
+        desc: "manual implementation of `str::repeat`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::EXTEND_WITH_DRAIN",
+        default_level: Warn,
+        desc: "using vec.append(&mut vec) to move the full range of a vector to another",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::MANUAL_SPLIT_ONCE",
+        default_level: Warn,
+        desc: "replace `.splitn(2, pat)` with `.split_once(pat)`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::NEEDLESS_SPLITN",
+        default_level: Warn,
+        desc: "usages of `str::splitn` that can be replaced with `str::split`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::UNNECESSARY_TO_OWNED",
+        default_level: Warn,
+        desc: "unnecessary calls to `to_owned`-like functions",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::UNNECESSARY_JOIN",
+        default_level: Allow,
+        desc: "using `.collect::<Vec<String>>().join(\"\")` on an iterator",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::ERR_EXPECT",
+        default_level: Warn,
+        desc: "using `.err().expect(\"\")` when `.expect_err(\"\")` can be used",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::NEEDLESS_OPTION_AS_DEREF",
+        default_level: Warn,
+        desc: "no-op use of `deref` or `deref_mut` method to `Option`.",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::IS_DIGIT_ASCII_RADIX",
+        default_level: Warn,
+        desc: "use of `char::is_digit(..)` with literal radix of 10 or 16",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::NEEDLESS_OPTION_TAKE",
+        default_level: Warn,
+        desc: "using `.as_ref().take()` on a temporary value",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::NO_EFFECT_REPLACE",
+        default_level: Warn,
+        desc: "replace with no effect",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::OBFUSCATED_IF_ELSE",
+        default_level: Warn,
+        desc: "use of `.then_some(..).unwrap_or(..)` can be written more clearly with `if .. else ..`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::ITER_ON_SINGLE_ITEMS",
+        default_level: Allow,
+        desc: "Iterator for array of length 1",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::ITER_ON_EMPTY_COLLECTIONS",
+        default_level: Allow,
+        desc: "Iterator for empty array",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::NAIVE_BYTECOUNT",
+        default_level: Allow,
+        desc: "use of naive `<slice>.filter(|&x| x == y).count()` to count byte values",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::BYTES_COUNT_TO_LEN",
+        default_level: Warn,
+        desc: "Using `bytes().count()` when `len()` performs the same functionality",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::CASE_SENSITIVE_FILE_EXTENSION_COMPARISONS",
+        default_level: Allow,
+        desc: "Checks for calls to ends_with with case-sensitive file extensions",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::GET_FIRST",
+        default_level: Warn,
+        desc: "Using `x.get(0)` when `x.first()` or `x.front()` is simpler",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::MANUAL_OK_OR",
+        default_level: Warn,
+        desc: "finds patterns that can be encoded more concisely with `Option::ok_or`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::MAP_CLONE",
+        default_level: Warn,
+        desc: "using `iterator.map(|x| x.clone())`, or dereferencing closures for `Copy` types",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::MAP_ERR_IGNORE",
+        default_level: Allow,
+        desc: "`map_err` should not ignore the original error",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::MUT_MUTEX_LOCK",
+        default_level: Warn,
+        desc: "`&mut Mutex::lock` does unnecessary locking",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::NONSENSICAL_OPEN_OPTIONS",
+        default_level: Deny,
+        desc: "nonsensical combination of options for opening a file",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::SUSPICIOUS_OPEN_OPTIONS",
+        default_level: Warn,
+        desc: "suspicious combination of options for opening a file",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::PATH_BUF_PUSH_OVERWRITE",
+        default_level: Allow,
+        desc: "calling `push` with file system root on `PathBuf` can overwrite it",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::RANGE_ZIP_WITH_LEN",
+        default_level: Warn,
+        desc: "zipping iterator with a range when `enumerate()` would do",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::REPEAT_ONCE",
+        default_level: Warn,
+        desc: "using `.repeat(1)` instead of `String.clone()`, `str.to_string()` or `slice.to_vec()` ",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::STABLE_SORT_PRIMITIVE",
+        default_level: Allow,
+        desc: "use of sort() when sort_unstable() is equivalent",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::UNIT_HASH",
+        default_level: Deny,
+        desc: "hashing a unit value, which does nothing",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::READ_LINE_WITHOUT_TRIM",
+        default_level: Deny,
+        desc: "calling `Stdin::read_line`, then trying to parse it without first trimming",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::UNNECESSARY_SORT_BY",
+        default_level: Warn,
+        desc: "Use of `Vec::sort_by` when `Vec::sort_by_key` or `Vec::sort` would be clearer",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::VEC_RESIZE_TO_ZERO",
+        default_level: Deny,
+        desc: "emptying a vector with `resize(0, an_int)` instead of `clear()` is probably an argument inversion mistake",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::VERBOSE_FILE_READS",
+        default_level: Allow,
+        desc: "use of `File::read_to_end` or `File::read_to_string`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::ITER_KV_MAP",
+        default_level: Warn,
+        desc: "iterating on map using `iter` when `keys` or `values` would do",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::SEEK_FROM_CURRENT",
+        default_level: Warn,
+        desc: "use dedicated method for seek from current position",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::SEEK_TO_START_INSTEAD_OF_REWIND",
+        default_level: Warn,
+        desc: "jumping to the start of stream using `seek` method",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::NEEDLESS_COLLECT",
+        default_level: Allow,
+        desc: "collecting an iterator when collect is not needed",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::SUSPICIOUS_COMMAND_ARG_SPACE",
+        default_level: Warn,
+        desc: "single command line argument that looks like it should be multiple arguments",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::CLEAR_WITH_DRAIN",
+        default_level: Allow,
+        desc: "calling `drain` in order to `clear` a container",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::MANUAL_NEXT_BACK",
+        default_level: Warn,
+        desc: "manual reverse iteration of `DoubleEndedIterator`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::UNNECESSARY_LITERAL_UNWRAP",
+        default_level: Warn,
+        desc: "using `unwrap()` related calls on `Result` and `Option` constructors",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::DRAIN_COLLECT",
+        default_level: Warn,
+        desc: "calling `.drain(..).collect()` to move all elements into a new collection",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::MANUAL_TRY_FOLD",
+        default_level: Warn,
+        desc: "checks for usage of `Iterator::fold` with a type that implements `Try`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::FORMAT_COLLECT",
+        default_level: Allow,
+        desc: "`format!`ing every element in a collection, then collecting the strings into a new `String`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::STRING_LIT_CHARS_ANY",
+        default_level: Allow,
+        desc: "checks for `<string_lit>.chars().any(|i| i == c)`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::ITER_SKIP_ZERO",
+        default_level: Deny,
+        desc: "disallows `.skip(0)`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::FILTER_MAP_BOOL_THEN",
+        default_level: Warn,
+        desc: "checks for usage of `bool::then` in `Iterator::filter_map`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::READONLY_WRITE_LOCK",
+        default_level: Warn,
+        desc: "acquiring a write lock when a read lock would work",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::ITER_OUT_OF_BOUNDS",
+        default_level: Warn,
+        desc: "calls to `.take()` or `.skip()` that are out of bounds",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::PATH_ENDS_WITH_EXT",
+        default_level: Warn,
+        desc: "attempting to compare file extensions using `Path::ends_with`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::REDUNDANT_AS_STR",
+        default_level: Warn,
+        desc: "`as_str` used to call a method on `str` that is also available on `String`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::WAKER_CLONE_WAKE",
+        default_level: Warn,
+        desc: "cloning a `Waker` only to wake it",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::UNNECESSARY_FALLIBLE_CONVERSIONS",
+        default_level: Warn,
+        desc: "calling the `try_from` and `try_into` trait methods when `From`/`Into` is implemented",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::JOIN_ABSOLUTE_PATHS",
+        default_level: Warn,
+        desc: "calls to `Path::join` which will overwrite the original path",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::RESULT_FILTER_MAP",
+        default_level: Warn,
+        desc: "filtering `Result` for `Ok` then force-unwrapping, which can be one type-safe operation",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::ITER_FILTER_IS_SOME",
+        default_level: Allow,
+        desc: "filtering an iterator over `Option`s for `Some` can be achieved with `flatten`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::ITER_FILTER_IS_OK",
+        default_level: Allow,
+        desc: "filtering an iterator over `Result`s for `Ok` can be achieved with `flatten`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::MANUAL_IS_VARIANT_AND",
+        default_level: Allow,
+        desc: "using `.map(f).unwrap_or_default()` or `.map(f) == Some/Ok(true)`, which are more succinctly expressed as `is_some_and(f)` or `is_ok_and(f)`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::STR_SPLIT_AT_NEWLINE",
+        default_level: Allow,
+        desc: "splitting a trimmed string at hard-coded newlines",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::OPTION_AS_REF_CLONED",
+        default_level: Allow,
+        desc: "cloning an `Option` via `as_ref().cloned()`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::UNNECESSARY_RESULT_MAP_OR_ELSE",
+        default_level: Warn,
+        desc: "making no use of the \"map closure\" when calling `.map_or_else(|err| handle_error(err), |n| n)`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::MANUAL_C_STR_LITERALS",
+        default_level: Warn,
+        desc: "creating a `CStr` through functions when `c\"\"` literals can be used",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::UNNECESSARY_GET_THEN_CHECK",
+        default_level: Warn,
+        desc: "calling `.get().is_some()` or `.get().is_none()` instead of `.contains()` or `.contains_key()`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::UNNECESSARY_FIRST_THEN_CHECK",
+        default_level: Warn,
+        desc: "calling `.first().is_some()` or `.first().is_none()` instead of `.is_empty()`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::NEEDLESS_CHARACTER_ITERATION",
+        default_level: Warn,
+        desc: "is_ascii() called on a char iterator",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::MANUAL_INSPECT",
+        default_level: Warn,
+        desc: "use of `map` returning the original item",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::UNNECESSARY_MIN_OR_MAX",
+        default_level: Warn,
+        desc: "using 'min()/max()' when there is no need for it",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::NEEDLESS_AS_BYTES",
+        default_level: Warn,
+        desc: "detect useless calls to `as_bytes()`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::MAP_ALL_ANY_IDENTITY",
+        default_level: Warn,
+        desc: "combine `.map(_)` followed by `.all(identity)`/`.any(identity)` into a single call",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::MAP_WITH_UNUSED_ARGUMENT_OVER_RANGES",
+        default_level: Allow,
+        desc: "map of a trivial closure (not dependent on parameter) over a range",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::UNNECESSARY_MAP_OR",
+        default_level: Warn,
+        desc: "reduce unnecessary calls to `.map_or(bool, …)`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::DOUBLE_ENDED_ITERATOR_LAST",
+        default_level: Warn,
+        desc: "using `Iterator::last` on a `DoubleEndedIterator`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::USELESS_NONZERO_NEW_UNCHECKED",
+        default_level: Warn,
+        desc: "using `NonZero::new_unchecked()` in a `const` context",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::MANUAL_REPEAT_N",
+        default_level: Warn,
+        desc: "detect `repeat().take()` that can be replaced with `repeat_n()`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::SLICED_STRING_AS_BYTES",
+        default_level: Warn,
+        desc: "slicing a string and immediately calling as_bytes is less efficient and can lead to panics",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::RETURN_AND_THEN",
+        default_level: Allow,
+        desc: "using `Option::and_then` or `Result::and_then` to chain a computation that returns an `Option` or a `Result`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::UNBUFFERED_BYTES",
+        default_level: Warn,
+        desc: "calling .bytes() is very inefficient when data is not in memory",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::MANUAL_CONTAINS",
+        default_level: Warn,
+        desc: "unnecessary `iter().any()` on slices that can be replaced with `contains()`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::IO_OTHER_ERROR",
+        default_level: Warn,
+        desc: "calling `std::io::Error::new(std::io::ErrorKind::Other, _)`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::SWAP_WITH_TEMPORARY",
+        default_level: Warn,
+        desc: "detect swap with a temporary value",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::IP_CONSTANT",
+        default_level: Allow,
+        desc: "hardcoded localhost IP address",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::REDUNDANT_ITER_CLONED",
+        default_level: Warn,
+        desc: "detects redundant calls to `Iterator::cloned`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::UNNECESSARY_OPTION_MAP_OR_ELSE",
+        default_level: Warn,
+        desc: "making no use of the \"map closure\" when calling `.map_or_else(|| 2 * k, |n| n)`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+]
+[compiler/rustc_lint/src/late.rs:442:21] env!("CARGO_PKG_NAME") = "rustc_lint"
+[compiler/rustc_lint/src/late.rs:442:21] lints = [
+    Lint {
+        name: "clippy::CAST_PRECISION_LOSS",
+        default_level: Allow,
+        desc: "casts that cause loss of precision, e.g., `x as f32` where `x: u64`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::CAST_SIGN_LOSS",
+        default_level: Allow,
+        desc: "casts from signed types to unsigned types, e.g., `x as u32` where `x: i32`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::CAST_POSSIBLE_TRUNCATION",
+        default_level: Allow,
+        desc: "casts that may cause truncation of the value, e.g., `x as u8` where `x: u32`, or `x as i32` where `x: f32`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::CAST_POSSIBLE_WRAP",
+        default_level: Allow,
+        desc: "casts that may cause wrapping around the value, e.g., `x as i32` where `x: u32` and `x > i32::MAX`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::CAST_LOSSLESS",
+        default_level: Allow,
+        desc: "casts using `as` that are known to be lossless, e.g., `x as u64` where `x: u8`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::CAST_PTR_ALIGNMENT",
+        default_level: Allow,
+        desc: "cast from a pointer to a more strictly aligned pointer",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::CAST_SLICE_DIFFERENT_SIZES",
+        default_level: Deny,
+        desc: "casting using `as` between raw pointers to slices of types with different sizes",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::UNNECESSARY_CAST",
+        default_level: Warn,
+        desc: "cast to the same type, e.g., `x as i32` where `x: i32`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::FN_TO_NUMERIC_CAST_ANY",
+        default_level: Allow,
+        desc: "casting a function pointer to any integer type",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::FN_TO_NUMERIC_CAST",
+        default_level: Warn,
+        desc: "casting a function pointer to a numeric type other than `usize`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::FN_TO_NUMERIC_CAST_WITH_TRUNCATION",
+        default_level: Warn,
+        desc: "casting a function pointer to a numeric type not wide enough to store the address",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::CHAR_LIT_AS_U8",
+        default_level: Warn,
+        desc: "casting a character literal to `u8` truncates",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::PTR_AS_PTR",
+        default_level: Allow,
+        desc: "casting using `as` between raw pointers that doesn't change their constness, where `pointer::cast` could take the place of `as`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::PTR_CAST_CONSTNESS",
+        default_level: Allow,
+        desc: "casting using `as` on raw pointers to change constness when specialized methods apply",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::CAST_ENUM_TRUNCATION",
+        default_level: Warn,
+        desc: "casts from an enum type to an integral type that will truncate the value",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::CAST_ENUM_CONSTRUCTOR",
+        default_level: Warn,
+        desc: "casts from an enum tuple constructor to an integer",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::CAST_ABS_TO_UNSIGNED",
+        default_level: Warn,
+        desc: "casting the result of `abs()` to an unsigned integer can panic",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::AS_UNDERSCORE",
+        default_level: Allow,
+        desc: "detects `as _` conversion",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::BORROW_AS_PTR",
+        default_level: Allow,
+        desc: "borrowing just to cast to a raw pointer",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::CAST_SLICE_FROM_RAW_PARTS",
+        default_level: Warn,
+        desc: "casting a slice created from a pointer and length to a slice pointer",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::AS_PTR_CAST_MUT",
+        default_level: Allow,
+        desc: "casting the result of the `&self`-taking `as_ptr` to a mutable pointer",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::CAST_NAN_TO_INT",
+        default_level: Warn,
+        desc: "casting a known floating-point NaN into an integer",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::ZERO_PTR",
+        default_level: Warn,
+        desc: "using `0 as *{const, mut} T`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::REF_AS_PTR",
+        default_level: Allow,
+        desc: "using `as` to cast a reference to pointer",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::AS_POINTER_UNDERSCORE",
+        default_level: Allow,
+        desc: "detects `as *mut _` and `as *const _` conversion",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::MANUAL_DANGLING_PTR",
+        default_level: Warn,
+        desc: "casting small constant literals to pointers to create dangling pointers",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::CONFUSING_METHOD_TO_NUMERIC_CAST",
+        default_level: Warn,
+        desc: "casting a primitive method pointer to any integer type",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+]
+[compiler/rustc_lint/src/late.rs:442:21] env!("CARGO_PKG_NAME") = "rustc_lint"
+[compiler/rustc_lint/src/late.rs:442:21] lints = [
+    Lint {
+        name: "clippy::MANUAL_MEMCPY",
+        default_level: Warn,
+        desc: "manually copying items between slices",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::MANUAL_FLATTEN",
+        default_level: Warn,
+        desc: "for loops over `Option`s or `Result`s with a single expression can be simplified",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::NEEDLESS_RANGE_LOOP",
+        default_level: Warn,
+        desc: "for-looping over a range of indices where an iterator over items would do",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::EXPLICIT_ITER_LOOP",
+        default_level: Allow,
+        desc: "for-looping over `_.iter()` or `_.iter_mut()` when `&_` or `&mut _` would do",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::EXPLICIT_INTO_ITER_LOOP",
+        default_level: Allow,
+        desc: "for-looping over `_.into_iter()` when `_` would do",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::ITER_NEXT_LOOP",
+        default_level: Deny,
+        desc: "for-looping over `_.next()` which is probably not intended",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::WHILE_LET_LOOP",
+        default_level: Warn,
+        desc: "`loop { if let { ... } else break }`, which can be written as a `while let` loop",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::EXPLICIT_COUNTER_LOOP",
+        default_level: Warn,
+        desc: "for-looping with an explicit counter when `_.enumerate()` would do",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::EMPTY_LOOP",
+        default_level: Warn,
+        desc: "empty `loop {}`, which should block or sleep",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::WHILE_LET_ON_ITERATOR",
+        default_level: Warn,
+        desc: "using a `while let` loop instead of a for loop on an iterator",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::FOR_KV_MAP",
+        default_level: Warn,
+        desc: "looping on a map using `iter` when `keys` or `values` would do",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::NEVER_LOOP",
+        default_level: Deny,
+        desc: "any loop that will always `break` or `return`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::MUT_RANGE_BOUND",
+        default_level: Warn,
+        desc: "for loop over a range where one of the bounds is a mutable variable",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::WHILE_IMMUTABLE_CONDITION",
+        default_level: Deny,
+        desc: "variables used within while expression are not mutated in the body",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::WHILE_FLOAT",
+        default_level: Allow,
+        desc: "while loops comparing floating point values",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::SAME_ITEM_PUSH",
+        default_level: Warn,
+        desc: "the same item is pushed inside of a for loop",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::SINGLE_ELEMENT_LOOP",
+        default_level: Warn,
+        desc: "there is no reason to have a single element loop",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::MISSING_SPIN_LOOP",
+        default_level: Warn,
+        desc: "An empty busy waiting loop",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::MANUAL_FIND",
+        default_level: Warn,
+        desc: "manual implementation of `Iterator::find`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::MANUAL_WHILE_LET_SOME",
+        default_level: Warn,
+        desc: "checking for emptiness of a `Vec` in the loop condition and popping an element in the body",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::UNUSED_ENUMERATE_INDEX",
+        default_level: Warn,
+        desc: "using `.enumerate()` and immediately dropping the index",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::INFINITE_LOOP",
+        default_level: Allow,
+        desc: "possibly unintended infinite loop",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::MANUAL_SLICE_FILL",
+        default_level: Warn,
+        desc: "manually filling a slice with a value",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+    Lint {
+        name: "clippy::CHAR_INDICES_AS_BYTE_INDICES",
+        default_level: Deny,
+        desc: "using the character position yielded by `.chars().enumerate()` in a context where a byte index is expected",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+]
+[compiler/rustc_lint/src/late.rs:442:21] env!("CARGO_PKG_NAME") = "rustc_lint"
+[compiler/rustc_lint/src/late.rs:442:21] lints = [
+    Lint {
+        name: "clippy::MANUAL_ASSERT",
+        default_level: Allow,
+        desc: "`panic!` and only a `panic!` in `if`-then statement",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+]
+[compiler/rustc_lint/src/late.rs:442:21] env!("CARGO_PKG_NAME") = "rustc_lint"
+[compiler/rustc_lint/src/late.rs:442:21] lints = [
+    Lint {
+        name: "clippy::UNNECESSARY_SEMICOLON",
+        default_level: Allow,
+        desc: "unnecessary semicolon after expression returning `()`",
+        edition_lint_opts: None,
+        report_in_external_macro: true,
+        future_incompatible: None,
+        is_externally_loaded: true,
+        feature_gate: None,
+        crate_level_only: false,
+        eval_always: false,
+    },
+]
+[compiler/rustc_lint/src/late.rs:442:21] env!("CARGO_PKG_NAME") = "rustc_lint"
+
+thread 'rustc' (256696) panicked at compiler/rustc_errors/src/lib.rs:750:17:
+`trimmed_def_paths` called, diagnostics were expected but none were emitted. Use `with_no_trimmed_paths` for debugging. This happened in the following `must_produce_diag` call's backtrace:
+   0: set_must_produce_diag
+             at /home/psy/git/rust/compiler/rustc_errors/src/lib.rs:1230:58
+   1: record_trimmed_def_paths
+             at /home/psy/git/rust/compiler/rustc_session/src/session.rs:284:20
+   2: trimmed_def_paths
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/print/pretty.rs:3458:14
+   3: {closure#0}
+             at /home/psy/git/rust/compiler/rustc_query_impl/src/plumbing.rs:294:9
+   4: __rust_begin_short_backtrace<rustc_query_impl::query_impl::trimmed_def_paths::dynamic_query::{closure#2}::{closure_env#0}, rustc_middle::query::erase::Erased<[u8; 8]>>
+             at /home/psy/git/rust/compiler/rustc_query_impl/src/plumbing.rs:578:18
+   5: {closure#2}
+             at /home/psy/git/rust/compiler/rustc_query_impl/src/plumbing.rs:655:25
+   6: call_once<rustc_query_impl::query_impl::trimmed_def_paths::dynamic_query::{closure_env#2}, (rustc_middle::ty::context::TyCtxt, ())>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/core/src/ops/function.rs:250:5
+   7: compute<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 8]>>, false, false, false>
+             at /home/psy/git/rust/compiler/rustc_query_impl/src/lib.rs:122:9
+   8: {closure#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 8]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>
+             at /home/psy/git/rust/compiler/rustc_query_system/src/query/plumbing.rs:493:72
+   9: {closure#0}<rustc_query_system::query::plumbing::execute_job_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 8]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>, rustc_middle::query::erase::Erased<[u8; 8]>>
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/context/tls.rs:60:9
+  10: try_with<core::cell::Cell<*const ()>, rustc_middle::ty::context::tls::enter_context::{closure_env#0}<rustc_query_system::query::plumbing::execute_job_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 8]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>, rustc_middle::query::erase::Erased<[u8; 8]>>, rustc_middle::query::erase::Erased<[u8; 8]>>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/thread/local.rs:315:12
+  11: with<core::cell::Cell<*const ()>, rustc_middle::ty::context::tls::enter_context::{closure_env#0}<rustc_query_system::query::plumbing::execute_job_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 8]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>, rustc_middle::query::erase::Erased<[u8; 8]>>, rustc_middle::query::erase::Erased<[u8; 8]>>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/thread/local.rs:279:20
+  12: enter_context<rustc_query_system::query::plumbing::execute_job_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 8]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>, rustc_middle::query::erase::Erased<[u8; 8]>>
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/context/tls.rs:57:9
+  13: {closure#0}<rustc_middle::query::erase::Erased<[u8; 8]>, rustc_query_system::query::plumbing::execute_job_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 8]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>>
+             at /home/psy/git/rust/compiler/rustc_query_impl/src/plumbing.rs:161:13
+  14: {closure#0}<rustc_query_impl::plumbing::{impl#3}::start_query::{closure_env#0}<rustc_middle::query::erase::Erased<[u8; 8]>, rustc_query_system::query::plumbing::execute_job_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 8]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>>, rustc_middle::query::erase::Erased<[u8; 8]>>
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/context/tls.rs:112:9
+  15: {closure#0}<rustc_middle::ty::context::tls::with_related_context::{closure_env#0}<rustc_query_impl::plumbing::{impl#3}::start_query::{closure_env#0}<rustc_middle::query::erase::Erased<[u8; 8]>, rustc_query_system::query::plumbing::execute_job_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 8]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>>, rustc_middle::query::erase::Erased<[u8; 8]>>, rustc_middle::query::erase::Erased<[u8; 8]>>
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/context/tls.rs:90:36
+  16: with_context_opt<rustc_middle::ty::context::tls::with_context::{closure_env#0}<rustc_middle::ty::context::tls::with_related_context::{closure_env#0}<rustc_query_impl::plumbing::{impl#3}::start_query::{closure_env#0}<rustc_middle::query::erase::Erased<[u8; 8]>, rustc_query_system::query::plumbing::execute_job_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 8]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>>, rustc_middle::query::erase::Erased<[u8; 8]>>, rustc_middle::query::erase::Erased<[u8; 8]>>, rustc_middle::query::erase::Erased<[u8; 8]>>
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/context/tls.rs:79:18
+  17: with_context<rustc_middle::ty::context::tls::with_related_context::{closure_env#0}<rustc_query_impl::plumbing::{impl#3}::start_query::{closure_env#0}<rustc_middle::query::erase::Erased<[u8; 8]>, rustc_query_system::query::plumbing::execute_job_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 8]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>>, rustc_middle::query::erase::Erased<[u8; 8]>>, rustc_middle::query::erase::Erased<[u8; 8]>>
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/context/tls.rs:90:5
+  18: with_related_context<rustc_query_impl::plumbing::{impl#3}::start_query::{closure_env#0}<rustc_middle::query::erase::Erased<[u8; 8]>, rustc_query_system::query::plumbing::execute_job_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 8]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>>, rustc_middle::query::erase::Erased<[u8; 8]>>
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/context/tls.rs:103:5
+  19: start_query<rustc_middle::query::erase::Erased<[u8; 8]>, rustc_query_system::query::plumbing::execute_job_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 8]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>>
+             at /home/psy/git/rust/compiler/rustc_query_impl/src/plumbing.rs:147:9
+  20: execute_job_non_incr<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 8]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>
+             at /home/psy/git/rust/compiler/rustc_query_system/src/query/plumbing.rs:493:22
+  21: execute_job<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 8]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt, false>
+             at /home/psy/git/rust/compiler/rustc_query_system/src/query/plumbing.rs:429:9
+  22: try_execute_query<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 8]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt, false>
+             at /home/psy/git/rust/compiler/rustc_query_system/src/query/plumbing.rs:372:13
+  23: {closure#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 8]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>
+             at /home/psy/git/rust/compiler/rustc_query_system/src/query/plumbing.rs:814:32
+  24: maybe_grow<rustc_middle::query::erase::Erased<[u8; 8]>, rustc_query_system::query::plumbing::get_query_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 8]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>>
+             at /home/psy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/stacker-0.1.21/src/lib.rs:57:9
+  25: ensure_sufficient_stack<rustc_middle::query::erase::Erased<[u8; 8]>, rustc_query_system::query::plumbing::get_query_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 8]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>>
+             at /home/psy/git/rust/compiler/rustc_data_structures/src/stack.rs:21:5
+  26: get_query_non_incr<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 8]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>
+             at /home/psy/git/rust/compiler/rustc_query_system/src/query/plumbing.rs:814:5
+  27: __rust_end_short_backtrace
+             at /home/psy/git/rust/compiler/rustc_query_impl/src/plumbing.rs:631:26
+  28: query_get_at<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 8]>>>
+             at /home/psy/git/rust/compiler/rustc_middle/src/query/inner.rs:33:17
+  29: trimmed_def_paths
+             at /home/psy/git/rust/compiler/rustc_middle/src/query/plumbing.rs:415:31
+  30: trimmed_def_paths
+             at /home/psy/git/rust/compiler/rustc_middle/src/query/plumbing.rs:406:35
+  31: try_print_trimmed_def_path<rustc_middle::ty::print::pretty::FmtPrinter>
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/print/pretty.rs:456:46
+  32: print_def_path
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/print/pretty.rs:2220:24
+  33: pretty_print_type<rustc_middle::ty::print::pretty::FmtPrinter>
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/print/pretty.rs:728:20
+  34: {closure#0}
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/print/pretty.rs:3065:26
+  35: {closure#0}<rustc_middle::ty::print::pretty::{impl#76}::fmt::{closure_env#0}, core::result::Result<(), core::fmt::Error>>
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/context/tls.rs:123:28
+  36: {closure#0}<rustc_middle::ty::context::tls::with::{closure_env#0}<rustc_middle::ty::print::pretty::{impl#76}::fmt::{closure_env#0}, core::result::Result<(), core::fmt::Error>>, core::result::Result<(), core::fmt::Error>>
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/context/tls.rs:90:36
+  37: with_context_opt<rustc_middle::ty::context::tls::with_context::{closure_env#0}<rustc_middle::ty::context::tls::with::{closure_env#0}<rustc_middle::ty::print::pretty::{impl#76}::fmt::{closure_env#0}, core::result::Result<(), core::fmt::Error>>, core::result::Result<(), core::fmt::Error>>, core::result::Result<(), core::fmt::Error>>
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/context/tls.rs:79:18
+  38: with_context<rustc_middle::ty::context::tls::with::{closure_env#0}<rustc_middle::ty::print::pretty::{impl#76}::fmt::{closure_env#0}, core::result::Result<(), core::fmt::Error>>, core::result::Result<(), core::fmt::Error>>
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/context/tls.rs:90:5
+  39: with<rustc_middle::ty::print::pretty::{impl#76}::fmt::{closure_env#0}, core::result::Result<(), core::fmt::Error>>
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/context/tls.rs:123:5
+  40: fmt
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/print/pretty.rs:3061:17
+  41: spec_to_string<rustc_middle::ty::Ty>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/alloc/src/string.rs:2820:9
+  42: to_string<rustc_middle::ty::Ty>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/alloc/src/string.rs:2799:9
+  43: snippet_eq_ty
+             at /home/psy/git/rust/src/tools/clippy/clippy_lints/src/casts/unnecessary_cast.rs:328:26
+  44: {closure#0}<&rustc_hir::hir::Expr>
+             at /home/psy/git/rust/src/tools/clippy/clippy_lints/src/casts/unnecessary_cast.rs:299:30
+  45: {closure#0}<&str, clippy_lints::casts::unnecessary_cast::is_cast_from_ty_alias::{closure#0}::{closure_env#0}<&rustc_hir::hir::Expr>>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/core/src/iter/traits/iterator.rs:2822:20
+  46: try_fold<core::str::iter::Split<&str>, (), core::iter::traits::iterator::Iterator::any::check::{closure_env#0}<&str, clippy_lints::casts::unnecessary_cast::is_cast_from_ty_alias::{closure#0}::{closure_env#0}<&rustc_hir::hir::Expr>>, core::ops::control_flow::ControlFlow<(), ()>>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/core/src/iter/traits/iterator.rs:2426:21
+  47: try_fold<core::str::iter::Split<&str>, (), core::iter::traits::iterator::Iterator::any::check::{closure_env#0}<&str, clippy_lints::casts::unnecessary_cast::is_cast_from_ty_alias::{closure#0}::{closure_env#0}<&rustc_hir::hir::Expr>>, core::ops::control_flow::ControlFlow<(), ()>>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/core/src/iter/adapters/skip.rs:118:19
+  48: any<core::iter::adapters::skip::Skip<core::str::iter::Split<&str>>, clippy_lints::casts::unnecessary_cast::is_cast_from_ty_alias::{closure#0}::{closure_env#0}<&rustc_hir::hir::Expr>>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/core/src/iter/traits/iterator.rs:2826:14
+  49: {closure#0}<&rustc_hir::hir::Expr>
+             at /home/psy/git/rust/src/tools/clippy/clippy_lints/src/casts/unnecessary_cast.rs:299:22
+  50: visit_expr<(), (), clippy_lints::casts::unnecessary_cast::is_cast_from_ty_alias::{closure_env#0}<&rustc_hir::hir::Expr>>
+             at /home/psy/git/rust/src/tools/clippy/clippy_utils/src/visitors.rs:119:19
+  51: walk_expr<clippy_utils::visitors::for_each_expr_without_closures::V<clippy_lints::casts::unnecessary_cast::is_cast_from_ty_alias::{closure_env#0}<&rustc_hir::hir::Expr>>>
+             at /home/psy/git/rust/compiler/rustc_hir/src/intravisit.rs:835:32
+  52: visit_expr<(), (), clippy_lints::casts::unnecessary_cast::is_cast_from_ty_alias::{closure_env#0}<&rustc_hir::hir::Expr>>
+             at /home/psy/git/rust/src/tools/clippy/clippy_utils/src/visitors.rs:120:60
+  53: walk_expr<clippy_utils::visitors::for_each_expr_without_closures::V<clippy_lints::casts::unnecessary_cast::is_cast_from_ty_alias::{closure_env#0}<&rustc_hir::hir::Expr>>>
+  54: visit_expr<(), (), clippy_lints::casts::unnecessary_cast::is_cast_from_ty_alias::{closure_env#0}<&rustc_hir::hir::Expr>>
+             at /home/psy/git/rust/src/tools/clippy/clippy_utils/src/visitors.rs:120:60
+  55: walk_expr<clippy_utils::visitors::for_each_expr_without_closures::V<clippy_lints::casts::unnecessary_cast::is_cast_from_ty_alias::{closure_env#0}<&rustc_hir::hir::Expr>>>
+             at /home/psy/git/rust/compiler/rustc_hir/src/intravisit.rs:854:32
+  56: visit_expr<(), (), clippy_lints::casts::unnecessary_cast::is_cast_from_ty_alias::{closure_env#0}<&rustc_hir::hir::Expr>>
+             at /home/psy/git/rust/src/tools/clippy/clippy_utils/src/visitors.rs:120:60
+  57: clippy_utils::visitors::for_each_expr_without_closures::<(), (), &rustc_hir::hir::Expr, clippy_lints::casts::unnecessary_cast::is_cast_from_ty_alias<&rustc_hir::hir::Expr>::{closure#0}>
+             at /home/psy/git/rust/src/tools/clippy/clippy_utils/src/visitors.rs:142:10
+  58: clippy_lints::casts::unnecessary_cast::is_cast_from_ty_alias::<&rustc_hir::hir::Expr>
+             at /home/psy/git/rust/src/tools/clippy/clippy_lints/src/casts/unnecessary_cast.rs:276:5
+  59: {closure#0}<&rustc_hir::hir::Expr>
+             at /home/psy/git/rust/src/tools/clippy/clippy_lints/src/casts/unnecessary_cast.rs:308:24
+  60: visit_expr<(), (), clippy_lints::casts::unnecessary_cast::is_cast_from_ty_alias::{closure_env#0}<&rustc_hir::hir::Expr>>
+             at /home/psy/git/rust/src/tools/clippy/clippy_utils/src/visitors.rs:119:19
+  61: walk_expr<clippy_utils::visitors::for_each_expr_without_closures::V<clippy_lints::casts::unnecessary_cast::is_cast_from_ty_alias::{closure_env#0}<&rustc_hir::hir::Expr>>>
+             at /home/psy/git/rust/compiler/rustc_hir/src/intravisit.rs:840:32
+  62: visit_expr<(), (), clippy_lints::casts::unnecessary_cast::is_cast_from_ty_alias::{closure_env#0}<&rustc_hir::hir::Expr>>
+             at /home/psy/git/rust/src/tools/clippy/clippy_utils/src/visitors.rs:120:60
+  63: clippy_utils::visitors::for_each_expr_without_closures::<(), (), &rustc_hir::hir::Expr, clippy_lints::casts::unnecessary_cast::is_cast_from_ty_alias<&rustc_hir::hir::Expr>::{closure#0}>
+             at /home/psy/git/rust/src/tools/clippy/clippy_utils/src/visitors.rs:142:10
+  64: clippy_lints::casts::unnecessary_cast::is_cast_from_ty_alias::<&rustc_hir::hir::Expr>
+             at /home/psy/git/rust/src/tools/clippy/clippy_lints/src/casts/unnecessary_cast.rs:276:5
+  65: check
+             at /home/psy/git/rust/src/tools/clippy/clippy_lints/src/casts/unnecessary_cast.rs:100:12
+  66: check_expr
+             at /home/psy/git/rust/src/tools/clippy/clippy_lints/src/casts/mod.rs:871:47
+  67: check_expr
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:328:26
+  68: {closure#0}<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:33:14
+  69: with_lint_attrs<rustc_lint::late::RuntimeCombinedLateLintPass, rustc_lint::late::{impl#1}::visit_expr::{closure#0}::{closure_env#0}<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:59:9
+  70: {closure#0}<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:165:18
+  71: maybe_grow<(), rustc_lint::late::{impl#1}::visit_expr::{closure_env#0}<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/stacker-0.1.21/src/lib.rs:57:9
+  72: ensure_sufficient_stack<(), rustc_lint::late::{impl#1}::visit_expr::{closure_env#0}<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_data_structures/src/stack.rs:21:5
+  73: visit_expr<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:164:9
+  74: walk_expr<rustc_lint::late::LateContextAndPass<rustc_lint::late::RuntimeCombinedLateLintPass>>
+  75: {closure#0}<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:167:17
+  76: with_lint_attrs<rustc_lint::late::RuntimeCombinedLateLintPass, rustc_lint::late::{impl#1}::visit_expr::{closure#0}::{closure_env#0}<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:59:9
+  77: {closure#0}<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:165:18
+  78: maybe_grow<(), rustc_lint::late::{impl#1}::visit_expr::{closure_env#0}<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/stacker-0.1.21/src/lib.rs:57:9
+  79: ensure_sufficient_stack<(), rustc_lint::late::{impl#1}::visit_expr::{closure_env#0}<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_data_structures/src/stack.rs:21:5
+  80: visit_expr<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:164:9
+  81: walk_expr<rustc_lint::late::LateContextAndPass<rustc_lint::late::RuntimeCombinedLateLintPass>>
+  82: {closure#0}<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:167:17
+  83: with_lint_attrs<rustc_lint::late::RuntimeCombinedLateLintPass, rustc_lint::late::{impl#1}::visit_expr::{closure#0}::{closure_env#0}<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:59:9
+  84: {closure#0}<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:165:18
+  85: maybe_grow<(), rustc_lint::late::{impl#1}::visit_expr::{closure_env#0}<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/stacker-0.1.21/src/lib.rs:57:9
+  86: ensure_sufficient_stack<(), rustc_lint::late::{impl#1}::visit_expr::{closure_env#0}<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_data_structures/src/stack.rs:21:5
+  87: visit_expr<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:164:9
+  88: walk_expr<rustc_lint::late::LateContextAndPass<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_hir/src/intravisit.rs:867:32
+  89: {closure#0}<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:167:17
+  90: with_lint_attrs<rustc_lint::late::RuntimeCombinedLateLintPass, rustc_lint::late::{impl#1}::visit_expr::{closure#0}::{closure_env#0}<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:59:9
+  91: {closure#0}<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:165:18
+  92: maybe_grow<(), rustc_lint::late::{impl#1}::visit_expr::{closure_env#0}<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/stacker-0.1.21/src/lib.rs:57:9
+  93: ensure_sufficient_stack<(), rustc_lint::late::{impl#1}::visit_expr::{closure_env#0}<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_data_structures/src/stack.rs:21:5
+  94: visit_expr<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:164:9
+  95: walk_block<rustc_lint::late::LateContextAndPass<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_hir/src/intravisit.rs:695:5
+  96: <rustc_lint::late::LateContextAndPass<rustc_lint::late::RuntimeCombinedLateLintPass> as rustc_hir::intravisit::Visitor>::visit_block
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:240:9
+  97: walk_expr<rustc_lint::late::LateContextAndPass<rustc_lint::late::RuntimeCombinedLateLintPass>>
+  98: {closure#0}<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:167:17
+  99: with_lint_attrs<rustc_lint::late::RuntimeCombinedLateLintPass, rustc_lint::late::{impl#1}::visit_expr::{closure#0}::{closure_env#0}<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:59:9
+ 100: {closure#0}<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:165:18
+ 101: maybe_grow<(), rustc_lint::late::{impl#1}::visit_expr::{closure_env#0}<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/stacker-0.1.21/src/lib.rs:57:9
+ 102: ensure_sufficient_stack<(), rustc_lint::late::{impl#1}::visit_expr::{closure_env#0}<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_data_structures/src/stack.rs:21:5
+ 103: visit_expr<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:164:9
+ 104: visit_body<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:120:9
+ 105: visit_nested_body<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:103:14
+ 106: visit_fn<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:196:9
+ 107: walk_item<rustc_lint::late::LateContextAndPass<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_hir/src/intravisit.rs:558:32
+ 108: {closure#0}<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:132:17
+ 109: with_param_env<rustc_lint::late::RuntimeCombinedLateLintPass, rustc_lint::late::{impl#1}::visit_item::{closure#0}::{closure_env#0}<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:71:9
+ 110: {closure#0}<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:130:16
+ 111: with_lint_attrs<rustc_lint::late::RuntimeCombinedLateLintPass, rustc_lint::late::{impl#1}::visit_item::{closure_env#0}<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:59:9
+ 112: visit_item<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:129:14
+ 113: visit_nested_item<rustc_lint::late::LateContextAndPass<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_hir/src/intravisit.rs:249:29
+ 114: walk_mod<rustc_lint::late::LateContextAndPass<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_hir/src/intravisit.rs:650:5
+ 115: walk_item<rustc_lint::late::LateContextAndPass<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_hir/src/intravisit.rs:571:32
+ 116: {closure#0}<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:132:17
+ 117: with_param_env<rustc_lint::late::RuntimeCombinedLateLintPass, rustc_lint::late::{impl#1}::visit_item::{closure#0}::{closure_env#0}<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:71:9
+ 118: {closure#0}<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:130:16
+ 119: with_lint_attrs<rustc_lint::late::RuntimeCombinedLateLintPass, rustc_lint::late::{impl#1}::visit_item::{closure_env#0}<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:59:9
+ 120: visit_item<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:129:14
+ 121: visit_nested_item<rustc_lint::late::LateContextAndPass<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_hir/src/intravisit.rs:249:29
+ 122: walk_mod<rustc_lint::late::LateContextAndPass<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_hir/src/intravisit.rs:650:5
+ 123: walk_item<rustc_lint::late::LateContextAndPass<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_hir/src/intravisit.rs:571:32
+ 124: {closure#0}<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:132:17
+ 125: with_param_env<rustc_lint::late::RuntimeCombinedLateLintPass, rustc_lint::late::{impl#1}::visit_item::{closure#0}::{closure_env#0}<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:71:9
+ 126: {closure#0}<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:130:16
+ 127: with_lint_attrs<rustc_lint::late::RuntimeCombinedLateLintPass, rustc_lint::late::{impl#1}::visit_item::{closure_env#0}<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:59:9
+ 128: visit_item<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:129:14
+ 129: visit_nested_item<rustc_lint::late::LateContextAndPass<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_hir/src/intravisit.rs:249:29
+ 130: walk_mod<rustc_lint::late::LateContextAndPass<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_hir/src/intravisit.rs:650:5
+ 131: walk_item<rustc_lint::late::LateContextAndPass<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_hir/src/intravisit.rs:571:32
+ 132: {closure#0}<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:132:17
+ 133: with_param_env<rustc_lint::late::RuntimeCombinedLateLintPass, rustc_lint::late::{impl#1}::visit_item::{closure#0}::{closure_env#0}<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:71:9
+ 134: {closure#0}<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:130:16
+ 135: with_lint_attrs<rustc_lint::late::RuntimeCombinedLateLintPass, rustc_lint::late::{impl#1}::visit_item::{closure_env#0}<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:59:9
+ 136: visit_item<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:129:14
+ 137: visit_nested_item<rustc_lint::late::LateContextAndPass<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_hir/src/intravisit.rs:249:29
+ 138: walk_mod<rustc_lint::late::LateContextAndPass<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_hir/src/intravisit.rs:650:5
+ 139: <rustc_middle::ty::context::TyCtxt>::hir_walk_toplevel_module::<rustc_lint::late::LateContextAndPass<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_middle/src/hir/map.rs:391:17
+ 140: {closure#0}<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:472:13
+ 141: with_lint_attrs<rustc_lint::late::RuntimeCombinedLateLintPass, rustc_lint::late::late_lint_crate_inner::{closure_env#0}<rustc_lint::late::RuntimeCombinedLateLintPass>>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:59:9
+ 142: late_lint_crate_inner<rustc_lint::late::RuntimeCombinedLateLintPass>
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:468:8
+ 143: late_lint_crate
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:457:5
+ 144: {closure#0}
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:483:17
+ 145: run<(), rustc_lint::late::check_crate::{closure#0}::{closure_env#0}>
+             at /home/psy/git/rust/compiler/rustc_data_structures/src/profiling.rs:844:9
+ 146: time<(), rustc_lint::late::check_crate::{closure#0}::{closure_env#0}>
+             at /home/psy/git/rust/compiler/rustc_session/src/utils.rs:17:50
+ 147: {closure#0}
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:481:22
+ 148: call_once<(), rustc_lint::late::check_crate::{closure_env#0}>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/core/src/panic/unwind_safe.rs:274:9
+ 149: do_call<core::panic::unwind_safe::AssertUnwindSafe<rustc_lint::late::check_crate::{closure_env#0}>, ()>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/panicking.rs:590:40
+ 150: catch_unwind<(), core::panic::unwind_safe::AssertUnwindSafe<rustc_lint::late::check_crate::{closure_env#0}>>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/panicking.rs:553:19
+ 151: catch_unwind<core::panic::unwind_safe::AssertUnwindSafe<rustc_lint::late::check_crate::{closure_env#0}>, ()>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/panic.rs:359:14
+ 152: run<(), rustc_lint::late::check_crate::{closure_env#0}>
+             at /home/psy/git/rust/compiler/rustc_data_structures/src/sync/parallel.rs:23:9
+ 153: {closure#0}<rustc_lint::late::check_crate::{closure_env#0}, rustc_lint::late::check_crate::{closure_env#1}, (), ()>
+             at /home/psy/git/rust/compiler/rustc_data_structures/src/sync/parallel.rs:52:23
+ 154: parallel_guard<(core::option::Option<()>, core::option::Option<()>), rustc_data_structures::sync::parallel::serial_join::{closure_env#0}<rustc_lint::late::check_crate::{closure_env#0}, rustc_lint::late::check_crate::{closure_env#1}, (), ()>>
+             at /home/psy/git/rust/compiler/rustc_data_structures/src/sync/parallel.rs:39:15
+ 155: serial_join<rustc_lint::late::check_crate::{closure_env#0}, rustc_lint::late::check_crate::{closure_env#1}, (), ()>
+             at /home/psy/git/rust/compiler/rustc_data_structures/src/sync/parallel.rs:51:18
+ 156: join<rustc_lint::late::check_crate::{closure_env#0}, rustc_lint::late::check_crate::{closure_env#1}, (), ()>
+             at /home/psy/git/rust/compiler/rustc_data_structures/src/sync/parallel.rs:132:9
+ 157: check_crate
+             at /home/psy/git/rust/compiler/rustc_lint/src/late.rs:479:5
+ 158: {closure#0}
+             at /home/psy/git/rust/compiler/rustc_interface/src/passes.rs:1165:29
+ 159: run<(), rustc_interface::passes::analysis::{closure#0}::{closure#2}::{closure#0}::{closure#2}::{closure#1}::{closure#0}::{closure#2}::{closure_env#0}>
+             at /home/psy/git/rust/compiler/rustc_data_structures/src/profiling.rs:844:9
+ 160: time<(), rustc_interface::passes::analysis::{closure#0}::{closure#2}::{closure#0}::{closure#2}::{closure#1}::{closure#0}::{closure#2}::{closure_env#0}>
+             at /home/psy/git/rust/compiler/rustc_session/src/utils.rs:17:50
+ 161: {closure#2}
+             at /home/psy/git/rust/compiler/rustc_interface/src/passes.rs:1164:30
+ 162: call_once<(), rustc_interface::passes::analysis::{closure#0}::{closure#1}::{closure#0}::{closure#0}::{closure_env#2}>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/core/src/panic/unwind_safe.rs:274:9
+ 163: do_call<core::panic::unwind_safe::AssertUnwindSafe<rustc_interface::passes::analysis::{closure#0}::{closure#1}::{closure#0}::{closure#0}::{closure_env#2}>, ()>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/panicking.rs:590:40
+ 164: catch_unwind<(), core::panic::unwind_safe::AssertUnwindSafe<rustc_interface::passes::analysis::{closure#0}::{closure#1}::{closure#0}::{closure#0}::{closure_env#2}>>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/panicking.rs:553:19
+ 165: catch_unwind<core::panic::unwind_safe::AssertUnwindSafe<rustc_interface::passes::analysis::{closure#0}::{closure#1}::{closure#0}::{closure#0}::{closure_env#2}>, ()>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/panic.rs:359:14
+ 166: run<(), rustc_interface::passes::analysis::{closure#0}::{closure#1}::{closure#0}::{closure#0}::{closure_env#2}>
+             at /home/psy/git/rust/compiler/rustc_data_structures/src/sync/parallel.rs:23:9
+ 167: {closure#0}
+             at /home/psy/git/rust/compiler/rustc_data_structures/src/sync/parallel.rs:88:29
+ 168: parallel_guard<(), rustc_interface::passes::analysis::{closure#0}::{closure#1}::{closure#0}::{closure_env#0}>
+             at /home/psy/git/rust/compiler/rustc_data_structures/src/sync/parallel.rs:39:15
+ 169: {closure#0}
+             at /home/psy/git/rust/compiler/rustc_interface/src/passes.rs:1152:17
+ 170: call_once<(), rustc_interface::passes::analysis::{closure#0}::{closure#1}::{closure_env#0}>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/core/src/panic/unwind_safe.rs:274:9
+ 171: do_call<core::panic::unwind_safe::AssertUnwindSafe<rustc_interface::passes::analysis::{closure#0}::{closure#1}::{closure_env#0}>, ()>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/panicking.rs:590:40
+ 172: catch_unwind<(), core::panic::unwind_safe::AssertUnwindSafe<rustc_interface::passes::analysis::{closure#0}::{closure#1}::{closure_env#0}>>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/panicking.rs:553:19
+ 173: catch_unwind<core::panic::unwind_safe::AssertUnwindSafe<rustc_interface::passes::analysis::{closure#0}::{closure#1}::{closure_env#0}>, ()>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/panic.rs:359:14
+ 174: run<(), rustc_interface::passes::analysis::{closure#0}::{closure#1}::{closure_env#0}>
+             at /home/psy/git/rust/compiler/rustc_data_structures/src/sync/parallel.rs:23:9
+ 175: {closure#1}
+             at /home/psy/git/rust/compiler/rustc_data_structures/src/sync/parallel.rs:87:27
+ 176: parallel_guard<(), rustc_interface::passes::analysis::{closure#0}::{closure_env#1}>
+             at /home/psy/git/rust/compiler/rustc_data_structures/src/sync/parallel.rs:39:15
+ 177: {closure#0}
+             at /home/psy/git/rust/compiler/rustc_interface/src/passes.rs:1148:9
+ 178: run<(), rustc_interface::passes::analysis::{closure_env#0}>
+             at /home/psy/git/rust/compiler/rustc_data_structures/src/profiling.rs:844:9
+ 179: time<(), rustc_interface::passes::analysis::{closure_env#0}>
+             at /home/psy/git/rust/compiler/rustc_session/src/utils.rs:17:50
+ 180: analysis
+             at /home/psy/git/rust/compiler/rustc_interface/src/passes.rs:1147:10
+ 181: {closure#0}
+             at /home/psy/git/rust/compiler/rustc_query_impl/src/plumbing.rs:294:9
+ 182: __rust_begin_short_backtrace<rustc_query_impl::query_impl::analysis::dynamic_query::{closure#2}::{closure_env#0}, rustc_middle::query::erase::Erased<[u8; 0]>>
+             at /home/psy/git/rust/compiler/rustc_query_impl/src/plumbing.rs:578:18
+ 183: {closure#2}
+             at /home/psy/git/rust/compiler/rustc_query_impl/src/plumbing.rs:655:25
+ 184: call_once<rustc_query_impl::query_impl::analysis::dynamic_query::{closure_env#2}, (rustc_middle::ty::context::TyCtxt, ())>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/core/src/ops/function.rs:250:5
+ 185: compute<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 0]>>, false, false, false>
+             at /home/psy/git/rust/compiler/rustc_query_impl/src/lib.rs:122:9
+ 186: {closure#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 0]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>
+             at /home/psy/git/rust/compiler/rustc_query_system/src/query/plumbing.rs:493:72
+ 187: {closure#0}<rustc_query_system::query::plumbing::execute_job_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 0]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>, rustc_middle::query::erase::Erased<[u8; 0]>>
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/context/tls.rs:60:9
+ 188: try_with<core::cell::Cell<*const ()>, rustc_middle::ty::context::tls::enter_context::{closure_env#0}<rustc_query_system::query::plumbing::execute_job_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 0]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>, rustc_middle::query::erase::Erased<[u8; 0]>>, rustc_middle::query::erase::Erased<[u8; 0]>>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/thread/local.rs:315:12
+ 189: with<core::cell::Cell<*const ()>, rustc_middle::ty::context::tls::enter_context::{closure_env#0}<rustc_query_system::query::plumbing::execute_job_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 0]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>, rustc_middle::query::erase::Erased<[u8; 0]>>, rustc_middle::query::erase::Erased<[u8; 0]>>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/thread/local.rs:279:20
+ 190: enter_context<rustc_query_system::query::plumbing::execute_job_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 0]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>, rustc_middle::query::erase::Erased<[u8; 0]>>
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/context/tls.rs:57:9
+ 191: {closure#0}<rustc_middle::query::erase::Erased<[u8; 0]>, rustc_query_system::query::plumbing::execute_job_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 0]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>>
+             at /home/psy/git/rust/compiler/rustc_query_impl/src/plumbing.rs:161:13
+ 192: {closure#0}<rustc_query_impl::plumbing::{impl#3}::start_query::{closure_env#0}<rustc_middle::query::erase::Erased<[u8; 0]>, rustc_query_system::query::plumbing::execute_job_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 0]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>>, rustc_middle::query::erase::Erased<[u8; 0]>>
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/context/tls.rs:112:9
+ 193: {closure#0}<rustc_middle::ty::context::tls::with_related_context::{closure_env#0}<rustc_query_impl::plumbing::{impl#3}::start_query::{closure_env#0}<rustc_middle::query::erase::Erased<[u8; 0]>, rustc_query_system::query::plumbing::execute_job_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 0]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>>, rustc_middle::query::erase::Erased<[u8; 0]>>, rustc_middle::query::erase::Erased<[u8; 0]>>
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/context/tls.rs:90:36
+ 194: with_context_opt<rustc_middle::ty::context::tls::with_context::{closure_env#0}<rustc_middle::ty::context::tls::with_related_context::{closure_env#0}<rustc_query_impl::plumbing::{impl#3}::start_query::{closure_env#0}<rustc_middle::query::erase::Erased<[u8; 0]>, rustc_query_system::query::plumbing::execute_job_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 0]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>>, rustc_middle::query::erase::Erased<[u8; 0]>>, rustc_middle::query::erase::Erased<[u8; 0]>>, rustc_middle::query::erase::Erased<[u8; 0]>>
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/context/tls.rs:79:18
+ 195: with_context<rustc_middle::ty::context::tls::with_related_context::{closure_env#0}<rustc_query_impl::plumbing::{impl#3}::start_query::{closure_env#0}<rustc_middle::query::erase::Erased<[u8; 0]>, rustc_query_system::query::plumbing::execute_job_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 0]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>>, rustc_middle::query::erase::Erased<[u8; 0]>>, rustc_middle::query::erase::Erased<[u8; 0]>>
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/context/tls.rs:90:5
+ 196: with_related_context<rustc_query_impl::plumbing::{impl#3}::start_query::{closure_env#0}<rustc_middle::query::erase::Erased<[u8; 0]>, rustc_query_system::query::plumbing::execute_job_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 0]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>>, rustc_middle::query::erase::Erased<[u8; 0]>>
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/context/tls.rs:103:5
+ 197: start_query<rustc_middle::query::erase::Erased<[u8; 0]>, rustc_query_system::query::plumbing::execute_job_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 0]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>>
+             at /home/psy/git/rust/compiler/rustc_query_impl/src/plumbing.rs:147:9
+ 198: execute_job_non_incr<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 0]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>
+             at /home/psy/git/rust/compiler/rustc_query_system/src/query/plumbing.rs:493:22
+ 199: execute_job<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 0]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt, false>
+             at /home/psy/git/rust/compiler/rustc_query_system/src/query/plumbing.rs:429:9
+ 200: try_execute_query<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 0]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt, false>
+             at /home/psy/git/rust/compiler/rustc_query_system/src/query/plumbing.rs:372:13
+ 201: {closure#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 0]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>
+             at /home/psy/git/rust/compiler/rustc_query_system/src/query/plumbing.rs:814:32
+ 202: maybe_grow<rustc_middle::query::erase::Erased<[u8; 0]>, rustc_query_system::query::plumbing::get_query_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 0]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>>
+             at /home/psy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/stacker-0.1.21/src/lib.rs:57:9
+ 203: ensure_sufficient_stack<rustc_middle::query::erase::Erased<[u8; 0]>, rustc_query_system::query::plumbing::get_query_non_incr::{closure_env#0}<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 0]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>>
+             at /home/psy/git/rust/compiler/rustc_data_structures/src/stack.rs:21:5
+ 204: get_query_non_incr<rustc_query_impl::DynamicConfig<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 0]>>, false, false, false>, rustc_query_impl::plumbing::QueryCtxt>
+             at /home/psy/git/rust/compiler/rustc_query_system/src/query/plumbing.rs:814:5
+ 205: __rust_end_short_backtrace
+             at /home/psy/git/rust/compiler/rustc_query_impl/src/plumbing.rs:631:26
+ 206: query_ensure<rustc_query_system::query::caches::SingleCache<rustc_middle::query::erase::Erased<[u8; 0]>>>
+             at /home/psy/git/rust/compiler/rustc_middle/src/query/inner.rs:51:9
+ 207: analysis
+             at /home/psy/git/rust/compiler/rustc_middle/src/query/plumbing.rs:173:9
+ 208: {closure#2}
+             at /home/psy/git/rust/compiler/rustc_driver_impl/src/lib.rs:371:29
+ 209: {closure#0}<core::option::Option<rustc_interface::queries::Linker>, rustc_driver_impl::run_compiler::{closure#0}::{closure_env#2}>
+             at /home/psy/git/rust/compiler/rustc_interface/src/passes.rs:1016:27
+ 210: {closure#1}<rustc_interface::passes::create_and_enter_global_ctxt::{closure#2}::{closure_env#0}<core::option::Option<rustc_interface::queries::Linker>, rustc_driver_impl::run_compiler::{closure#0}::{closure_env#2}>, core::option::Option<rustc_interface::queries::Linker>>
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/context.rs:1663:37
+ 211: {closure#0}<rustc_middle::ty::context::{impl#21}::enter::{closure_env#1}<rustc_interface::passes::create_and_enter_global_ctxt::{closure#2}::{closure_env#0}<core::option::Option<rustc_interface::queries::Linker>, rustc_driver_impl::run_compiler::{closure#0}::{closure_env#2}>, core::option::Option<rustc_interface::queries::Linker>>, core::option::Option<rustc_interface::queries::Linker>>
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/context/tls.rs:60:9
+ 212: try_with<core::cell::Cell<*const ()>, rustc_middle::ty::context::tls::enter_context::{closure_env#0}<rustc_middle::ty::context::{impl#21}::enter::{closure_env#1}<rustc_interface::passes::create_and_enter_global_ctxt::{closure#2}::{closure_env#0}<core::option::Option<rustc_interface::queries::Linker>, rustc_driver_impl::run_compiler::{closure#0}::{closure_env#2}>, core::option::Option<rustc_interface::queries::Linker>>, core::option::Option<rustc_interface::queries::Linker>>, core::option::Option<rustc_interface::queries::Linker>>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/thread/local.rs:315:12
+ 213: with<core::cell::Cell<*const ()>, rustc_middle::ty::context::tls::enter_context::{closure_env#0}<rustc_middle::ty::context::{impl#21}::enter::{closure_env#1}<rustc_interface::passes::create_and_enter_global_ctxt::{closure#2}::{closure_env#0}<core::option::Option<rustc_interface::queries::Linker>, rustc_driver_impl::run_compiler::{closure#0}::{closure_env#2}>, core::option::Option<rustc_interface::queries::Linker>>, core::option::Option<rustc_interface::queries::Linker>>, core::option::Option<rustc_interface::queries::Linker>>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/thread/local.rs:279:20
+ 214: enter_context<rustc_middle::ty::context::{impl#21}::enter::{closure_env#1}<rustc_interface::passes::create_and_enter_global_ctxt::{closure#2}::{closure_env#0}<core::option::Option<rustc_interface::queries::Linker>, rustc_driver_impl::run_compiler::{closure#0}::{closure_env#2}>, core::option::Option<rustc_interface::queries::Linker>>, core::option::Option<rustc_interface::queries::Linker>>
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/context/tls.rs:57:9
+ 215: enter<rustc_interface::passes::create_and_enter_global_ctxt::{closure#2}::{closure_env#0}<core::option::Option<rustc_interface::queries::Linker>, rustc_driver_impl::run_compiler::{closure#0}::{closure_env#2}>, core::option::Option<rustc_interface::queries::Linker>>
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/context.rs:1663:9
+ 216: create_global_ctxt<core::option::Option<rustc_interface::queries::Linker>, rustc_interface::passes::create_and_enter_global_ctxt::{closure#2}::{closure_env#0}<core::option::Option<rustc_interface::queries::Linker>, rustc_driver_impl::run_compiler::{closure#0}::{closure_env#2}>>
+             at /home/psy/git/rust/compiler/rustc_middle/src/ty/context.rs:1870:13
+ 217: {closure#2}<core::option::Option<rustc_interface::queries::Linker>, rustc_driver_impl::run_compiler::{closure#0}::{closure_env#2}>
+             at /home/psy/git/rust/compiler/rustc_interface/src/passes.rs:983:9
+ 218: call_once<rustc_interface::passes::create_and_enter_global_ctxt::{closure_env#2}<core::option::Option<rustc_interface::queries::Linker>, rustc_driver_impl::run_compiler::{closure#0}::{closure_env#2}>, (&rustc_session::session::Session, rustc_middle::ty::context::CurrentGcx, alloc::sync::Arc<rustc_data_structures::jobserver::Proxy, alloc::alloc::Global>, &std::sync::once_lock::OnceLock<rustc_middle::ty::context::GlobalCtxt>, &rustc_data_structures::sync::worker_local::WorkerLocal<rustc_middle::arena::Arena>, &rustc_data_structures::sync::worker_local::WorkerLocal<rustc_hir::Arena>, rustc_driver_impl::run_compiler::{closure#0}::{closure_env#2})>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/core/src/ops/function.rs:250:5
+ 219: call_once<(&rustc_session::session::Session, rustc_middle::ty::context::CurrentGcx, alloc::sync::Arc<rustc_data_structures::jobserver::Proxy, alloc::alloc::Global>, &std::sync::once_lock::OnceLock<rustc_middle::ty::context::GlobalCtxt>, &rustc_data_structures::sync::worker_local::WorkerLocal<rustc_middle::arena::Arena>, &rustc_data_structures::sync::worker_local::WorkerLocal<rustc_hir::Arena>, rustc_driver_impl::run_compiler::{closure#0}::{closure_env#2}), dyn core::ops::function::FnOnce<(&rustc_session::session::Session, rustc_middle::ty::context::CurrentGcx, alloc::sync::Arc<rustc_data_structures::jobserver::Proxy, alloc::alloc::Global>, &std::sync::once_lock::OnceLock<rustc_middle::ty::context::GlobalCtxt>, &rustc_data_structures::sync::worker_local::WorkerLocal<rustc_middle::arena::Arena>, &rustc_data_structures::sync::worker_local::WorkerLocal<rustc_hir::Arena>, rustc_driver_impl::run_compiler::{closure#0}::{closure_env#2}), Output=core::option::Option<rustc_interface::queries::Linker>>, alloc::alloc::Global>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/alloc/src/boxed.rs:1985:9
+ 220: create_and_enter_global_ctxt<core::option::Option<rustc_interface::queries::Linker>, rustc_driver_impl::run_compiler::{closure#0}::{closure_env#2}>
+             at /home/psy/git/rust/compiler/rustc_interface/src/passes.rs:1024:5
+ 221: {closure#0}
+             at /home/psy/git/rust/compiler/rustc_driver_impl/src/lib.rs:344:22
+ 222: {closure#2}<(), rustc_driver_impl::run_compiler::{closure_env#0}>
+             at /home/psy/git/rust/compiler/rustc_interface/src/interface.rs:551:80
+ 223: call_once<(), rustc_interface::interface::run_compiler::{closure#1}::{closure_env#2}<(), rustc_driver_impl::run_compiler::{closure_env#0}>>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/core/src/panic/unwind_safe.rs:274:9
+ 224: do_call<core::panic::unwind_safe::AssertUnwindSafe<rustc_interface::interface::run_compiler::{closure#1}::{closure_env#2}<(), rustc_driver_impl::run_compiler::{closure_env#0}>>, ()>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/panicking.rs:590:40
+ 225: catch_unwind<(), core::panic::unwind_safe::AssertUnwindSafe<rustc_interface::interface::run_compiler::{closure#1}::{closure_env#2}<(), rustc_driver_impl::run_compiler::{closure_env#0}>>>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/panicking.rs:553:19
+ 226: catch_unwind<core::panic::unwind_safe::AssertUnwindSafe<rustc_interface::interface::run_compiler::{closure#1}::{closure_env#2}<(), rustc_driver_impl::run_compiler::{closure_env#0}>>, ()>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/panic.rs:359:14
+ 227: {closure#1}<(), rustc_driver_impl::run_compiler::{closure_env#0}>
+             at /home/psy/git/rust/compiler/rustc_interface/src/interface.rs:551:23
+ 228: {closure#0}<rustc_interface::interface::run_compiler::{closure_env#1}<(), rustc_driver_impl::run_compiler::{closure_env#0}>, ()>
+             at /home/psy/git/rust/compiler/rustc_interface/src/util.rs:208:17
+ 229: {closure#0}<rustc_interface::util::run_in_thread_pool_with_globals::{closure_env#0}<rustc_interface::interface::run_compiler::{closure_env#1}<(), rustc_driver_impl::run_compiler::{closure_env#0}>, ()>, ()>
+             at /home/psy/git/rust/compiler/rustc_interface/src/util.rs:162:24
+ 230: set<rustc_span::SessionGlobals, rustc_interface::util::run_in_thread_with_globals::{closure#0}::{closure#0}::{closure_env#0}<rustc_interface::util::run_in_thread_pool_with_globals::{closure_env#0}<rustc_interface::interface::run_compiler::{closure_env#1}<(), rustc_driver_impl::run_compiler::{closure_env#0}>, ()>, ()>, ()>
+             at /home/psy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/scoped-tls-1.0.1/src/lib.rs:137:9
+ 231: create_session_globals_then<(), rustc_interface::util::run_in_thread_with_globals::{closure#0}::{closure#0}::{closure_env#0}<rustc_interface::util::run_in_thread_pool_with_globals::{closure_env#0}<rustc_interface::interface::run_compiler::{closure_env#1}<(), rustc_driver_impl::run_compiler::{closure_env#0}>, ()>, ()>>
+             at /home/psy/git/rust/compiler/rustc_span/src/lib.rs:146:21
+ 232: {closure#0}<rustc_interface::util::run_in_thread_pool_with_globals::{closure_env#0}<rustc_interface::interface::run_compiler::{closure_env#1}<(), rustc_driver_impl::run_compiler::{closure_env#0}>, ()>, ()>
+             at /home/psy/git/rust/compiler/rustc_interface/src/util.rs:158:17
+ 233: __rust_begin_short_backtrace<rustc_interface::util::run_in_thread_with_globals::{closure#0}::{closure_env#0}<rustc_interface::util::run_in_thread_pool_with_globals::{closure_env#0}<rustc_interface::interface::run_compiler::{closure_env#1}<(), rustc_driver_impl::run_compiler::{closure_env#0}>, ()>, ()>, ()>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/sys/backtrace.rs:158:18
+ 234: {closure#0}<rustc_interface::util::run_in_thread_with_globals::{closure#0}::{closure_env#0}<rustc_interface::util::run_in_thread_pool_with_globals::{closure_env#0}<rustc_interface::interface::run_compiler::{closure_env#1}<(), rustc_driver_impl::run_compiler::{closure_env#0}>, ()>, ()>, ()>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/thread/mod.rs:559:17
+ 235: call_once<(), std::thread::{impl#0}::spawn_unchecked_::{closure#1}::{closure_env#0}<rustc_interface::util::run_in_thread_with_globals::{closure#0}::{closure_env#0}<rustc_interface::util::run_in_thread_pool_with_globals::{closure_env#0}<rustc_interface::interface::run_compiler::{closure_env#1}<(), rustc_driver_impl::run_compiler::{closure_env#0}>, ()>, ()>, ()>>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/core/src/panic/unwind_safe.rs:274:9
+ 236: do_call<core::panic::unwind_safe::AssertUnwindSafe<std::thread::{impl#0}::spawn_unchecked_::{closure#1}::{closure_env#0}<rustc_interface::util::run_in_thread_with_globals::{closure#0}::{closure_env#0}<rustc_interface::util::run_in_thread_pool_with_globals::{closure_env#0}<rustc_interface::interface::run_compiler::{closure_env#1}<(), rustc_driver_impl::run_compiler::{closure_env#0}>, ()>, ()>, ()>>, ()>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/panicking.rs:590:40
+ 237: catch_unwind<(), core::panic::unwind_safe::AssertUnwindSafe<std::thread::{impl#0}::spawn_unchecked_::{closure#1}::{closure_env#0}<rustc_interface::util::run_in_thread_with_globals::{closure#0}::{closure_env#0}<rustc_interface::util::run_in_thread_pool_with_globals::{closure_env#0}<rustc_interface::interface::run_compiler::{closure_env#1}<(), rustc_driver_impl::run_compiler::{closure_env#0}>, ()>, ()>, ()>>>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/panicking.rs:553:19
+ 238: catch_unwind<core::panic::unwind_safe::AssertUnwindSafe<std::thread::{impl#0}::spawn_unchecked_::{closure#1}::{closure_env#0}<rustc_interface::util::run_in_thread_with_globals::{closure#0}::{closure_env#0}<rustc_interface::util::run_in_thread_pool_with_globals::{closure_env#0}<rustc_interface::interface::run_compiler::{closure_env#1}<(), rustc_driver_impl::run_compiler::{closure_env#0}>, ()>, ()>, ()>>, ()>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/panic.rs:359:14
+ 239: {closure#1}<rustc_interface::util::run_in_thread_with_globals::{closure#0}::{closure_env#0}<rustc_interface::util::run_in_thread_pool_with_globals::{closure_env#0}<rustc_interface::interface::run_compiler::{closure_env#1}<(), rustc_driver_impl::run_compiler::{closure_env#0}>, ()>, ()>, ()>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/thread/mod.rs:557:30
+ 240: call_once<std::thread::{impl#0}::spawn_unchecked_::{closure_env#1}<rustc_interface::util::run_in_thread_with_globals::{closure#0}::{closure_env#0}<rustc_interface::util::run_in_thread_pool_with_globals::{closure_env#0}<rustc_interface::interface::run_compiler::{closure_env#1}<(), rustc_driver_impl::run_compiler::{closure_env#0}>, ()>, ()>, ()>, ()>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/core/src/ops/function.rs:250:5
+ 241: <alloc::boxed::Box<F,A> as core::ops::function::FnOnce<Args>>::call_once
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/alloc/src/boxed.rs:1985:9
+ 242: std::sys::thread::unix::Thread::new::thread_start
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/sys/thread/unix.rs:126:17
+ 243: <unknown>
+ 244: <unknown>
+
+stack backtrace:
+   0: __rustc::rust_begin_unwind
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/std/src/panicking.rs:698:5
+   1: core::panicking::panic_fmt
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/core/src/panicking.rs:75:14
+   2: drop
+             at /home/psy/git/rust/compiler/rustc_errors/src/lib.rs:750:17
+   3: drop_in_place<rustc_errors::DiagCtxtInner>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/core/src/ptr/mod.rs:804:1
+   4: drop_in_place<core::cell::UnsafeCell<rustc_errors::DiagCtxtInner>>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/core/src/ptr/mod.rs:804:1
+   5: drop_in_place<rustc_data_structures::sync::lock::Lock<rustc_errors::DiagCtxtInner>>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/core/src/ptr/mod.rs:804:1
+   6: drop_in_place<rustc_errors::DiagCtxt>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/core/src/ptr/mod.rs:804:1
+   7: drop_in_place<rustc_session::parse::ParseSess>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/core/src/ptr/mod.rs:804:1
+   8: drop_in_place<rustc_session::session::Session>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/core/src/ptr/mod.rs:804:1
+   9: drop_in_place<rustc_interface::interface::Compiler>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/core/src/ptr/mod.rs:804:1
+  10: drop<rustc_interface::interface::Compiler>
+             at /rustc/bb624dcb4c8ab987e10c0808d92d76f3b84dd117/library/core/src/mem/mod.rs:961:24
+  11: {closure#3}<(), rustc_driver_impl::run_compiler::{closure_env#0}>
+             at /home/psy/git/rust/compiler/rustc_interface/src/interface.rs:579:64
+  12: run<(), rustc_interface::interface::run_compiler::{closure#1}::{closure_env#3}<(), rustc_driver_impl::run_compiler::{closure_env#0}>>
+             at /home/psy/git/rust/compiler/rustc_data_structures/src/profiling.rs:808:9
+  13: {closure#1}<(), rustc_driver_impl::run_compiler::{closure_env#0}>
+             at /home/psy/git/rust/compiler/rustc_interface/src/interface.rs:579:52
+  14: {closure#0}<rustc_interface::interface::run_compiler::{closure_env#1}<(), rustc_driver_impl::run_compiler::{closure_env#0}>, ()>
+             at /home/psy/git/rust/compiler/rustc_interface/src/util.rs:208:17
+  15: {closure#0}<rustc_interface::util::run_in_thread_pool_with_globals::{closure_env#0}<rustc_interface::interface::run_compiler::{closure_env#1}<(), rustc_driver_impl::run_compiler::{closure_env#0}>, ()>, ()>
+             at /home/psy/git/rust/compiler/rustc_interface/src/util.rs:162:24
+  16: set<rustc_span::SessionGlobals, rustc_interface::util::run_in_thread_with_globals::{closure#0}::{closure#0}::{closure_env#0}<rustc_interface::util::run_in_thread_pool_with_globals::{closure_env#0}<rustc_interface::interface::run_compiler::{closure_env#1}<(), rustc_driver_impl::run_compiler::{closure_env#0}>, ()>, ()>, ()>
+             at /home/psy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/scoped-tls-1.0.1/src/lib.rs:137:9
+  17: create_session_globals_then<(), rustc_interface::util::run_in_thread_with_globals::{closure#0}::{closure#0}::{closure_env#0}<rustc_interface::util::run_in_thread_pool_with_globals::{closure_env#0}<rustc_interface::interface::run_compiler::{closure_env#1}<(), rustc_driver_impl::run_compiler::{closure_env#0}>, ()>, ()>>
+             at /home/psy/git/rust/compiler/rustc_span/src/lib.rs:146:21
+  18: {closure#0}<rustc_interface::util::run_in_thread_pool_with_globals::{closure_env#0}<rustc_interface::interface::run_compiler::{closure_env#1}<(), rustc_driver_impl::run_compiler::{closure_env#0}>, ()>, ()>
+             at /home/psy/git/rust/compiler/rustc_interface/src/util.rs:158:17
+note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
+
+error: the compiler unexpectedly panicked. this is a bug.
+
+note: using internal features is not supported and expected to cause internal compiler errors when used incorrectly
+
+note: please attach the file at `/home/psy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libc-0.2.177/rustc-ice-2026-01-30T16_18_03-256694.txt` to your bug report
+
+note: compiler flags: --crate-type lib -C opt-level=3 -C embed-bitcode=no -C debuginfo=line-tables-only -C debug-assertions=on -C overflow-checks=off -C symbol-mangling-version=legacy -Z unstable-options -Z macro-backtrace -C split-debuginfo=off -C force-frame-pointers=true -C prefer-dynamic -C llvm-args=-import-instr-limit=10 -Z inline-mir -Z inline-mir-preserve-debug -Z mir_strip_debuginfo=locals-in-tiny-functions -C link-args=-Wl,-z,origin -C link-args=-Wl,-rpath,$ORIGIN/../lib -C embed-bitcode=yes -C lto=off -Z unstable-options -C force-frame-pointers=non-leaf -Z crate-attr=doc(html_root_url="https://doc.rust-lang.org/nightly/") -Z binary-dep-depinfo -Z force-unstable-if-unmarked
+
+note: some of the compiler flags provided by cargo are hidden
+
+query stack during panic:
+end of query stack
+error: could not compile `libc` (lib)
+
+Caused by:
+  process didn't exit successfully: `/home/psy/git/rust/build/bootstrap/debug/rustc /home/psy/git/rust/build/bootstrap/debug/rustc --crate-name libc --edition=2021 /home/psy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libc-0.2.177/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C opt-level=3 -C embed-bitcode=no -C debuginfo=line-tables-only '--allow=clippy::used_underscore_binding' --allow=unused_qualifications '--warn=clippy::unnecessary_semicolon' '--allow=clippy::unnecessary_cast' '--allow=clippy::uninlined_format_args' '--warn=clippy::ptr_as_ptr' '--allow=clippy::non_minimal_cfg' '--allow=clippy::missing_safety_doc' '--warn=clippy::map_unwrap_or' '--warn=clippy::manual_assert' '--allow=clippy::identity_op' '--warn=clippy::explicit_iter_loop' '--allow=clippy::expl_impl_clone_on_copy' -C debug-assertions=on -C overflow-checks=off --cfg 'feature="align"' --cfg 'feature="rustc-dep-of-std"' --cfg 'feature="rustc-std-workspace-core"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values("align", "const-extern-fn", "default", "extra_traits", "rustc-dep-of-std", "rustc-std-workspace-core", "std", "use_std"))' -C metadata=a046830526c5322d -C extra-filename=-5958870cb2ca4b3b --out-dir /home/psy/git/rust/build/x86_64-unknown-linux-gnu/stage1-std/x86_64-unknown-linux-gnu/release/deps --target x86_64-unknown-linux-gnu -L dependency=/home/psy/git/rust/build/x86_64-unknown-linux-gnu/stage1-std/x86_64-unknown-linux-gnu/release/deps -L dependency=/home/psy/git/rust/build/x86_64-unknown-linux-gnu/stage1-std/release/deps --extern rustc_std_workspace_core=/home/psy/git/rust/build/x86_64-unknown-linux-gnu/stage1-std/x86_64-unknown-linux-gnu/release/deps/librustc_std_workspace_core-6cbfe28b929b65af.rmeta --cap-lints allow -Csymbol-mangling-version=legacy '--check-cfg=cfg(feature,values(any()))' -Zunstable-options -Zmacro-backtrace -Csplit-debuginfo=off -Cforce-frame-pointers=true -Cprefer-dynamic -Cllvm-args=-import-instr-limit=10 -Zinline-mir -Zinline-mir-preserve-debug -Zmir_strip_debuginfo=locals-in-tiny-functions -Clink-args=-Wl,-z,origin '-Clink-args=-Wl,-rpath,$ORIGIN/../lib' -Alinker-messages -Cembed-bitcode=yes -Clto=off -Zunstable-options -Cforce-frame-pointers=non-leaf '-Zcrate-attr=doc(html_root_url="https://doc.rust-lang.org/nightly/")' -Z binary-dep-depinfo --cfg freebsd12 --cfg libc_thread_local --check-cfg 'cfg(emscripten_old_stat_abi)' --check-cfg 'cfg(espidf_time32)' --check-cfg 'cfg(freebsd10)' --check-cfg 'cfg(freebsd11)' --check-cfg 'cfg(freebsd12)' --check-cfg 'cfg(freebsd13)' --check-cfg 'cfg(freebsd14)' --check-cfg 'cfg(freebsd15)' --check-cfg 'cfg(gnu_file_offset_bits64)' --check-cfg 'cfg(gnu_time_bits64)' --check-cfg 'cfg(libc_deny_warnings)' --check-cfg 'cfg(libc_thread_local)' --check-cfg 'cfg(linux_time_bits64)' --check-cfg 'cfg(musl_v1_2_3)' --check-cfg 'cfg(target_os,values("switch","aix","ohos","hurd","rtems","visionos","nuttx","cygwin"))' --check-cfg 'cfg(target_env,values("illumos","wasi","aix","ohos","nto71_iosock","nto80"))' --check-cfg 'cfg(target_arch,values("loongarch64","mips32r6","mips64r6","csky"))'` (exit status: 101)
+Build completed unsuccessfully in 0:01:25

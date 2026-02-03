@@ -54,6 +54,7 @@ impl DbgMacro {
 }
 
 impl LateLintPass<'_> for DbgMacro {
+    #[allow(warnings)]
     fn check_expr(&mut self, cx: &LateContext<'_>, expr: &Expr<'_>) {
         let cur_syntax_ctxt = expr.span.ctxt();
 

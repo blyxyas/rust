@@ -221,10 +221,14 @@ impl TestContext {
         }
 
         config.program.program = profile_path.join(if cfg!(windows) {
-            "clippy-driver.exe"
+            "../../../stage1-tools/x86_64-unknown-linux-gnu/release/clippy-driver"
+            // "../../../stage1-rustc/x86_64-unknown-linux-gnu/release/rustc-main.exe"
         } else {
-            "clippy-driver"
+            // "../../../stage1-rustc/x86_64-unknown-linux-gnu/release/rustc-main"
+            "../../../stage1-tools/x86_64-unknown-linux-gnu/release/clippy-driver"
         });
+        config.program.args.push("-Wclippy::size_of_in_element_count".into());
+        config.program.args.push("-Wclippy::all".into());
 
         config
     }

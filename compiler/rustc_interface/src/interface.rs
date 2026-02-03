@@ -498,24 +498,42 @@ pub fn run_compiler<R: Send>(config: Config, f: impl FnOnce(&Compiler) -> R + Se
                 sess.opts.untracked_state_hash = hasher.finish()
             }
 
-            // Even though the session holds the lint store, we can't build the
+            // Even though the session holds the lint store, we can't build thex
             // lint store until after the session exists. And we wait until now
             // so that `register_lints` sees the fully initialized session.
             let mut lint_store = rustc_lint::new_lint_store(sess.enable_internal_lints());
+            if sess.opts.lint_opts.iter().any(|e| e.0.starts_with("clippy"))
+                && !std::env::current_exe().unwrap().ends_with("clippy-driver")
+            {
+                let _ = tracing::warn!("{:#?}", std::env::current_exe());
 
-            if sess.opts.lint_opts.iter().any(|e| dbg!(&e).0.starts_with("clippy")) {
                 let conf_path = clippy_config::lookup_conf_file();
                 let mut list_builder = LintListBuilder::default();
                 let mut lint_list = Vec::with_capacity(sess.opts.lint_opts.len());
+                let mut super_lint_lists = Vec::with_capacity(sess.opts.lint_opts.len());
+                for lint in clippy_lints::declared_lints::LINTS {
+                    if sess
+                        .opts
+                        .lint_opts
+                        .iter()
+                        .any(|e| e.0.strip_prefix("clippy::").unwrap_or(&e.0) == lint.name_lower())
+                    {
+                        tracing::warn!("PUSH LINT: {}", lint.name_lower());
+                        lint_list.push(*lint);
+                        super_lint_lists.push(lint.lint);
+                    }
+                }
+                // lint_store.register_lints(super_lint_lists.as_slice());
+                // list_builder.insert(clippy_lints::declared_lints::LINTS);
                 list_builder.insert(lint_list.as_slice());
                 list_builder.register(&mut lint_store);
                 let conf = clippy_config::Conf::read(&sess, &conf_path);
-                clippy_lints::register_lint_passes(&mut lint_store, conf)
+                clippy_lints::register_lint_passes(&mut lint_store, conf);
             }
-
             if let Some(register_lints) = config.register_lints.as_deref() {
                 register_lints(&sess, &mut lint_store);
             }
+
             sess.lint_store = Some(Arc::new(lint_store));
 
             util::check_abi_required_features(&sess);

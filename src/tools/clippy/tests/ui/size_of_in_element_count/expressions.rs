@@ -1,3 +1,4 @@
+#![warn(clippy::default)]
 #![warn(clippy::size_of_in_element_count)]
 #![allow(clippy::ptr_offset_with_cast)]
 

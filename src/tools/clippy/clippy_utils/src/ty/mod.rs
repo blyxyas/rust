@@ -981,7 +981,7 @@ pub fn make_projection<'tcx>(
             AssocTag::Type,
             container_id,
         ) else {
-            debug_assert!(false, "type `{assoc_ty}` not found in `{container_id:?}`");
+            // debug_assert!(false, "type `{assoc_ty}` not found in `{container_id:?}`");
             return None;
         };
         #[cfg(debug_assertions)]

@@ -1,0 +1,5 @@
+Building stage1 compiler artifacts (stage0 -> stage1, x86_64-unknown-linux-gnu)
+Creating a sysroot for stage1 compiler (use `rustup toolchain link 'name' build/host/stage1`)
+Building stage1 lld-wrapper (stage0 -> stage1, x86_64-unknown-linux-gnu)
+Building stage1 clippy-driver (stage0 -> stage1, x86_64-unknown-linux-gnu)
+Building stage1 library artifacts (stage1 -> stage1, x86_64-unknown-linux-gnu)
