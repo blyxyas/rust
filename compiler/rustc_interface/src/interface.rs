@@ -512,12 +512,23 @@ pub fn run_compiler<R: Send>(config: Config, f: impl FnOnce(&Compiler) -> R + Se
                 let mut lint_list = Vec::with_capacity(sess.opts.lint_opts.len());
                 let mut super_lint_lists = Vec::with_capacity(sess.opts.lint_opts.len());
                 for lint in clippy_lints::declared_lints::LINTS {
-                    if sess
-                        .opts
-                        .lint_opts
-                        .iter()
-                        .any(|e| e.0.strip_prefix("clippy::").unwrap_or(&e.0) == lint.name_lower())
-                    {
+                    if sess.opts.lint_opts.iter().any(|e| {
+                        let x = e.0.strip_prefix("clippy::").unwrap_or(&e.0);
+                        x == lint.name_lower()
+                            || [
+                                "pedantic",
+                                "suspicious",
+                                "complexity",
+                                "all",
+                                "restriction",
+                                "style",
+                                "correctness",
+                                "nursery",
+                                "nursery",
+                                "cargo",
+                            ]
+                            .contains(&x)
+                    }) {
                         tracing::warn!("PUSH LINT: {}", lint.name_lower());
                         lint_list.push(*lint);
                         super_lint_lists.push(lint.lint);
