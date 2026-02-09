@@ -13,8 +13,8 @@ use rustc_hir::{self as hir, AmbigArg, HirId, intravisit as hir_visit};
 use rustc_middle::hir::nested_filter;
 use rustc_middle::ty::{self, TyCtxt};
 use rustc_session::Session;
-use rustc_session::lint::LintPass;
 use rustc_session::lint::builtin::HardwiredLints;
+use rustc_session::lint::{Level, LintPass};
 use rustc_span::Span;
 use tracing::debug;
 
@@ -434,12 +434,9 @@ fn late_lint_crate<'tcx>(tcx: TyCtxt<'tcx>) {
             if !lint_store.from_clippy {
                 let x = lints.iter().any(|lint| {
                     lint.name_lower().starts_with("clippy")
-                        && tcx
-                            .sess
-                            .opts
-                            .lint_opts
-                            .iter()
-                            .any(|(lint_name, _)| lint.name_lower() == *lint_name)
+                        && tcx.sess.opts.lint_opts.iter().any(|(lint_name, level)| {
+                            lint.name_lower() == *lint_name && !matches!(level, Level::Allow)
+                        })
                 });
                 return x;
             }
