@@ -338,6 +338,8 @@ impl ToStableHashKey<StableHashingContext<'_>> for MonoItem<'_> {
 pub struct MonoItemPartitions<'tcx> {
     pub codegen_units: &'tcx [CodegenUnit<'tcx>],
     pub all_mono_items: &'tcx DefIdSet,
+    // MonoItemPartitions before reaching a codegen-producing stage is not complete, therefore cannot be used
+    pub is_complete: bool,
 }
 
 #[derive(Debug, HashStable)]

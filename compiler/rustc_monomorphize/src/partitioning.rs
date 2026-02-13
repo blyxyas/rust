@@ -1134,6 +1134,14 @@ fn collect_and_partition_mono_items(tcx: TyCtxt<'_>, (): ()) -> MonoItemPartitio
         )
     });
 
+    if !tcx.sess.opts.output_types.should_codegen() {
+        return MonoItemPartitions {
+            codegen_units,
+            all_mono_items: tcx.arena.alloc(UnordSet::new()),
+            is_complete: true,
+        };
+    }
+
     if tcx.prof.enabled() {
         // Record CGU size estimates for self-profiling.
         for cgu in codegen_units {
@@ -1211,7 +1219,11 @@ fn collect_and_partition_mono_items(tcx: TyCtxt<'_>, (): ()) -> MonoItemPartitio
         }
     }
 
-    MonoItemPartitions { all_mono_items: tcx.arena.alloc(mono_items), codegen_units }
+    MonoItemPartitions {
+        all_mono_items: tcx.arena.alloc(mono_items),
+        codegen_units,
+        is_complete: false,
+    }
 }
 
 /// Outputs stats about instantiation counts and estimated size, per `MonoItem`'s
