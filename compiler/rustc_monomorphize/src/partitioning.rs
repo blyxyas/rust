@@ -1110,6 +1110,7 @@ where
 }
 
 fn collect_and_partition_mono_items(tcx: TyCtxt<'_>, (): ()) -> MonoItemPartitions<'_> {
+    let x = tcx.prof.generic_activity("collect_and_partition_mono_items");
     let collection_strategy = if tcx.sess.link_dead_code() {
         MonoItemCollectionStrategy::Eager
     } else {
@@ -1219,6 +1220,7 @@ fn collect_and_partition_mono_items(tcx: TyCtxt<'_>, (): ()) -> MonoItemPartitio
         }
     }
 
+    drop(x);
     MonoItemPartitions {
         all_mono_items: tcx.arena.alloc(mono_items),
         codegen_units,

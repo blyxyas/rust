@@ -227,6 +227,10 @@ fn exported_generic_symbols_provider_local<'tcx>(
         // external linkage is enough for monomorphization to be linked to.
         let need_visibility = tcx.sess.target.dynamic_linking && !tcx.sess.target.only_cdylib;
 
+        if tcx.sess.opts.output_types.should_codegen() {
+            return &[];
+        }
+
         let cgus = tcx.collect_and_partition_mono_items(()).codegen_units;
 
         // Do not export symbols that cannot be instantiated by downstream crates.
