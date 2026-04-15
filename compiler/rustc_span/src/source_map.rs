@@ -525,7 +525,6 @@ impl SourceMap {
     }
 
     pub fn span_to_lines(&self, sp: Span) -> FileLinesResult {
-        debug!("span_to_lines(sp={:?})", sp);
         let (lo, hi) = self.is_valid_span(sp)?;
         assert!(hi.line >= lo.line);
 
@@ -548,8 +547,13 @@ impl SourceMap {
         // asserting that the line numbers here are all indeed 1-based.
         let hi_line = hi.line.saturating_sub(1);
         for line_index in lo.line.saturating_sub(1)..hi_line {
-            let line_len = lo.file.get_line(line_index).map_or(0, |s| s.chars().count());
-            lines.push(LineInfo { line_index, start_col, end_col: CharPos::from_usize(line_len) });
+            let line_len = lo.file.get_line_length(line_index);
+            debug_assert!(line_len.is_some());
+            lines.push(LineInfo {
+                line_index,
+                start_col,
+                end_col: CharPos::from_usize(line_len.unwrap_or(0)),
+            });
             start_col = CharPos::from_usize(0);
         }
 
