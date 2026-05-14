@@ -547,13 +547,8 @@ impl SourceMap {
         // asserting that the line numbers here are all indeed 1-based.
         let hi_line = hi.line.saturating_sub(1);
         for line_index in lo.line.saturating_sub(1)..hi_line {
-            let line_len = lo.file.get_line_length(line_index);
-            debug_assert!(line_len.is_some());
-            lines.push(LineInfo {
-                line_index,
-                start_col,
-                end_col: CharPos::from_usize(line_len.unwrap_or(0)),
-            });
+            let line_len = lo.file.get_line_length(line_index).unwrap_or(0);
+            lines.push(LineInfo { line_index, start_col, end_col: CharPos::from_usize(line_len) });
             start_col = CharPos::from_usize(0);
         }
 

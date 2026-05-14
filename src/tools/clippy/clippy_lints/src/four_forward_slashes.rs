@@ -54,6 +54,7 @@ impl<'tcx> LateLintPass<'tcx> for FourForwardSlashes {
             return;
         };
         let mut bad_comments = vec![];
+
         for line in (0..end_line.saturating_sub(1)).rev() {
             let Some(contents) = file.get_line(line).map(|c| c.trim().to_owned()) else {
                 return;

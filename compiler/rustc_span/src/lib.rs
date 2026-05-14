@@ -75,7 +75,6 @@ use std::hash::Hash;
 use std::io::{self, Read};
 use std::ops::{Add, Range, Sub};
 use std::path::{Path, PathBuf};
-use std::slice::SliceIndex;
 use std::str::FromStr;
 use std::sync::Arc;
 use std::{fmt, iter};
@@ -2296,24 +2295,29 @@ impl SourceFile {
 
     /// Gets a line from the list of pre-computed line-beginnings.
     /// The line number here is 0-based.
-    pub fn get_lines<I>(&self, line_number: I) -> Option<Cow<'_, str>>
-    where
-        I: SliceIndex<[RelativeBytePos], Output = [RelativeBytePos]> + std::fmt::Debug,
-    {
-        fn get_until_newline(src: &str, _begin: usize, _end: usize) -> &str {
+    pub fn get_lines(&self, start_line: usize, end_line: usize) -> Option<Cow<'_, str>> {
+        fn get_until_newline(src: &str, begin: usize, end: usize) -> &str {
             // We can't use `lines.get(line_number+1)` because we might
             // be parsing when we call this function and thus the current
             // line is the last one we have line info for.
-            let slice = &src[_begin..];
+            let slice = &src[end..];
             match slice.find('\n') {
-                Some(e) => &slice[..e],
-                None => slice,
+                Some(e) => &src[begin..end + e],
+                None => &src[begin..],
             }
         }
 
-        let lines = self.lines().get(line_number)?;
-        let begin = { lines.first()?.to_usize() };
-        let end = { lines.last()?.to_usize() };
+        let begin = {
+            let line_start = self.lines().get(start_line).copied()?;
+            line_start.to_usize()
+        };
+
+        let end = if start_line != end_line {
+            let line_end = self.lines().get(end_line).copied()?;
+            line_end.to_usize()
+        } else {
+            begin
+        };
 
         if let Some(ref src) = self.src {
             Some(Cow::from(get_until_newline(src, begin, end)))
@@ -2327,22 +2331,20 @@ impl SourceFile {
 
     #[inline]
     pub fn get_line(&self, line_number: usize) -> Option<Cow<'_, str>> {
-        self.get_lines(line_number..=line_number)
+        self.get_lines(line_number, line_number)
     }
 
     pub fn get_line_length(&self, line_number: usize) -> Option<usize> {
         if self.src.is_some() {
             let lines = self.lines();
-            if let [_, next_line, ..] = lines[line_number..] {
-                return Some(next_line.0 as usize);
+            if let [current_line, _next_line, ..] = lines[line_number..] {
+                return Some((_next_line.0 - current_line.0 - 1) as usize);
             }
 
             return Some((lines.get(line_number + 1)?.0 - lines.get(line_number)?.0) as usize);
         }
 
-        let ext_src = self.external_src.borrow();
-        let mut lines = ext_src.get_source().unwrap().lines();
-        return Some(lines.nth(line_number)?.len());
+        return None;
     }
 
     pub fn is_real_file(&self) -> bool {
