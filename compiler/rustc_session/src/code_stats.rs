@@ -70,7 +70,7 @@ pub struct TypeSizeInfo {
     pub variants: Vec<VariantInfo>,
 }
 
-#[derive(Default)]
+#[derive(Default, Clone)]
 pub struct CodeStats {
     /// The hash set that actually holds all the type size information.
     /// The field is public for use in external tools. See #139876.

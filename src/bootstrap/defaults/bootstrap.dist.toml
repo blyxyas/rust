@@ -10,7 +10,7 @@ extended = true
 
 # Most users installing from source want to build all parts of the project from source.
 [llvm]
-download-ci-llvm = false
+download-ci-llvm = true
 
 # Most users installing from source want to build all parts of the project from source.
 [gcc]
