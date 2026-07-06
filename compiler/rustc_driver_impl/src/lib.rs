@@ -595,22 +595,29 @@ fn process_rlink(sess: &Session, compiler: &interface::Compiler) {
 }
 
 fn list_metadata(sess: &Session, metadata_loader: &dyn MetadataLoader) {
-    match sess.io.input {
-        Input::File(ref path) => {
-            let mut v = Vec::new();
-            locator::list_file_metadata(
-                &sess.target,
-                path,
-                metadata_loader,
-                &mut v,
-                &sess.opts.unstable_opts.ls,
-                sess.cfg_version,
-            )
-            .unwrap();
-            safe_println!("{}", String::from_utf8(v).unwrap());
-        }
-        Input::Str { .. } => {
-            sess.dcx().fatal("cannot list metadata for stdin");
+    for searchpath in
+        sess.host_filesearch().cli_search_paths(rustc_session::search_paths::PathKind::Dependency)
+    {
+        for queried_path in searchpath.files.query("", ".rmeta").unwrap_or_else(|| sess.dcx().fatal("could not find any metadata (.rmeta) files, try running the compiler normally before listing metadata")).map(|e| e.0) {
+            safe_println!("Showing metadata for {}", queried_path);
+            match sess.io.input {
+                Input::File(_) => {
+                    let mut v = Vec::new();
+                    locator::list_file_metadata(
+                        &sess.target,
+                        &searchpath.dir.join(format!("{queried_path}.rmeta")),
+                        metadata_loader,
+                        &mut v,
+                        &sess.opts.unstable_opts.ls,
+                        sess.cfg_version,
+                    )
+                    .unwrap();
+                    safe_println!("{}", String::from_utf8(v).unwrap());
+                }
+                Input::Str { .. } => {
+                    sess.dcx().fatal("cannot list metadata for stdin");
+                }
+            }
         }
     }
 }
