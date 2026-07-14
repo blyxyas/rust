@@ -92,11 +92,11 @@ pub(crate) type DeniedPartialMitigations = Vec<DeniedPartialMitigation>;
 
 pub(crate) struct CrateMetadata {
     /// The primary crate data - binary metadata blob.
-    blob: MetadataBlob,
+    pub blob: MetadataBlob,
 
     // --- Some data pre-decoded from the metadata blob, usually for performance ---
     /// Data about the top-level items in a crate, as well as various crate-level metadata.
-    root: CrateRoot,
+    pub root: CrateRoot,
     /// Trait impl data.
     /// FIXME: Used only from queries and can use query cache,
     /// so pre-decoding can probably be avoided.
@@ -166,7 +166,7 @@ struct ImportedSourceFile {
 /// Decode context used when we just have a blob of metadata from which we have to decode a header
 /// and [`CrateRoot`]. After that, [`MetadataDecodeContext`] can be used.
 /// Most notably, [`BlobDecodeContext]` doesn't implement [`SpanDecoder`]
-pub(super) struct BlobDecodeContext<'a> {
+pub struct BlobDecodeContext<'a> {
     opaque: MemDecoder<'a>,
     blob: &'a MetadataBlob,
     lazy_state: LazyState,
@@ -225,7 +225,7 @@ impl<'a> LazyDecoder for BlobDecodeContext<'a> {
 /// Decoding of some types, like `Span` require some information to already been read.
 /// Can be constructed from a [`TyCtxt`] and [`CrateMetadata`] (see impls of the [`MetaDecoder`]
 /// trait).
-pub(super) struct MetadataDecodeContext<'a, 'tcx> {
+pub struct MetadataDecodeContext<'a, 'tcx> {
     blob_decoder: BlobDecodeContext<'a>,
     cdata: &'a CrateMetadata,
     tcx: TyCtxt<'tcx>,
@@ -262,7 +262,7 @@ pub(super) trait MetaBlob<'a>: Copy {
     fn blob(&self) -> &'a MetadataBlob;
 }
 
-pub(super) trait MetaDecoder: Copy {
+pub trait MetaDecoder: Copy {
     type Context: BlobDecoder + LazyDecoder;
 
     fn decoder(self, pos: usize) -> Self::Context;
@@ -299,6 +299,18 @@ impl<'a> MetaBlob<'a> for &'a CrateMetadata {
     }
 }
 
+// impl<'a, 'tcx> MetaDecoder for &'a CrateMetadata {
+//     type Context = BlobDecodeContext<'a, 'tcx>;
+
+//     fn decoder(self, pos: usize) -> MetadataDecodeContext<'a, 'tcx> {
+//         MetadataDecodeContext {
+//             blob_decoder: self.0.blob().decoder(pos),
+//             cdata: self.0,
+//             alloc_decoding_session: self.0.alloc_decoding_state.new_decoding_session(),
+//         }
+//     }
+// }
+
 impl<'a, 'tcx> MetaDecoder for (&'a CrateMetadata, TyCtxt<'tcx>) {
     type Context = MetadataDecodeContext<'a, 'tcx>;
 
@@ -314,7 +326,7 @@ impl<'a, 'tcx> MetaDecoder for (&'a CrateMetadata, TyCtxt<'tcx>) {
 
 impl<T: ParameterizedOverTcx> LazyValue<T> {
     #[inline]
-    fn decode<'tcx, M: MetaDecoder>(self, metadata: M) -> T::Value<'tcx>
+    pub fn decode<'tcx, M: MetaDecoder>(self, metadata: M) -> T::Value<'tcx>
     where
         T::Value<'tcx>: Decodable<M::Context>,
     {
@@ -324,7 +336,7 @@ impl<T: ParameterizedOverTcx> LazyValue<T> {
     }
 }
 
-struct DecodeIterator<T, D> {
+pub struct DecodeIterator<T, D> {
     elem_counter: std::ops::Range<usize>,
     dcx: D,
     _phantom: PhantomData<fn() -> T>,
@@ -354,7 +366,10 @@ unsafe impl<D: Decoder, T: Decodable<D>> TrustedLen for DecodeIterator<T, D> {}
 
 impl<T: ParameterizedOverTcx> LazyArray<T> {
     #[inline]
-    fn decode<'tcx, M: MetaDecoder>(self, metadata: M) -> DecodeIterator<T::Value<'tcx>, M::Context>
+    pub fn decode<'tcx, M: MetaDecoder>(
+        self,
+        metadata: M,
+    ) -> DecodeIterator<T::Value<'tcx>, M::Context>
     where
         T::Value<'tcx>: Decodable<M::Context>,
     {

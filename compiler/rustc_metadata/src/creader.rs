@@ -3,7 +3,8 @@
 use std::collections::BTreeMap;
 use std::path::Path;
 use std::str::FromStr;
-use std::{cmp, env, iter};
+use std::time::Instant;
+use std::{cmp, env, io, iter};
 
 use rustc_ast::expand::allocator::{ALLOC_ERROR_HANDLER, AllocatorKind, global_fn_name};
 use rustc_ast::{self as ast, *};
@@ -14,10 +15,13 @@ use rustc_data_structures::sync::{self, FreezeReadGuard, FreezeWriteGuard};
 use rustc_data_structures::unord::UnordMap;
 use rustc_expand::base::SyntaxExtension;
 use rustc_hir as hir;
-use rustc_hir::def_id::{CrateNum, LOCAL_CRATE, LocalDefId, StableCrateId};
-use rustc_hir::definitions::Definitions;
+use rustc_hir::def_id::{
+    CRATE_DEF_INDEX, CrateNum, DefIndex, LOCAL_CRATE, LocalDefId, StableCrateId,
+};
+use rustc_hir::definitions::{DefPath, Definitions};
 use rustc_index::IndexVec;
 use rustc_middle::bug;
+use rustc_middle::metadata::Reexport;
 use rustc_middle::ty::data_structures::IndexSet;
 use rustc_middle::ty::{TyCtxt, TyCtxtFeed};
 use rustc_proc_macro::bridge::client::Client as ProcMacroClient;
@@ -32,7 +36,7 @@ use rustc_session::search_paths::PathKind;
 use rustc_session::{Session, lint};
 use rustc_span::def_id::DefId;
 use rustc_span::edition::Edition;
-use rustc_span::{DUMMY_SP, Ident, Span, Symbol, sym};
+use rustc_span::{DUMMY_SP, Ident, Span, Symbol, kw, sym};
 use rustc_target::spec::{PanicStrategy, Target};
 use tracing::{debug, info, trace};
 
@@ -839,7 +843,7 @@ impl CStore {
             }
         };
 
-        match result {
+        let result = match result {
             (LoadResult::Previous(cnum), None) => {
                 info!("library for `{}` was loaded previously, cnum {cnum}", name);
                 // When `private_dep` is none, it indicates the directly dependent crate. If it is
@@ -860,7 +864,83 @@ impl CStore {
                 self.register_crate(tcx, host_library, origin, library, dep_kind, name, private_dep)
             }
             _ => panic!(),
+        };
+
+        fn print_item(
+            tcx: TyCtxt<'_>,
+            crate_data: &CrateMetadata,
+            root: &CrateRoot,
+            item: DefIndex,
+        ) -> io::Result<()> {
+            let root = &crate_data.root;
+
+            let def_kind = root.tables.def_kind.get(&crate_data.blob, item).unwrap();
+            let def_key =
+                root.tables.def_keys.get(&crate_data.blob, item).unwrap().decode(&crate_data.blob);
+            #[allow(rustc::symbol_intern_string_literal)]
+            let def_name = if item == CRATE_DEF_INDEX {
+                kw::Crate
+            } else {
+                def_key
+                    .disambiguated_data
+                    .data
+                    .get_opt_name()
+                    .unwrap_or_else(|| Symbol::intern("???"))
+            };
+            let visibility = root
+                .tables
+                .visibility
+                .get(&crate_data.blob, item)
+                .unwrap()
+                .decode(&crate_data.blob)
+                .map_id(|index| {
+                    format!(
+                        "crate{}",
+                        DefPath::make(LOCAL_CRATE, index, |parent| root
+                            .tables
+                            .def_keys
+                            .get(&crate_data.blob, parent)
+                            .unwrap()
+                            .decode((crate_data, tcx)))
+                        .to_string_no_crate_verbose()
+                    )
+                });
+
+            info!("{:#?} - {:#?}", crate_data.name(), Instant::now());
+            if let Some(children) =
+                root.tables.module_children_non_reexports.get(&crate_data.blob, item)
+            {
+                for child in children.decode(crate_data) {
+                    print_item(tcx, crate_data, &root, child);
+                }
+            }
+
+            if let children = root.tables.module_children_reexports.get(&crate_data.blob, item) {
+                if children.len() != 0 {
+                    for child in children.decode(&crate_data.blob) {
+                        info!("ONE");
+                        break;
+                        if child
+                            .reexport_chain
+                            .iter()
+                            .any(|reexport| matches!(reexport, Reexport::Glob(_)))
+                        {
+                            break;
+                        }
+                        dbg!(child.ident);
+                    }
+                }
+            }
+
+            Ok(())
         }
+
+        if let Ok(result) = result {
+            let crate_data = self.get_crate_data(result);
+            print_item(tcx, &crate_data, &crate_data.root, CRATE_DEF_INDEX);
+        }
+
+        result
     }
 
     fn load(
