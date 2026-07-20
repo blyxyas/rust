@@ -749,6 +749,11 @@ impl<'tcx> Body<'tcx> {
     }
 }
 
+#[derive(Clone, TyEncodable, TyDecodable, Debug, StableHash, TypeFoldable, TypeVisitable)]
+pub struct StrippedBody<'tcx> {
+    pub basic_blocks: BasicBlocks<'tcx>,
+}
+
 impl<'tcx> Index<BasicBlock> for Body<'tcx> {
     type Output = BasicBlockData<'tcx>;
 
