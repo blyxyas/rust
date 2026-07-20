@@ -1675,6 +1675,8 @@ impl<'a, 'tcx> EncodeContext<'a, 'tcx> {
             let module_children = tcx.module_children_local(local_def_id);
             record_array!(self.tables.module_children_non_reexports[def_id] <-
                 module_children.iter().map(|child| child.res.def_id().index));
+            record_array!(self.tables.module_children_non_reexports2[def_id] <-
+                module_children.iter().map(|child| child.res.def_id().index));
         } else {
             // For non-enum, there is only one variant, and its def_id is the adt's.
             debug_assert_eq!(adt_def.variants().len(), 1);
