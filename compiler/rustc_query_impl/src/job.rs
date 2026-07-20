@@ -484,6 +484,7 @@ pub(crate) fn create_cycle_error<'tcx>(
             note_span: (),
         })
     } else {
+        panic!();
         tcx.sess.dcx().create_err(crate::error::Cycle {
             span,
             cycle_stack,

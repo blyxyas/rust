@@ -921,13 +921,18 @@ impl<'tcx> Debug for TerminatorKind<'tcx> {
     fn fmt(&self, fmt: &mut Formatter<'_>) -> fmt::Result {
         self.fmt_head(fmt)?;
         let successor_count = self.successors().count();
+        dbg!();
         let labels = self.fmt_successor_labels();
+        dbg!();
         assert_eq!(successor_count, labels.len());
 
         // `Cleanup` is already included in successors
+        dbg!();
         let show_unwind = !matches!(self.unwind(), None | Some(UnwindAction::Cleanup(_)));
+        dbg!();
         let fmt_unwind = |fmt: &mut Formatter<'_>| -> fmt::Result {
             write!(fmt, "unwind ")?;
+            dbg!();
             match self.unwind() {
                 // Not needed or included in successors
                 None | Some(UnwindAction::Cleanup(_)) => unreachable!(),
@@ -938,16 +943,17 @@ impl<'tcx> Debug for TerminatorKind<'tcx> {
                 }
             }
         };
+        dbg!();
 
         match (successor_count, show_unwind) {
-            (0, false) => Ok(()),
+            (0, false) => dbg!(Ok(())),
             (0, true) => {
                 write!(fmt, " -> ")?;
-                fmt_unwind(fmt)
+                dbg!(fmt_unwind(fmt))
             }
-            (1, false) => write!(fmt, " -> {:?}", self.successors().next().unwrap()),
+            (1, false) => dbg!(write!(fmt, " -> {:?}", self.successors().next().unwrap())),
             _ => {
-                write!(fmt, " -> [")?;
+                dbg!(write!(fmt, " -> [")?);
                 for (i, target) in self.successors().enumerate() {
                     if i > 0 {
                         write!(fmt, ", ")?;
@@ -958,6 +964,7 @@ impl<'tcx> Debug for TerminatorKind<'tcx> {
                     write!(fmt, ", ")?;
                     fmt_unwind(fmt)?;
                 }
+                dbg!();
                 write!(fmt, "]")
             }
         }
@@ -976,26 +983,33 @@ impl<'tcx> TerminatorKind<'tcx> {
     pub fn fmt_head<W: fmt::Write>(&self, fmt: &mut W) -> fmt::Result {
         use self::TerminatorKind::*;
         match self {
-            Goto { .. } => write!(fmt, "goto"),
-            SwitchInt { discr, .. } => write!(fmt, "switchInt({discr:?})"),
-            Return => write!(fmt, "return"),
-            CoroutineDrop => write!(fmt, "coroutine_drop"),
-            UnwindResume => write!(fmt, "resume"),
+            Goto { .. } => dbg!(write!(fmt, "goto")),
+            SwitchInt { discr, .. } => dbg!(write!(fmt, "switchInt({discr:?})")),
+            Return => dbg!(write!(fmt, "return")),
+            CoroutineDrop => dbg!(write!(fmt, "coroutine_drop")),
+            UnwindResume => dbg!(write!(fmt, "resume")),
             UnwindTerminate(reason) => {
-                write!(fmt, "terminate({})", reason.as_short_str())
+                dbg!(write!(fmt, "terminate({})", reason.as_short_str()))
             }
-            Yield { value, resume_arg, .. } => write!(fmt, "{resume_arg:?} = yield({value:?})"),
-            Unreachable => write!(fmt, "unreachable"),
-            Drop { place, .. } => write!(fmt, "drop({place:?})"),
+            Yield { value, resume_arg, .. } => {
+                dbg!(write!(fmt, "{resume_arg:?} = yield({value:?})"))
+            }
+            Unreachable => dbg!(write!(fmt, "unreachable")),
+            Drop { place, .. } => dbg!(write!(fmt, "drop({place:?})")),
             Call { func, args, destination, .. } => {
                 write!(fmt, "{destination:?} = ")?;
+
                 write!(fmt, "{func:?}(")?;
                 for (index, arg) in args.iter().enumerate() {
+                    dbg!();
                     if index > 0 {
+                        dbg!();
                         write!(fmt, ", ")?;
                     }
+                    dbg!();
                     write!(fmt, "{:?}", arg.node)?;
                 }
+                dbg!();
                 write!(fmt, ")")
             }
             TailCall { func, args, .. } => {

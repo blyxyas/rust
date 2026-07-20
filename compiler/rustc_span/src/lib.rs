@@ -74,12 +74,14 @@ use std::borrow::Cow;
 use std::cmp::{self, Ordering};
 use std::fmt::Display;
 use std::hash::Hash;
+use std::intrinsics::caller_location;
 use std::io::{self, Read};
 use std::ops::{Add, Range, Sub};
+use std::panic::Location;
 use std::path::{Path, PathBuf};
 use std::str::FromStr;
 use std::sync::Arc;
-use std::{fmt, iter};
+use std::{backtrace, fmt, iter};
 
 use md5::{Digest, Md5};
 use rustc_data_structures::stable_hash::{StableHash, StableHasher};

@@ -18,7 +18,7 @@ use rustc_hir::find_attr;
 use rustc_hir_pretty::id_to_string;
 use rustc_middle::dep_graph::WorkProductId;
 use rustc_middle::middle::dependency_format::Linkage;
-use rustc_middle::mir::interpret;
+use rustc_middle::mir::{StrippedBody, interpret};
 use rustc_middle::query::Providers;
 use rustc_middle::traits::specialization_graph;
 use rustc_middle::ty::AssocContainer;
@@ -1523,6 +1523,7 @@ impl<'a, 'tcx> EncodeContext<'a, 'tcx> {
                 let module_children = self.tcx.module_children_local(local_id);
                 record_array!(self.tables.module_children_non_reexports[def_id] <-
                     module_children.iter().map(|child| child.res.def_id().index));
+                record_array!(self.tables.module_children_reexports2[def_id] <- module_children);
                 if self.tcx.is_const_trait(def_id) {
                     record_defaulted_array!(self.tables.explicit_implied_const_bounds[def_id]
                         <- self.tcx.explicit_implied_const_bounds(def_id).skip_binder());
@@ -1675,8 +1676,9 @@ impl<'a, 'tcx> EncodeContext<'a, 'tcx> {
             let module_children = tcx.module_children_local(local_def_id);
             record_array!(self.tables.module_children_non_reexports[def_id] <-
                 module_children.iter().map(|child| child.res.def_id().index));
-            record_array!(self.tables.module_children_non_reexports2[def_id] <-
-                module_children.iter().map(|child| child.res.def_id().index));
+            record_array!(self.tables.module_children_reexports2[def_id] <- module_children);
+            // record_array!(self.tables.module_children_non_reexports2[def_id] <-
+            //     module_children.iter().map(|child| child.res.def_id().index));
         } else {
             // For non-enum, there is only one variant, and its def_id is the adt's.
             debug_assert_eq!(adt_def.variants().len(), 1);
@@ -1737,6 +1739,10 @@ impl<'a, 'tcx> EncodeContext<'a, 'tcx> {
             record_array!(self.tables.module_children_non_reexports[def_id] <-
                 module_children.iter().filter(|child| child.reexport_chain.is_empty())
                     .map(|child| child.res.def_id().index));
+            record_array!(self.tables.module_children_reexports2[def_id] <- module_children);
+            // record_array!(self.tables.module_children_non_reexports2[def_id] <-
+            //     module_children.iter().filter(|child| child.reexport_chain.is_empty())
+            //         .map(|child| child.res.def_id().index));
 
             record_defaulted_array!(self.tables.module_children_reexports[def_id] <-
                 module_children.iter().filter(|child| !child.reexport_chain.is_empty()));
@@ -1821,7 +1827,11 @@ impl<'a, 'tcx> EncodeContext<'a, 'tcx> {
 
             debug!("EntryBuilder::encode_mir({:?})", def_id);
             if encode_opt {
-                record!(self.tables.optimized_mir[def_id.to_def_id()] <- tcx.optimized_mir(def_id));
+                let optimized_mir = tcx.optimized_mir(def_id);
+                record!(self.tables.optimized_mir[def_id.to_def_id()] <- optimized_mir);
+                // let stripped_body =
+                //     StrippedBody { basic_blocks: optimized_mir.basic_blocks.clone() };
+                record!(self.tables.stripped_mir[def_id.to_def_id()] <- optimized_mir.basic_blocks.len());
                 self.tables
                     .cross_crate_inlinable
                     .set(def_id.to_def_id().index, self.tcx.cross_crate_inlinable(def_id));

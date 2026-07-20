@@ -2,6 +2,7 @@
 
 use std::iter::TrustedLen;
 use std::ops::{Deref, DerefMut};
+use std::panic::Location;
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, OnceLock};
 use std::{io, mem};
@@ -326,13 +327,16 @@ impl<'a, 'tcx> MetaDecoder for (&'a CrateMetadata, TyCtxt<'tcx>) {
 
 impl<T: ParameterizedOverTcx> LazyValue<T> {
     #[inline]
+    #[track_caller]
     pub fn decode<'tcx, M: MetaDecoder>(self, metadata: M) -> T::Value<'tcx>
     where
         T::Value<'tcx>: Decodable<M::Context>,
     {
         let mut dcx = metadata.decoder(self.position.get());
         dcx.set_lazy_state(LazyState::NodeStart(self.position));
-        T::Value::decode(&mut dcx)
+        let x = T::Value::decode(&mut dcx);
+        // dbg!(Location::caller());
+        x
     }
 }
 
@@ -484,20 +488,27 @@ impl<'a, 'tcx> SpanDecoder for MetadataDecodeContext<'a, 'tcx> {
         DefId { krate: Decodable::decode(self), index: Decodable::decode(self) }
     }
 
+    #[track_caller]
     fn decode_syntax_context(&mut self) -> SyntaxContext {
+        // dbg!("Decoding syntax context");
         let cdata = self.cdata;
         let tcx = self.tcx;
 
         let cname = cdata.root.name();
-        rustc_span::hygiene::decode_syntax_context(self, &cdata.hygiene_context, |_, id| {
-            debug!("SpecializedDecoder<SyntaxContext>: decoding {}", id);
-            cdata
-                .root
-                .syntax_contexts
-                .get(cdata, id)
-                .unwrap_or_else(|| panic!("Missing SyntaxContext {id:?} for crate {cname:?}"))
-                .decode((cdata, tcx))
-        })
+        // dbg!("INside decode context");
+        let x =
+            rustc_span::hygiene::decode_syntax_context(self, &cdata.hygiene_context, |_, id| {
+                debug!("SpecializedDecoder<SyntaxContext>: decoding {}", id);
+                cdata
+                    .root
+                    .syntax_contexts
+                    .get(cdata, id)
+                    .unwrap_or_else(|| panic!("Missing SyntaxContext {id:?} for crate {cname:?}"))
+                    .decode((cdata, tcx))
+            });
+        // dbg!("INside decode context");
+
+        x
     }
 
     fn decode_expn_id(&mut self) -> ExpnId {
@@ -524,6 +535,7 @@ impl<'a, 'tcx> SpanDecoder for MetadataDecodeContext<'a, 'tcx> {
         expn_id
     }
 
+    #[track_caller]
     fn decode_span(&mut self) -> Span {
         let start = self.position();
         let tag = SpanTag(self.peek_byte());
@@ -542,6 +554,7 @@ impl<'a, 'tcx> SpanDecoder for MetadataDecodeContext<'a, 'tcx> {
             };
             self.with_position(position, SpanData::decode)
         } else {
+            // dbg!(Location::caller());
             SpanData::decode(self)
         };
         data.span()
@@ -583,8 +596,12 @@ impl<'a> BlobDecoder for BlobDecodeContext<'a> {
 }
 
 impl<'a, 'tcx> Decodable<MetadataDecodeContext<'a, 'tcx>> for SpanData {
+    #[track_caller]
     fn decode(decoder: &mut MetadataDecodeContext<'a, 'tcx>) -> SpanData {
         let tag = SpanTag::decode(decoder);
+        if tag.context().is_none() {
+            // dbg!(Location::caller());
+        }
         let ctxt = tag.context().unwrap_or_else(|| SyntaxContext::decode(decoder));
 
         if tag.kind() == SpanKind::Partial {

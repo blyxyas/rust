@@ -18,8 +18,9 @@ use rustc_span::hygiene::{
     ExpnId, HygieneDecodeContext, HygieneEncodeContext, SyntaxContext, SyntaxContextKey,
 };
 use rustc_span::{
-    BlobDecoder, BytePos, ByteSymbol, CachingSourceMapView, ExpnData, ExpnHash, RelativeBytePos,
-    SourceFile, Span, SpanDecoder, SpanEncoder, Spanned, StableSourceFileId, Symbol,
+    BlobDecoder, BytePos, ByteSymbol, CachingSourceMapView, DUMMY_SP, ExpnData, ExpnHash,
+    RelativeBytePos, SourceFile, Span, SpanDecoder, SpanEncoder, Spanned, StableSourceFileId,
+    Symbol,
 };
 
 use crate::dep_graph::{DepNodeIndex, QuerySideEffect, SerializedDepNodeIndex};

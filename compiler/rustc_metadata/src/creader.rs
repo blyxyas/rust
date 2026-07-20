@@ -910,27 +910,64 @@ impl CStore {
             if let Some(children) =
                 root.tables.module_children_non_reexports.get(&crate_data.blob, item)
             {
-                for child in children.decode(crate_data) {
+                for child in children.decode((crate_data, tcx)) {
                     print_item(tcx, crate_data, &root, child);
                 }
             }
 
-            if let children = root.tables.module_children_reexports.get(&crate_data.blob, item) {
-                if children.len() != 0 {
-                    for child in children.decode(&crate_data.blob) {
-                        info!("ONE");
-                        break;
-                        if child
-                            .reexport_chain
-                            .iter()
-                            .any(|reexport| matches!(reexport, Reexport::Glob(_)))
-                        {
-                            break;
+            if let Some(children) =
+                root.tables.module_children_reexports2.get(&crate_data.blob, item)
+            {
+                for child in children.decode((crate_data, tcx)) {
+                    eprintln!("{} :: {}", child.ident, child.res.descr());
+
+                    if !child.reexport_chain.is_empty() {
+                        for reexport in child.reexport_chain {
+                            match reexport {
+                                Reexport::Single(_) => {
+                                    dbg!("Single");
+                                }
+                                Reexport::Glob(_) => {
+                                    dbg!("Glob");
+                                }
+                                Reexport::ExternCrate(_) => {
+                                    dbg!("ExternCrate");
+                                }
+                                Reexport::MacroUse => {
+                                    dbg!("MacroUse");
+                                }
+                                Reexport::MacroExport => {
+                                    dbg!("MacroExport");
+                                }
+                            };
                         }
-                        dbg!(child.ident);
+                        // panic!();
                     }
                 }
             }
+
+            // if let Some(mir_bodies) = root.tables.optimized_mir.get(&crate_data.blob, item) {
+            //     let mir_body = mir_bodies.decode((crate_data, tcx));
+            // };
+
+            // if let children = root.tables.module_children_reexports.get(&crate_data.blob, item) {
+
+            // if children.len() != 0 {
+
+            // for child in children.decode(&crate_data.blob) {
+            //     info!("ONE");
+            //     break;
+            //     if child
+            //         .reexport_chain
+            //         .iter()
+            //         .any(|reexport| matches!(reexport, Reexport::Glob(_)))
+            //     {
+            //         break;
+            //     }
+            //     dbg!(child.ident);
+            // }
+            // }
+            // }
 
             Ok(())
         }

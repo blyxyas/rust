@@ -422,7 +422,9 @@ define_tables! {
     attributes: Table<DefIndex, LazyArray<hir::Attribute>>,
     // For non-reexported names in a module every name is associated with a separate `DefId`,
     // so we can take their names, visibilities etc from other encoded tables.
-    module_children_non_reexports: Table<DefIndex, LazyArray<DefIndex>>,
+    module_children_non_reexports: Table<DefIndex
+    , LazyArray<DefIndex>>,
+    module_children_reexports2: Table<DefIndex, LazyArray<ModChild>>,
     associated_item_or_field_def_ids: Table<DefIndex, LazyArray<DefIndex>>,
     def_kind: Table<DefIndex, DefKind>,
     visibility: Table<DefIndex, LazyValue<ty::Visibility<DefIndex>>>,
@@ -442,6 +444,7 @@ define_tables! {
     const_param_default: Table<DefIndex, LazyValue<ty::EarlyBinder<'static, rustc_middle::ty::Const<'static>>>>,
     object_lifetime_default: Table<DefIndex, LazyValue<ObjectLifetimeDefault>>,
     optimized_mir: Table<DefIndex, LazyValue<mir::Body<'static>>>,
+    stripped_mir: Table<DefIndex, LazyValue<usize>>,
     mir_for_ctfe: Table<DefIndex, LazyValue<mir::Body<'static>>>,
     trivial_const: Table<DefIndex, LazyValue<(ConstValue, Ty<'static>)>>,
     closure_saved_names_of_captured_variables: Table<DefIndex, LazyValue<IndexVec<FieldIdx, Symbol>>>,
@@ -599,3 +602,5 @@ pub fn provide(providers: &mut Providers) {
     encoder::provide(&mut providers.queries);
     decoder::provide(providers);
 }
+
+pub struct MirBodyProxy {}

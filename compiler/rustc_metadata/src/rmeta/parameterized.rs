@@ -162,6 +162,7 @@ parameterized_over_tcx! {
     crate::rmeta::DefPathHashMapRef,
     rustc_middle::middle::exported_symbols::ExportedSymbol,
     rustc_middle::mir::Body,
+    rustc_middle::mir::StrippedBody,
     rustc_middle::mir::CoroutineLayout,
     rustc_middle::mir::interpret::ConstAllocation,
     rustc_middle::ty::Clause,
