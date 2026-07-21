@@ -10,11 +10,10 @@ use rustc_data_structures::memmap::{Mmap, MmapMut};
 use rustc_data_structures::sync::{par_for_each_in, par_join};
 use rustc_data_structures::temp_dir::MaybeTempDir;
 use rustc_data_structures::thousands::usize_with_underscores;
-use rustc_hir as hir;
 use rustc_hir::attrs::{AttributeKind, EncodeCrossCrate};
 use rustc_hir::def_id::{CRATE_DEF_ID, LOCAL_CRATE, LocalDefId, LocalDefIdSet};
 use rustc_hir::definitions::DefPathData;
-use rustc_hir::find_attr;
+use rustc_hir::{self as hir, Attribute, find_attr};
 use rustc_hir_pretty::id_to_string;
 use rustc_middle::dep_graph::WorkProductId;
 use rustc_middle::middle::dependency_format::Linkage;
@@ -1523,7 +1522,16 @@ impl<'a, 'tcx> EncodeContext<'a, 'tcx> {
                 let module_children = self.tcx.module_children_local(local_id);
                 record_array!(self.tables.module_children_non_reexports[def_id] <-
                     module_children.iter().map(|child| child.res.def_id().index));
-                record_array!(self.tables.module_children_reexports2[def_id] <- module_children);
+
+                if module_children.iter().all(|modchild| {
+                    if let Some(def_id) = modchild.res.opt_def_id() {
+                        !find_attr!(tcx, def_id, AttributeKind::RustcStdInternalSymbol)
+                    } else {
+                        true
+                    }
+                }) {
+                    record_array!(self.tables.module_children_reexports2[def_id] <- module_children);
+                }
                 if self.tcx.is_const_trait(def_id) {
                     record_defaulted_array!(self.tables.explicit_implied_const_bounds[def_id]
                         <- self.tcx.explicit_implied_const_bounds(def_id).skip_binder());
@@ -1676,7 +1684,16 @@ impl<'a, 'tcx> EncodeContext<'a, 'tcx> {
             let module_children = tcx.module_children_local(local_def_id);
             record_array!(self.tables.module_children_non_reexports[def_id] <-
                 module_children.iter().map(|child| child.res.def_id().index));
-            record_array!(self.tables.module_children_reexports2[def_id] <- module_children);
+
+            if module_children.iter().all(|modchild| {
+                if let Some(def_id) = modchild.res.opt_def_id() {
+                    !find_attr!(tcx, def_id, AttributeKind::RustcStdInternalSymbol)
+                } else {
+                    true
+                }
+            }) {
+                record_array!(self.tables.module_children_reexports2[def_id] <- module_children);
+            }
             // record_array!(self.tables.module_children_non_reexports2[def_id] <-
             //     module_children.iter().map(|child| child.res.def_id().index));
         } else {
@@ -1739,7 +1756,17 @@ impl<'a, 'tcx> EncodeContext<'a, 'tcx> {
             record_array!(self.tables.module_children_non_reexports[def_id] <-
                 module_children.iter().filter(|child| child.reexport_chain.is_empty())
                     .map(|child| child.res.def_id().index));
-            record_array!(self.tables.module_children_reexports2[def_id] <- module_children);
+            // if module_children.iter().all(|modchild| {
+            //     if let Some(def_id) = modchild.res.opt_def_id() {
+            //         !find_attr!(tcx, def_id, AttributeKind::RustcStdInternalSymbol)
+            //     } else {
+            //         true
+            //     }
+            // }) {
+            //     db!("encoding");
+            //     record_array!(self.tables.module_children_reexports2[def_id] <- module_children);
+            // }
+
             // record_array!(self.tables.module_children_non_reexports2[def_id] <-
             //     module_children.iter().filter(|child| child.reexport_chain.is_empty())
             //         .map(|child| child.res.def_id().index));

@@ -1390,7 +1390,7 @@ impl CrateMetadata {
         }
     }
 
-    fn is_item_mir_available(&self, id: DefIndex) -> bool {
+    pub fn is_item_mir_available(&self, id: DefIndex) -> bool {
         self.root.tables.optimized_mir.get(self, id).is_some()
     }
 

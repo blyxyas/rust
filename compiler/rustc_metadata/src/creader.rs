@@ -15,6 +15,7 @@ use rustc_data_structures::sync::{self, FreezeReadGuard, FreezeWriteGuard};
 use rustc_data_structures::unord::UnordMap;
 use rustc_expand::base::SyntaxExtension;
 use rustc_hir as hir;
+use rustc_hir::def::DefKind;
 use rustc_hir::def_id::{
     CRATE_DEF_INDEX, CrateNum, DefIndex, LOCAL_CRATE, LocalDefId, StableCrateId,
 };
@@ -920,29 +921,44 @@ impl CStore {
             {
                 for child in children.decode((crate_data, tcx)) {
                     eprintln!("{} :: {}", child.ident, child.res.descr());
-
-                    if !child.reexport_chain.is_empty() {
-                        for reexport in child.reexport_chain {
-                            match reexport {
-                                Reexport::Single(_) => {
-                                    dbg!("Single");
-                                }
-                                Reexport::Glob(_) => {
-                                    dbg!("Glob");
-                                }
-                                Reexport::ExternCrate(_) => {
-                                    dbg!("ExternCrate");
-                                }
-                                Reexport::MacroUse => {
-                                    dbg!("MacroUse");
-                                }
-                                Reexport::MacroExport => {
-                                    dbg!("MacroExport");
-                                }
-                            };
+                    // if child.ident.as_str() == "__alloc_error_handler" {
+                    //     break;
+                    // }
+                    if let Some(def_id) = child.res.opt_def_id() {
+                        if crate_data.is_item_mir_available(def_id.index) {
+                            let mir_body = crate_data
+                                .root
+                                .tables
+                                .optimized_mir
+                                .get(crate_data, def_id.index)
+                                .unwrap()
+                                .decode((crate_data, tcx));
                         }
-                        // panic!();
-                    }
+                    } else {
+                        dbg!("@");
+                    };
+
+                    // if !child.reexport_chain.is_empty() {
+                    //     for reexport in child.reexport_chain {
+                    //         match reexport {
+                    //             Reexport::Single(_) => {
+                    //                 dbg!("Single");
+                    //             }
+                    //             Reexport::Glob(_) => {
+                    //                 dbg!("Glob");
+                    //             }
+                    //             Reexport::ExternCrate(_) => {
+                    //                 dbg!("ExternCrate");
+                    //             }
+                    //             Reexport::MacroUse => {
+                    //                 dbg!("MacroUse");
+                    //             }
+                    //             Reexport::MacroExport => {
+                    //                 dbg!("MacroExport");
+                    //             }
+                    //         };
+                    //     }
+                    // }
                 }
             }
 

@@ -651,6 +651,20 @@ pub const fn handle_alloc_error(layout: Layout) -> ! {
 #[doc(hidden)]
 #[allow(unused_attributes)]
 #[unstable(feature = "alloc_internals", issue = "none")]
+pub mod holaholajejeje {
+    #[rustc_std_internal_symbol]
+    pub unsafe fn hola(size: usize, _align: usize) -> ! {
+        core::panicking::panic_nounwind_fmt(
+            format_args!("memory allocation of {size} bytes failed"),
+            /* force_no_backtrace */ false,
+        )
+    }
+}
+
+#[cfg(not(no_global_oom_handling))]
+#[doc(hidden)]
+#[allow(unused_attributes)]
+#[unstable(feature = "alloc_internals", issue = "none")]
 pub mod __alloc_error_handler {
     // called via generated `__rust_alloc_error_handler` if there is no
     // `#[alloc_error_handler]`.
