@@ -773,7 +773,9 @@ pub(crate) fn run_optimization_passes<'tcx>(tcx: TyCtxt<'tcx>, body: &mut Body<'
 }
 
 /// Optimize the MIR and prepare it for codegen.
-fn optimized_mir(tcx: TyCtxt<'_>, did: LocalDefId) -> &Body<'_> {
+pub fn optimized_mir(tcx: TyCtxt<'_>, did: LocalDefId) -> &Body<'_> {
+    dbg!("@");
+
     if tcx.is_constructor(did.to_def_id()) {
         // There's no reason to run all of the MIR passes on constructors when
         // we can just output the MIR we want directly. This also saves const
@@ -786,6 +788,7 @@ fn optimized_mir(tcx: TyCtxt<'_>, did: LocalDefId) -> &Body<'_> {
 }
 
 fn inner_optimized_mir(tcx: TyCtxt<'_>, did: LocalDefId) -> Body<'_> {
+    dbg!("@");
     match tcx.hir_body_const_context(did) {
         // Run the `mir_for_ctfe` query, which depends on `mir_drops_elaborated_and_const_checked`
         // which we are going to steal below. Thus we need to run `mir_for_ctfe` first, so it
@@ -794,18 +797,24 @@ fn inner_optimized_mir(tcx: TyCtxt<'_>, did: LocalDefId) -> Body<'_> {
         None => {}
         Some(other) => panic!("do not use `optimized_mir` for constants: {other:?}"),
     }
+    dbg!("@");
     debug!("about to call mir_drops_elaborated...");
     let body = tcx.mir_drops_elaborated_and_const_checked(did).steal();
     let mut body = remap_mir_for_const_eval_select(tcx, body, hir::Constness::NotConst);
+    dbg!("@");
 
     if body.tainted_by_errors.is_some() {
         return body;
     }
+    dbg!("@");
 
     // Before doing anything, remember which items are being mentioned so that the set of items
     // visited does not depend on the optimization level.
     // We do not use `run_passes` for this as that might skip the pass if `injection_phase` is set.
+    dbg!("@");
+
     mentioned_items::MentionedItems.run_pass(tcx, &mut body);
+    dbg!("@");
 
     // If `mir_drops_elaborated_and_const_checked` found that the current body has unsatisfiable
     // predicates, it will shrink the MIR to a single `unreachable` terminator.

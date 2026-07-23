@@ -1,5 +1,6 @@
 use std::fmt;
 use std::ops::Deref;
+use std::panic::Location;
 
 use rustc_data_structures::fingerprint::Fingerprint;
 use rustc_data_structures::fx::FxIndexMap;
@@ -642,6 +643,7 @@ pub(crate) use define_callbacks;
 pub(crate) use maybe_into_query_key;
 
 #[cold]
+#[track_caller]
 pub(crate) fn default_query(name: &str, key: &dyn std::fmt::Debug) -> ! {
     bug!(
         "`tcx.{name}({key:?})` is not supported for this key;\n\

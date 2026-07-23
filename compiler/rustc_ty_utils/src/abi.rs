@@ -306,9 +306,11 @@ fn fn_abi_of_instance_raw<'tcx>(
     tcx: TyCtxt<'tcx>,
     query: ty::PseudoCanonicalInput<'tcx, (ty::Instance<'tcx>, &'tcx ty::List<Ty<'tcx>>)>,
 ) -> Result<&'tcx FnAbi<'tcx, Ty<'tcx>>, &'tcx FnAbiError<'tcx>> {
+    dbg!("@");
     // The `fn_abi_of_instance_no_deduced_attrs` query may have been called during CTFE, so we
     // delegate to it here in order to reuse (and, if necessary, augment) its result.
     tcx.fn_abi_of_instance_no_deduced_attrs(query).map(|fn_abi| {
+        dbg!("@");
         let params = FnAbiDesc::for_instance(tcx, query);
         // If the function's body can be used to deduce parameter attributes, then adjust such
         // "no deduced attrs" ABI; otherwise, return that ABI unadjusted.

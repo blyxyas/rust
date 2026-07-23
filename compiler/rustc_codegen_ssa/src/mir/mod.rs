@@ -214,8 +214,10 @@ pub fn codegen_mir<'a, 'tcx, Bx: BuilderMethods<'a, 'tcx>>(
     // got here (`deduce_param_attrs`). That means we can *not* apply arbitrary further MIR
     // transforms as that may invalidate those deduced facts!
 
+    dbg!("@");
     let fn_abi = cx.fn_abi_of_instance(instance, ty::List::empty());
     debug!("fn_abi: {:?}", fn_abi);
+    dbg!("@");
 
     let nop_landing_pads = rustc_mir_transform::remove_noop_landing_pads::find_noop_landing_pads(
         mir,
@@ -227,16 +229,24 @@ pub fn codegen_mir<'a, 'tcx, Bx: BuilderMethods<'a, 'tcx>>(
     );
 
     if tcx.features().ergonomic_clones() {
+        dbg!("@");
+
         let monomorphized_mir = instance.instantiate_mir_and_normalize_erasing_regions(
             tcx,
             ty::TypingEnv::fully_monomorphized(),
             ty::EarlyBinder::bind(tcx, mir.clone()),
         );
+        dbg!("@");
+
         mir = tcx.arena.alloc(optimize_use_clone::<Bx>(cx, monomorphized_mir));
     }
+    dbg!("@");
 
     let start_llbb = Bx::append_block(cx, llfn, "start");
+    dbg!("@");
+
     let mut start_bx = Bx::build(cx, start_llbb);
+    dbg!("@");
 
     if mir::traversal::mono_reachable(&mir, tcx, instance).any(|(bb, block)| {
         (block.is_cleanup && !nop_landing_pads.contains(bb))
@@ -244,6 +254,7 @@ pub fn codegen_mir<'a, 'tcx, Bx: BuilderMethods<'a, 'tcx>>(
     }) {
         start_bx.set_personality_fn(cx.eh_personality());
     }
+    dbg!("@");
 
     let cleanup_kinds = base::wants_new_eh_instructions(tcx.sess)
         .then(|| analyze::cleanup_kinds(&mir, &nop_landing_pads));

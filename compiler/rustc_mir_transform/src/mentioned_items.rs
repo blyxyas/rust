@@ -12,7 +12,7 @@ pub(super) struct MentionedItems;
 struct MentionedItemsVisitor<'a, 'tcx> {
     tcx: TyCtxt<'tcx>,
     body: &'a mir::Body<'tcx>,
-    mentioned_items: Vec<Spanned<MentionedItem<'tcx>>>,
+    mentioned_items: Vec<MentionedItem<'tcx>>,
 }
 
 impl<'tcx> crate::MirPass<'tcx> for MentionedItems {
@@ -42,21 +42,17 @@ impl<'tcx> Visitor<'tcx> for MentionedItemsVisitor<'_, 'tcx> {
         match &terminator.kind {
             mir::TerminatorKind::Call { func, .. } | mir::TerminatorKind::TailCall { func, .. } => {
                 let callee_ty = func.ty(self.body, self.tcx);
-                self.mentioned_items
-                    .push(Spanned { node: MentionedItem::Fn(callee_ty), span: span() });
+                self.mentioned_items.push(MentionedItem::Fn(callee_ty));
             }
             mir::TerminatorKind::Drop { place, .. } => {
                 let ty = place.ty(self.body, self.tcx).ty;
-                self.mentioned_items.push(Spanned { node: MentionedItem::Drop(ty), span: span() });
+                self.mentioned_items.push(MentionedItem::Drop(ty));
             }
             mir::TerminatorKind::InlineAsm { operands, .. } => {
                 for op in operands {
                     match *op {
                         mir::InlineAsmOperand::SymFn { ref value } => {
-                            self.mentioned_items.push(Spanned {
-                                node: MentionedItem::Fn(value.const_.ty()),
-                                span: span(),
-                            });
+                            self.mentioned_items.push(MentionedItem::Fn(value.const_.ty()));
                         }
                         _ => {}
                     }
@@ -89,10 +85,7 @@ impl<'tcx> Visitor<'tcx> for MentionedItemsVisitor<'_, 'tcx> {
                     _ => true,
                 };
                 if may_involve_vtable {
-                    self.mentioned_items.push(Spanned {
-                        node: MentionedItem::UnsizeCast { source_ty, target_ty },
-                        span: span(),
-                    });
+                    self.mentioned_items.push(MentionedItem::UnsizeCast { source_ty, target_ty });
                 }
             }
             // Similarly, record closures that are turned into function pointers.
@@ -102,8 +95,7 @@ impl<'tcx> Visitor<'tcx> for MentionedItemsVisitor<'_, 'tcx> {
                 _,
             ) => {
                 let source_ty = operand.ty(self.body, self.tcx);
-                self.mentioned_items
-                    .push(Spanned { node: MentionedItem::Closure(source_ty), span: span() });
+                self.mentioned_items.push(MentionedItem::Closure(source_ty));
             }
             // And finally, function pointer reification casts.
             mir::Rvalue::Cast(
@@ -112,7 +104,7 @@ impl<'tcx> Visitor<'tcx> for MentionedItemsVisitor<'_, 'tcx> {
                 _,
             ) => {
                 let fn_ty = operand.ty(self.body, self.tcx);
-                self.mentioned_items.push(Spanned { node: MentionedItem::Fn(fn_ty), span: span() });
+                self.mentioned_items.push(MentionedItem::Fn(fn_ty));
             }
             _ => {}
         }

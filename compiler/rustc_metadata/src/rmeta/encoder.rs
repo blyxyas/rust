@@ -1856,9 +1856,9 @@ impl<'a, 'tcx> EncodeContext<'a, 'tcx> {
             if encode_opt {
                 let optimized_mir = tcx.optimized_mir(def_id);
                 record!(self.tables.optimized_mir[def_id.to_def_id()] <- optimized_mir);
-                // let stripped_body =
-                //     StrippedBody { basic_blocks: optimized_mir.basic_blocks.clone() };
-                record!(self.tables.stripped_mir[def_id.to_def_id()] <- optimized_mir.basic_blocks.len());
+                let stripped_body =
+                    StrippedBody { mentioned_items: optimized_mir.mentioned_items.clone() };
+                record!(self.tables.stripped_mir[def_id.to_def_id()] <- stripped_body);
                 self.tables
                     .cross_crate_inlinable
                     .set(def_id.to_def_id().index, self.tcx.cross_crate_inlinable(def_id));
