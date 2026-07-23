@@ -5,6 +5,7 @@ use std::ops::Deref;
 
 use rustc_hir::def_id::LocalDefId;
 use rustc_span::{DUMMY_SP, ErrorGuaranteed, Span};
+use tracing::{info, instrument};
 
 use crate::dep_graph;
 use crate::dep_graph::DepNodeKey;
@@ -127,6 +128,7 @@ fn try_get_cached<'tcx, C>(tcx: TyCtxt<'tcx>, cache: &C, key: C::Key) -> Option<
 where
     C: QueryCache,
 {
+    return None;
     match cache.lookup(&key) {
         Some((value, index)) => {
             tcx.prof.query_cache_hit(index.into());
@@ -149,6 +151,7 @@ pub(crate) fn query_get_at<'tcx, C>(
 where
     C: QueryCache,
 {
+    dbg!(query.name);
     match try_get_cached(tcx, &query.cache, key) {
         Some(value) => value,
         None => (query.execute_query_fn)(tcx, span, key, QueryMode::Get).unwrap(),

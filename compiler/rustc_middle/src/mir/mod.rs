@@ -282,7 +282,7 @@ pub struct Body<'tcx> {
     /// set after drop elaboration, so some drop calls that can never be reached are not considered
     /// "mentioned".) See the documentation of `CollectionMode` in
     /// `compiler/rustc_monomorphize/src/collector.rs` for more context.
-    pub mentioned_items: Option<Vec<Spanned<MentionedItem<'tcx>>>>,
+    pub mentioned_items: Option<Vec<MentionedItem<'tcx>>>,
 
     /// Does this body use generic parameters. This is used for the `ConstEvaluatable` check.
     ///
@@ -732,7 +732,7 @@ impl<'tcx> Body<'tcx> {
     }
 
     #[track_caller]
-    pub fn set_mentioned_items(&mut self, mentioned_items: Vec<Spanned<MentionedItem<'tcx>>>) {
+    pub fn set_mentioned_items(&mut self, mentioned_items: Vec<MentionedItem<'tcx>>) {
         assert!(
             self.mentioned_items.is_none(),
             "mentioned_items for {:?} have already been set",
@@ -741,7 +741,7 @@ impl<'tcx> Body<'tcx> {
         self.mentioned_items = Some(mentioned_items);
     }
     #[track_caller]
-    pub fn mentioned_items(&self) -> &[Spanned<MentionedItem<'tcx>>] {
+    pub fn mentioned_items(&self) -> &[MentionedItem<'tcx>] {
         match &self.mentioned_items {
             Some(l) => l,
             None => panic!("mentioned_items for {:?} have not yet been set", self.source.def_id()),
@@ -751,7 +751,8 @@ impl<'tcx> Body<'tcx> {
 
 #[derive(Clone, TyEncodable, TyDecodable, Debug, StableHash, TypeFoldable, TypeVisitable)]
 pub struct StrippedBody<'tcx> {
-    pub basic_blocks: BasicBlocks<'tcx>,
+    // pub basic_blocks: BasicBlocks<'tcx>,
+    pub mentioned_items: Option<Vec<MentionedItem<'tcx>>>,
 }
 
 impl<'tcx> Index<BasicBlock> for Body<'tcx> {
