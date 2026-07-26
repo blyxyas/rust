@@ -927,52 +927,53 @@ impl CStore {
                     //     break;
                     // }
                     if let Some(def_id) = child.res.opt_def_id() {
-                        if crate_data.is_item_mir_available(def_id.index) {
-                            eprintln!("^^^^ MIR AVAILABLE");
+                        // if crate_data.is_item_mir_available(def_id.index) {
+                        eprintln!("^^^^ MIR AVAILABLE");
 
-                            if let Some(mitems) = crate_data
-                                .root
-                                .tables
-                                .stripped_mir
-                                .get(crate_data, def_id.index)
-                                .unwrap()
-                                .decode((crate_data, tcx))
-                                .mentioned_items
-                            {
-                                for mitem in mitems {
-                                    match mitem {
-                                        MentionedItem::Fn(fn_ty) => {
-                                            dbg!("MentionedItem::Fn");
-                                            if let TyKind::FnDef(def_id, _) = fn_ty.kind() {
-                                                dbg!("@", &def_id);
-                                                if def_id.is_local() {
-                                                    dbg!("@@@@@@@@@");
+                        // if let Some(mitems) = crate_data
+                        //     .root
+                        //     .tables
+                        //     .stripped_mir
+                        //     .get(crate_data, def_id.index)
+                        //     .unwrap()
+                        //     .decode((crate_data, tcx))
+                        //     .mentioned_items
+                        // {
+                        //     for mitem in mitems {
+                        //         match mitem {
+                        //             MentionedItem::Fn(fn_ty) => {
+                        //                 dbg!("MentionedItem::Fn");
+                        //                 if let TyKind::FnDef(def_id, _) = fn_ty.kind() {
+                        //                     dbg!("@", &def_id);
+                        //                     // if def_id.is_local() {
+                        //                     //     dbg!("@@@@@@@@@");
 
-                                                    tcx.mir_for_ctfe(def_id.as_local().unwrap());
-                                                } else {
-                                                    dbg!("@@@@@@@@");
-                                                    tcx.instance_mir(
-                                                        rustc_middle::ty::InstanceKind::Item(
-                                                            *def_id,
-                                                        ),
-                                                    );
-                                                }
-                                                dbg!("@");
-                                            }
-                                        }
-                                        MentionedItem::Closure(_) => {
-                                            dbg!("MentionedItem::Closure");
-                                        }
-                                        MentionedItem::Drop(_) => {
-                                            dbg!("MentionedItem::Drop");
-                                        }
-                                        MentionedItem::UnsizeCast { .. } => {
-                                            dbg!("MentionedItem::UnsizeCast");
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        //                     //     tcx.mir_for_ctfe(def_id.as_local().unwrap());
+                        //                     // } else {
+                        //                     //     dbg!("@@@@@@@@");
+                        //                     //     dbg!(tcx.crate_for_resolver(()));
+                        //                     //     tcx.instance_mir(
+                        //                     //         rustc_middle::ty::InstanceKind::Item(
+                        //                     //             *def_id,
+                        //                     //         ),
+                        //                     //     );
+                        //                     // }
+                        //                     // dbg!("@");
+                        //                 }
+                        //             }
+                        //             MentionedItem::Closure(_) => {
+                        //                 dbg!("MentionedItem::Closure");
+                        //             }
+                        //             MentionedItem::Drop(_) => {
+                        //                 dbg!("MentionedItem::Drop");
+                        //             }
+                        //             MentionedItem::UnsizeCast { .. } => {
+                        //                 dbg!("MentionedItem::UnsizeCast");
+                        //             }
+                        //         }
+                        //     }
+                        // }
+                        // }
                     } else {
                         dbg!("@");
                     };
