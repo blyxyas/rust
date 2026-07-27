@@ -4,6 +4,9 @@
 use std::ops::Deref;
 
 use rustc_hir::def_id::LocalDefId;
+use std::backtrace::Backtrace;
+use std::panic::Location;
+
 use rustc_span::{DUMMY_SP, ErrorGuaranteed, Span};
 use tracing::{info, instrument};
 
@@ -141,6 +144,7 @@ where
 /// Shared implementation of `tcx.$query(..)` and `tcx.at(span).$query(..)`
 /// for all queries.
 #[inline(always)]
+#[track_caller]
 pub(crate) fn query_get_at<'tcx, C>(
     tcx: TyCtxt<'tcx>,
     span: Span,
@@ -150,6 +154,21 @@ pub(crate) fn query_get_at<'tcx, C>(
 where
     C: QueryCache,
 {
+    dbg!(query.name);
+    if query.name == "shallow_lint_levels_on" {
+        dbg!(Location::caller());
+        dbg!(Backtrace::capture());
+        return match try_get_cached(tcx, &query.cache, key) {
+            Some(value) => {
+                dbg!("Some");
+                value
+            }
+            None => {
+                dbg!("None");
+                (query.execute_query_fn)(tcx, span, key, QueryMode::Get).unwrap()
+            }
+        };
+    }
     match try_get_cached(tcx, &query.cache, key) {
         Some(value) => value,
         None => (query.execute_query_fn)(tcx, span, key, QueryMode::Get).unwrap(),
