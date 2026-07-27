@@ -1,4 +1,6 @@
+use std::backtrace::Backtrace;
 use std::fmt::Debug;
+use std::panic::Location;
 
 use rustc_ast as ast;
 use rustc_ast::attr::AttributeExt;
@@ -155,6 +157,7 @@ fn skippable_lints(tcx: TyCtxt<'_>, (): ()) -> UnordSet<LintId> {
 }
 
 #[instrument(level = "trace", skip(tcx), ret)]
+#[track_caller]
 fn shallow_lint_levels_on(tcx: TyCtxt<'_>, owner: hir::OwnerId) -> ShallowLintLevelMap {
     let store = unerased_lint_store(tcx.sess);
     let attrs = tcx.hir_attr_map(owner);

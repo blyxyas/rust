@@ -626,6 +626,7 @@ macro_rules! define_callbacks {
                 $(#[$attr])*
                 #[inline(always)]
                 pub fn $name(self, value: $name::ProvidedValue<'tcx>) {
+                    dbg!("feed_query", stringify!($name), std::any::type_name::<$name::Key>());
                     $crate::query::inner::query_feed(
                         self.tcx,
                         &self.tcx.query_system.query_vtables.$name,

@@ -437,6 +437,7 @@ impl<'tcx> GenericArgs<'tcx> {
         F: FnMut(&ty::GenericParamDef, &[GenericArg<'tcx>]) -> GenericArg<'tcx>,
     {
         let defs = tcx.generics_of(def_id);
+
         let count = defs.count();
         let mut args = SmallVec::with_capacity(count);
         Self::fill_item(&mut args, tcx, defs, &mut mk_kind);

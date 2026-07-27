@@ -1892,20 +1892,18 @@ impl<'tcx> TyCtxt<'tcx> {
     pub fn instance_mir(self, instance: ty::InstanceKind<'tcx>) -> &'tcx Body<'tcx> {
         let body = match instance {
             ty::InstanceKind::Item(def) => {
+                dbg!("@");
                 debug!("calling def_kind on def: {:?}", def);
                 let def_kind = self.def_kind(def);
                 debug!("returned from def_kind: {:?}", def_kind);
-                dbg!("@");
 
+                dbg!("@");
                 match def_kind {
                     DefKind::Const { .. }
                     | DefKind::Static { .. }
                     | DefKind::AssocConst { .. }
                     | DefKind::Ctor(..)
-                    | DefKind::AnonConst => {
-                        dbg!("@");
-                        self.mir_for_ctfe(def)
-                    }
+                    | DefKind::AnonConst => self.mir_for_ctfe(def),
                     DefKind::Fn | DefKind::AssocFn
                         if matches!(
                             self.constness(def),
@@ -2394,20 +2392,16 @@ impl<'tcx> TyCtxt<'tcx> {
         self,
         query: ty::PseudoCanonicalInput<'tcx, (ty::Instance<'tcx>, &'tcx ty::List<Ty<'tcx>>)>,
     ) -> Result<&'tcx FnAbi<'tcx, Ty<'tcx>>, &'tcx FnAbiError<'tcx>> {
-        dbg!("@");
-
         // Only deduce attrs in full, optimized builds. Otherwise, avoid the query system overhead
         // of ever invoking the `fn_abi_of_instance_raw` query.
-        dbg!(&self.sess.opts.incremental, self.sess.opts.optimize);
 
-        if self.sess.opts.optimize != OptLevel::No && self.sess.opts.incremental.is_none() {
-            dbg!("@");
-            // self.fn_abi_of_instance_no_deduced_attrs(query)
+        // if self.sess.opts.optimize != OptLevel::No && self.sess.opts.incremental.is_none() {
+        // self.fn_abi_of_instance_no_deduced_attrs(query)
 
-            self.fn_abi_of_instance_raw(query)
-        } else {
-            self.fn_abi_of_instance_no_deduced_attrs(query)
-        }
+        // self.fn_abi_of_instance_raw(query)
+        // } else {
+        self.fn_abi_of_instance_no_deduced_attrs(query)
+        // }
     }
 }
 

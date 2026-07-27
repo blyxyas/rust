@@ -742,7 +742,7 @@ impl<'tcx> Body<'tcx> {
     }
     #[track_caller]
     pub fn mentioned_items(&self) -> &[MentionedItem<'tcx>] {
-        match &self.mentioned_items {
+        match dbg!(&self.mentioned_items) {
             Some(l) => l,
             None => panic!("mentioned_items for {:?} have not yet been set", self.source.def_id()),
         }

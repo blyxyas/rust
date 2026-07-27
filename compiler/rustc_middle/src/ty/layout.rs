@@ -1456,12 +1456,9 @@ pub trait FnAbiOf<'tcx>: FnAbiOfHelpers<'tcx> {
         instance: ty::Instance<'tcx>,
         extra_args: &'tcx ty::List<Ty<'tcx>>,
     ) -> Self::FnAbiOfResult {
-        dbg!("@");
         // FIXME(eddyb) get a better `span` here.
         let span = self.layout_tcx_at_span();
-        dbg!("@");
         let tcx = self.tcx().at(span);
-        dbg!("@");
 
         MaybeResult::from(
             tcx.fn_abi_of_instance(self.typing_env().as_query_input((instance, extra_args)))
