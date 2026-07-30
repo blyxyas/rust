@@ -20,13 +20,13 @@ use rustc_hir::def_id::{
     CRATE_DEF_INDEX, CrateNum, DefIndex, LOCAL_CRATE, LocalDefId, StableCrateId,
 };
 // shallow_lint_levels_on
-use rustc_hir::definitions::{DefPath, Definitions};
+use rustc_hir::definitions::{DefPath, Definitions, PerParentDisambiguatorState};
 use rustc_index::IndexVec;
 use rustc_middle::bug;
 use rustc_middle::metadata::Reexport;
 use rustc_middle::mir::MentionedItem;
 use rustc_middle::ty::data_structures::IndexSet;
-use rustc_middle::ty::{Instance, TyCtxt, TyCtxtFeed, TyKind};
+use rustc_middle::ty::{GenericArgs, Instance, TyCtxt, TyCtxtFeed, TyKind};
 use rustc_proc_macro::bridge::client::Client as ProcMacroClient;
 use rustc_session::config::mitigation_coverage::DeniedPartialMitigationLevel;
 use rustc_session::config::{
@@ -918,9 +918,11 @@ impl CStore {
                 }
             }
 
+            let mut all_symbols_without_generics = Vec::new();
             if let Some(children) =
                 root.tables.module_children_reexports2.get(&crate_data.blob, item)
             {
+                dbg!("@");
                 for child in children.decode((crate_data, tcx)) {
                     eprintln!("{} :: {}", child.ident, child.res.descr());
                     // if child.ident.as_str() == "__alloc_error_handler" {
@@ -929,16 +931,6 @@ impl CStore {
                     if let Some(def_id) = child.res.opt_def_id() {
                         if crate_data.is_item_mir_available(def_id.index) {
                             eprintln!("^^^^ MIR AVAILABLE");
-
-                            // dbg!(
-                            //     crate_data
-                            //         .root
-                            //         .tables
-                            //         .stripped_mir
-                            //         .get(crate_data, def_id.index)
-                            //         .unwrap()
-                            //         .decode((crate_data, tcx))
-                            // );
                             if let Some(mitems) = crate_data
                                 .root
                                 .tables
@@ -948,27 +940,38 @@ impl CStore {
                                 .decode((crate_data, tcx))
                                 .mentioned_items
                             {
-                                dbg!(mitems.len());
                                 for mitem in mitems {
                                     match mitem {
                                         MentionedItem::Fn(fn_ty) => {
                                             dbg!("MentionedItem::Fn");
                                             if let TyKind::FnDef(def_id, _) = fn_ty.kind() {
-                                                dbg!("@");
-                                                // if def_id.is_local() {
-                                                //     dbg!("@@@@@@@@@");
+                                                if let Some(lazy_generics_of) = crate_data
+                                                    .root
+                                                    .tables
+                                                    .generics_of
+                                                    .get(crate_data, def_id.index)
+                                                {
+                                                    let def_id_generics =
+                                                        lazy_generics_of.decode((crate_data, tcx));
 
-                                                //     tcx.mir_for_ctfe(def_id.as_local().unwrap());
-                                                // } else {
-                                                //     dbg!("@@@@@@@@");
-                                                // panic!();
-                                                let _ = Instance::mono(tcx, *def_id);
+                                                    if def_id_generics.is_empty() {
+                                                        all_symbols_without_generics.push(def_id);
+                                                    }
 
-                                                // tcx.instance_mir(
-                                                // rustc_middle::ty::InstanceKind::Item(*def_id),
-                                                // );
-                                                // }
-                                                // dbg!("@");
+                                                    // let def_id_generics =
+                                                    //     lazy_generics_of.decode((crate_data, tcx));
+                                                    // let mut disambiguator =
+                                                    //     PerParentDisambiguatorState::new(
+                                                    //         def_id.as_local().unwrap(),
+                                                    //     );
+                                                    // let feed = tcx.create_def(
+                                                    //     def_id.as_local().unwrap(),
+                                                    //     None,
+                                                    //     DefKind::Fn,
+                                                    //     None,
+                                                    //     &mut disambiguator,
+                                                    // );
+                                                }
                                             }
                                         }
                                         MentionedItem::Closure(_) => {
@@ -985,55 +988,46 @@ impl CStore {
                             }
                         }
                     } else {
-                        dbg!("@");
                     };
-
-                    // if !child.reexport_chain.is_empty() {
-                    //     for reexport in child.reexport_chain {
-                    //         match reexport {
-                    //             Reexport::Single(_) => {
-                    //                 dbg!("Single");
-                    //             }
-                    //             Reexport::Glob(_) => {
-                    //                 dbg!("Glob");
-                    //             }
-                    //             Reexport::ExternCrate(_) => {
-                    //                 dbg!("ExternCrate");
-                    //             }
-                    //             Reexport::MacroUse => {
-                    //                 dbg!("MacroUse");
-                    //             }
-                    //             Reexport::MacroExport => {
-                    //                 dbg!("MacroExport");
-                    //             }
-                    //         };
-                    //     }
-                    // }
                 }
+
+                for symbol in all_symbols_without_generics {
+                    eprintln!(
+                        "SYMBOL_MENTIONED = {}{}",
+                        root.name().as_str(),
+                        DefPath::make(LOCAL_CRATE, symbol.index, |parent| root
+                            .tables
+                            .def_keys
+                            .get(&crate_data.blob, parent)
+                            .unwrap()
+                            .decode((crate_data, tcx)))
+                        .to_string_no_crate_verbose()
+                    );
+                }
+
+                // if let Some(mir_bodies) = root.tables.optimized_mir.get(&crate_data.blob, item) {
+                //     let mir_body = mir_bodies.decode((crate_data, tcx));
+                // };
+
+                // if let children = root.tables.module_children_reexports.get(&crate_data.blob, item) {
+
+                // if children.len() != 0 {
+
+                // for child in children.decode(&crate_data.blob) {
+                //     info!("ONE");
+                //     break;
+                //     if child
+                //         .reexport_chain
+                //         .iter()
+                //         .any(|reexport| matches!(reexport, Reexport::Glob(_)))
+                //     {
+                //         break;
+                //     }
+                //     dbg!(child.ident);
+                // }
+                // }
+                // }
             }
-
-            // if let Some(mir_bodies) = root.tables.optimized_mir.get(&crate_data.blob, item) {
-            //     let mir_body = mir_bodies.decode((crate_data, tcx));
-            // };
-
-            // if let children = root.tables.module_children_reexports.get(&crate_data.blob, item) {
-
-            // if children.len() != 0 {
-
-            // for child in children.decode(&crate_data.blob) {
-            //     info!("ONE");
-            //     break;
-            //     if child
-            //         .reexport_chain
-            //         .iter()
-            //         .any(|reexport| matches!(reexport, Reexport::Glob(_)))
-            //     {
-            //         break;
-            //     }
-            //     dbg!(child.ident);
-            // }
-            // }
-            // }
 
             Ok(())
         }

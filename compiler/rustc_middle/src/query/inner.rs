@@ -45,21 +45,6 @@ pub(crate) fn query_get_at<'tcx, C>(
 where
     C: QueryCache,
 {
-    dbg!(query.name);
-    if query.name == "shallow_lint_levels_on" {
-        dbg!(Location::caller());
-        dbg!(Backtrace::capture());
-        return match try_get_cached(tcx, &query.cache, key) {
-            Some(value) => {
-                dbg!("Some");
-                value
-            }
-            None => {
-                dbg!("None");
-                (query.execute_query_fn)(tcx, span, key, QueryMode::Get).unwrap()
-            }
-        };
-    }
     match try_get_cached(tcx, &query.cache, key) {
         Some(value) => value,
         None => (query.execute_query_fn)(tcx, span, key, QueryMode::Get).unwrap(),

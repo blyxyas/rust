@@ -1028,13 +1028,9 @@ fn inline_call<'tcx, I: Inliner<'tcx>>(
     // the actually used items. By doing this we can entirely avoid visiting the callee!
     // We need to reconstruct the `required_item` for the callee so that we can find and
     // remove it.
-    dbg!("@");
     let callee_item = MentionedItem::Fn(func.ty(caller_body, tcx));
-    dbg!("@");
     let caller_mentioned_items = caller_body.mentioned_items.as_mut().unwrap();
-    dbg!("@");
     if let Some(idx) = caller_mentioned_items.iter().position(|item| *item == callee_item)
-        && callee_body.mentioned_items.is_some()
     {
         // We found the callee, so remove it and add its items instead.
         caller_mentioned_items.remove(idx);

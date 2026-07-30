@@ -1892,12 +1892,10 @@ impl<'tcx> TyCtxt<'tcx> {
     pub fn instance_mir(self, instance: ty::InstanceKind<'tcx>) -> &'tcx Body<'tcx> {
         let body = match instance {
             ty::InstanceKind::Item(def) => {
-                dbg!("@");
                 debug!("calling def_kind on def: {:?}", def);
                 let def_kind = self.def_kind(def);
                 debug!("returned from def_kind: {:?}", def_kind);
 
-                dbg!("@");
                 match def_kind {
                     DefKind::Const { .. }
                     | DefKind::Static { .. }
