@@ -20,7 +20,7 @@ use rustc_hir::def_id::{
     CRATE_DEF_INDEX, CrateNum, DefIndex, LOCAL_CRATE, LocalDefId, StableCrateId,
 };
 // shallow_lint_levels_on
-use rustc_hir::definitions::{DefPath, Definitions, PerParentDisambiguatorState};
+use rustc_hir::definitions::{DefKey, DefPath, Definitions, PerParentDisambiguatorState};
 use rustc_index::IndexVec;
 use rustc_middle::bug;
 use rustc_middle::metadata::Reexport;
@@ -922,12 +922,8 @@ impl CStore {
             if let Some(children) =
                 root.tables.module_children_reexports2.get(&crate_data.blob, item)
             {
-                dbg!("@");
                 for child in children.decode((crate_data, tcx)) {
                     eprintln!("{} :: {}", child.ident, child.res.descr());
-                    // if child.ident.as_str() == "__alloc_error_handler" {
-                    //     break;
-                    // }
                     if let Some(def_id) = child.res.opt_def_id() {
                         if crate_data.is_item_mir_available(def_id.index) {
                             eprintln!("^^^^ MIR AVAILABLE");
@@ -957,20 +953,6 @@ impl CStore {
                                                     if def_id_generics.is_empty() {
                                                         all_symbols_without_generics.push(def_id);
                                                     }
-
-                                                    // let def_id_generics =
-                                                    //     lazy_generics_of.decode((crate_data, tcx));
-                                                    // let mut disambiguator =
-                                                    //     PerParentDisambiguatorState::new(
-                                                    //         def_id.as_local().unwrap(),
-                                                    //     );
-                                                    // let feed = tcx.create_def(
-                                                    //     def_id.as_local().unwrap(),
-                                                    //     None,
-                                                    //     DefKind::Fn,
-                                                    //     None,
-                                                    //     &mut disambiguator,
-                                                    // );
                                                 }
                                             }
                                         }
@@ -993,7 +975,7 @@ impl CStore {
 
                 for symbol in all_symbols_without_generics {
                     eprintln!(
-                        "SYMBOL_MENTIONED = {}{}",
+                        "SYMBOL_MENTIONED = {}{} BY {}",
                         root.name().as_str(),
                         DefPath::make(LOCAL_CRATE, symbol.index, |parent| root
                             .tables
@@ -1001,32 +983,10 @@ impl CStore {
                             .get(&crate_data.blob, parent)
                             .unwrap()
                             .decode((crate_data, tcx)))
-                        .to_string_no_crate_verbose()
+                        .to_string_no_crate_verbose(),
+                        std::env::var("CARGO_CRATE_NAME").unwrap_or("<Cannot>".into())
                     );
                 }
-
-                // if let Some(mir_bodies) = root.tables.optimized_mir.get(&crate_data.blob, item) {
-                //     let mir_body = mir_bodies.decode((crate_data, tcx));
-                // };
-
-                // if let children = root.tables.module_children_reexports.get(&crate_data.blob, item) {
-
-                // if children.len() != 0 {
-
-                // for child in children.decode(&crate_data.blob) {
-                //     info!("ONE");
-                //     break;
-                //     if child
-                //         .reexport_chain
-                //         .iter()
-                //         .any(|reexport| matches!(reexport, Reexport::Glob(_)))
-                //     {
-                //         break;
-                //     }
-                //     dbg!(child.ident);
-                // }
-                // }
-                // }
             }
 
             Ok(())
