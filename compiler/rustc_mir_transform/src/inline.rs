@@ -1030,8 +1030,7 @@ fn inline_call<'tcx, I: Inliner<'tcx>>(
     // remove it.
     let callee_item = MentionedItem::Fn(func.ty(caller_body, tcx));
     let caller_mentioned_items = caller_body.mentioned_items.as_mut().unwrap();
-    if let Some(idx) = caller_mentioned_items.iter().position(|item| *item == callee_item)
-    {
+    if let Some(idx) = caller_mentioned_items.iter().position(|item| *item == callee_item) {
         // We found the callee, so remove it and add its items instead.
         caller_mentioned_items.remove(idx);
         caller_mentioned_items.extend(callee_body.mentioned_items());
