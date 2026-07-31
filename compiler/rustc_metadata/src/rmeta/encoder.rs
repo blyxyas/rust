@@ -251,9 +251,14 @@ impl<'a, 'tcx> Encodable<EncodeContext<'a, 'tcx>> for SpanData {
         // IMPORTANT: If this is ever changed, be sure to update
         // `rustc_span::hygiene::raw_encode_expn_id` to handle
         // encoding `ExpnData` for proc-macro crates.
-        let ctxt = if s.is_proc_macro { SyntaxContext::root() } else { self.ctxt };
+        let ctxt =
+            if s.is_proc_macro || s.tcx.sess.opts.unstable_opts.incremental_ignore_spans || true {
+                SyntaxContext::root()
+            } else {
+                self.ctxt
+            };
 
-        if self.is_dummy() || s.tcx.sess.opts.unstable_opts.incremental_ignore_spans {
+        if self.is_dummy() || s.tcx.sess.opts.unstable_opts.incremental_ignore_spans || true {
             let tag = SpanTag::new(SpanKind::Partial, ctxt, 0);
             tag.encode(s);
             if tag.context().is_none() {

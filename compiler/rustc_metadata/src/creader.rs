@@ -936,7 +936,6 @@ impl CStore {
                                 .decode((crate_data, tcx))
                                 .mentioned_items
                             {
-                                dbg!("@");
                                 for mitem in mitems {
                                     match mitem {
                                         MentionedItem::Fn(fn_ty) => {
