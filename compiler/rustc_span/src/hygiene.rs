@@ -1445,6 +1445,7 @@ pub fn decode_syntax_context<D: Decoder>(
     // Don't try to decode data while holding the lock, since we need to
     // be able to recursively decode a SyntaxContext
     let (parent, expn_id, transparency) = decode_data(d, raw_id);
+
     let ctxt =
         HygieneData::with(|hygiene_data| hygiene_data.alloc_ctxt(parent, expn_id, transparency));
 

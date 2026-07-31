@@ -253,7 +253,7 @@ impl<'a, 'tcx> Encodable<EncodeContext<'a, 'tcx>> for SpanData {
         // encoding `ExpnData` for proc-macro crates.
         let ctxt = if s.is_proc_macro { SyntaxContext::root() } else { self.ctxt };
 
-        if self.is_dummy() {
+        if self.is_dummy() || s.tcx.sess.opts.unstable_opts.incremental_ignore_spans {
             let tag = SpanTag::new(SpanKind::Partial, ctxt, 0);
             tag.encode(s);
             if tag.context().is_none() {

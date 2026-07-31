@@ -930,12 +930,13 @@ impl CStore {
                             if let Some(mitems) = crate_data
                                 .root
                                 .tables
-                                .stripped_mir
+                                .optimized_mir
                                 .get(crate_data, def_id.index)
                                 .unwrap()
                                 .decode((crate_data, tcx))
                                 .mentioned_items
                             {
+                                dbg!("@");
                                 for mitem in mitems {
                                     match mitem {
                                         MentionedItem::Fn(fn_ty) => {
