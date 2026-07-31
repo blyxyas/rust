@@ -1,5 +1,7 @@
 // Decoding metadata from a single crate's metadata
 
+use std::any::type_name;
+use std::intrinsics::caller_location;
 use std::iter::TrustedLen;
 use std::ops::{Deref, DerefMut};
 use std::panic::Location;
@@ -335,7 +337,6 @@ impl<T: ParameterizedOverTcx> LazyValue<T> {
         let mut dcx = metadata.decoder(self.position.get());
         dcx.set_lazy_state(LazyState::NodeStart(self.position));
         let x = T::Value::decode(&mut dcx);
-        // dbg!(Location::caller());
         x
     }
 }
@@ -506,7 +507,6 @@ impl<'a, 'tcx> SpanDecoder for MetadataDecodeContext<'a, 'tcx> {
                     .unwrap_or_else(|| panic!("Missing SyntaxContext {id:?} for crate {cname:?}"))
                     .decode((cdata, tcx))
             });
-        // dbg!("INside decode context");
 
         x
     }
