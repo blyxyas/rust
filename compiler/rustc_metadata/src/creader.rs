@@ -950,9 +950,9 @@ impl CStore {
                                                     let def_id_generics =
                                                         lazy_generics_of.decode((crate_data, tcx));
 
-                                                    if def_id_generics.is_empty() {
-                                                        all_symbols_without_generics.push(def_id);
-                                                    }
+                                                    // if def_id_generics.is_empty() {
+                                                    all_symbols_without_generics.push(def_id);
+                                                    // }
                                                 }
                                             }
                                         }
