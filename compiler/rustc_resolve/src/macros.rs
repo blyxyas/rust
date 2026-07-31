@@ -122,7 +122,6 @@ fn fast_print_path(path: &ast::Path) -> Symbol {
     }
 }
 
-<<<<<<< HEAD
 const PREDEFINED_TOOLS: &[Symbol] =
     &[sym::clippy, sym::rustfmt, sym::diagnostic, sym::miri, sym::rust_analyzer];
 
@@ -144,11 +143,6 @@ pub(crate) fn registered_attr_tools(tcx: TyCtxt<'_>, (): ()) -> RegisteredTools 
     // We implicitly add predefined tools, but it's not an error to register them explicitly.
     registered_tools.extend(PREDEFINED_TOOLS.iter().cloned().map(Ident::with_dummy_span));
     registered_tools
-=======
-pub(crate) fn registered_tools(tcx: TyCtxt<'_>, (): ()) -> RegisteredTools {
-    let (_, pre_configured_attrs) = &*tcx.crate_for_resolver(()).borrow();
-    registered_tools_ast(tcx.dcx(), pre_configured_attrs, tcx.sess)
->>>>>>> eedb71fd39d (wip)
 }
 
 pub(crate) fn registered_lint_tools(tcx: TyCtxt<'_>, (): ()) -> RegisteredTools {
