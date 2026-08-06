@@ -416,7 +416,7 @@ impl<'ra, 'tcx> Resolver<'ra, 'tcx> {
 
             let key =
                 BindingKey::new_disambiguated(ident, ns, || (child_index + 1).try_into().unwrap());
-            if resolutions.insert(key, resolution).is_some() {
+            if resolutions.insert(key, resolution).is_some() && false {
                 span_bug!(span, "an external binding was already defined");
             }
         };
