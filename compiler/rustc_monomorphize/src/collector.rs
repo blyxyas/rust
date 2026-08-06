@@ -257,6 +257,7 @@ struct SharedState<'tcx> {
     usage_map: Lock<UsageMap<'tcx>>,
 }
 
+#[derive(Debug)]
 pub(crate) struct UsageMap<'tcx> {
     // Maps every mono item to the mono items used by it.
     pub used_map: UnordMap<MonoItem<'tcx>, Vec<MonoItem<'tcx>>>,
