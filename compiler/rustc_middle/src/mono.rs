@@ -336,13 +336,24 @@ impl ToStableHashKey for MonoItem<'_> {
     }
 }
 
-#[derive(Debug, StableHash, Copy, Clone)]
+#[derive(Debug, StableHash, Copy, Clone, TyEncodable, TyDecodable)]
 pub struct MonoItemPartitions<'tcx> {
     pub codegen_units: &'tcx [CodegenUnit<'tcx>],
     pub all_mono_items: &'tcx DefIdSet,
 }
+use rustc_serialize::Decodable;
 
-#[derive(Debug, StableHash)]
+use crate::ty::codec::{RefDecodable, TyDecoder};
+impl<'tcx, D: TyDecoder<'tcx>> RefDecodable<'tcx, D> for [CodegenUnit<'tcx>] {
+    fn decode(decoder: &mut D) -> &'tcx Self {
+        decoder
+            .interner()
+            .arena
+            .alloc_from_iter((0..decoder.read_usize()).map(|_| Decodable::decode(decoder)))
+    }
+}
+
+#[derive(Debug, StableHash, TyEncodable, TyDecodable)]
 pub struct CodegenUnit<'tcx> {
     /// A name for this CGU. Incremental compilation requires that
     /// name be unique amongst **all** crates. Therefore, it should
@@ -363,7 +374,7 @@ pub struct CodegenUnit<'tcx> {
 }
 
 /// Auxiliary info about a `MonoItem`.
-#[derive(Copy, Clone, PartialEq, Debug, StableHash)]
+#[derive(Copy, Clone, PartialEq, Debug, StableHash, TyEncodable, TyDecodable)]
 pub struct MonoItemData {
     /// A cached copy of the result of `MonoItem::instantiation_mode`, where
     /// `GloballyShared` maps to `false` and `LocalCopy` maps to `true`.

@@ -4,7 +4,7 @@ use std::fs::File;
 use std::io::{Read, Seek, Write};
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
-
+use rustc_middle::mono::MonoItemPartitions;
 use rustc_data_structures::fx::{FxIndexMap, FxIndexSet};
 use rustc_data_structures::memmap::{Mmap, MmapMut};
 use rustc_data_structures::sync::{par_for_each_in, par_join};
@@ -652,6 +652,7 @@ impl<'a, 'tcx> EncodeContext<'a, 'tcx> {
 
         // Encode the def IDs of impls, for coherence checking.
         let impls = stat!("impls", || self.encode_impls());
+        let mono_items = stat!("mono-items", || self.encode_mono_items());
 
         let incoherent_impls = stat!("incoherent-impls", || self.encode_incoherent_impls());
 
@@ -2241,6 +2242,14 @@ impl<'a, 'tcx> EncodeContext<'a, 'tcx> {
             .collect();
 
         self.lazy_array(&trait_impls)
+    }
+
+    fn encode_mono_items(&mut self) -> LazyValue<MonoItemPartitions<'static>> {
+        let tcx = self.tcx;
+        let mono_items = tcx.collect_and_partition_mono_items(());
+
+        dbg!("encoding mono items!!");
+        self.lazy(mono_items)
     }
 
     #[instrument(level = "debug", skip(self))]

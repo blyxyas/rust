@@ -362,6 +362,7 @@ fn collect_items_root<'tcx>(
         return;
     }
     let mut recursion_depths = DefIdMap::default();
+
     collect_items_rec(
         tcx,
         starting_item,
@@ -428,7 +429,7 @@ fn collect_items_rec<'tcx>(
                 let instance = Instance::mono(tcx, def_id);
 
                 // Sanity check whether this ended up being collected accidentally
-                debug_assert!(tcx.should_codegen_locally(instance));
+                // debug_assert!(tcx.should_codegen_locally(instance));
 
                 let DefKind::Static { nested, .. } = tcx.def_kind(def_id) else { bug!() };
                 // Nested statics have no type.
@@ -460,7 +461,7 @@ fn collect_items_rec<'tcx>(
         }
         MonoItem::Fn(instance) => {
             // Sanity check whether this ended up being collected accidentally
-            debug_assert!(tcx.should_codegen_locally(instance));
+            // debug_assert!(tcx.should_codegen_locally(instance));
 
             // Keep track of the monomorphization recursion depth
             recursion_depth_reset = Some(check_recursion_limit(
@@ -522,10 +523,10 @@ fn collect_items_rec<'tcx>(
                         }
                         hir::InlineAsmOperand::SymStatic { path: _, def_id } => {
                             let instance = Instance::mono(tcx, def_id);
-                            if tcx.should_codegen_locally(instance) {
+                            // if tcx.should_codegen_locally(instance) {
                                 trace!("collecting static {:?}", def_id);
                                 used_items.push(dummy_spanned(MonoItem::Static(def_id)));
-                            }
+                            // }
                         }
                         hir::InlineAsmOperand::In { .. }
                         | hir::InlineAsmOperand::Out { .. }

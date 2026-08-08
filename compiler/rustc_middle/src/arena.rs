@@ -193,6 +193,7 @@ impl_ref_decodable_into_arena! {
     rustc_ast::tokenstream::TokenStream,
     rustc_data_structures::unord::UnordMap<rustc_span::def_id::DefId, rustc_middle::ty::EarlyBinder<'tcx, Ty<'tcx>>>,
     rustc_data_structures::unord::UnordSet<rustc_span::def_id::LocalDefId>,
+    rustc_data_structures::unord::UnordSet<rustc_span::def_id::DefId>,
     rustc_hir::Attribute,
     rustc_index::IndexVec<rustc_middle::mir::Promoted, rustc_middle::mir::Body<'tcx>>,
     rustc_middle::middle::deduced_param_attrs::DeducedParamAttrs,

@@ -1,5 +1,5 @@
 use std::hash::Hash;
-
+use rustc_middle::mono::MonoItemPartitions;
 use rustc_data_structures::unord::UnordMap;
 use rustc_hir::def_id::DefIndex;
 use rustc_index::{Idx, IndexVec};
@@ -54,6 +54,10 @@ impl ParameterizedOverTcx for Region<'static> {
 
 impl ParameterizedOverTcx for GenericArg<'static> {
     type Value<'tcx> = GenericArg<'tcx>;
+}
+
+impl ParameterizedOverTcx for MonoItemPartitions<'static> {
+    type Value<'tcx> = MonoItemPartitions<'tcx>;
 }
 
 macro_rules! trivially_parameterized_over_tcx {

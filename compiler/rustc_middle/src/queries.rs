@@ -2448,7 +2448,7 @@ rustc_queries! {
     }
 
     query collect_and_partition_mono_items(_: ()) -> MonoItemPartitions<'tcx> {
-        eval_always
+        cache_on_disk
         desc { "collect_and_partition_mono_items" }
     }
 
