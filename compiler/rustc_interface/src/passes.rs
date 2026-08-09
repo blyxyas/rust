@@ -1276,7 +1276,7 @@ pub(crate) fn start_codegen<'tcx>(
     tcx: TyCtxt<'tcx>,
 ) -> (Box<dyn Any>, CrateInfo, EncodedMetadata) {
     if tcx.sess.opts.unstable_opts.always_encode_mir || tcx.sess.opts.output_types.should_codegen() {
-        let _ = rustc_monomorphize::collect_and_partition_mono_items(tcx, ());
+        let _ = tcx.collect_and_partition_mono_items(());
     }
     tcx.sess.timings.start_section(tcx.sess.dcx(), TimingSection::Codegen);
 
@@ -1292,7 +1292,6 @@ pub(crate) fn start_codegen<'tcx>(
     if tcx.sess.opts.output_types.should_codegen() {
         rustc_symbol_mangling::test::dump_symbol_names_and_def_paths(tcx);
     }
-    dbg!("codegen");
 
     // Don't do code generation if there were any errors. Likewise if
     // there were any delayed bugs, because codegen will likely cause
@@ -1300,13 +1299,10 @@ pub(crate) fn start_codegen<'tcx>(
     if let Some(guar) = tcx.sess.dcx().has_errors_or_delayed_bugs() {
         guar.raise_fatal();
     }
-    dbg!("codegen");
 
     info!("Pre-codegen\n{:?}", tcx.debug_stats());
-    dbg!("codegen");
 
     let metadata = rustc_metadata::fs::encode_and_write_metadata(tcx);
-    dbg!("codegen");
 
     let codegen = tcx.sess.time("codegen_crate", || {
         if tcx.sess.opts.unstable_opts.no_codegen || !tcx.sess.opts.output_types.should_codegen() {
