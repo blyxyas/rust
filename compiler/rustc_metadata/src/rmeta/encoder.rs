@@ -10,11 +10,10 @@ use rustc_data_structures::memmap::{Mmap, MmapMut};
 use rustc_data_structures::sync::{par_for_each_in, par_join};
 use rustc_data_structures::temp_dir::MaybeTempDir;
 use rustc_data_structures::thousands::usize_with_underscores;
-use rustc_hir as hir;
 use rustc_hir::attrs::{AttributeKind, EncodeCrossCrate};
 use rustc_hir::def_id::{CRATE_DEF_ID, LOCAL_CRATE, LocalDefId, LocalDefIdSet};
 use rustc_hir::definitions::DefPathData;
-use rustc_hir::find_attr;
+use rustc_hir::{self as hir, Attribute, find_attr};
 use rustc_hir_pretty::id_to_string;
 use rustc_middle::dep_graph::WorkProductId;
 use rustc_middle::middle::dependency_format::Linkage;
@@ -252,9 +251,14 @@ impl<'a, 'tcx> Encodable<EncodeContext<'a, 'tcx>> for SpanData {
         // IMPORTANT: If this is ever changed, be sure to update
         // `rustc_span::hygiene::raw_encode_expn_id` to handle
         // encoding `ExpnData` for proc-macro crates.
-        let ctxt = if s.is_proc_macro { SyntaxContext::root() } else { self.ctxt };
+        let ctxt =
+            if s.is_proc_macro || s.tcx.sess.opts.unstable_opts.incremental_ignore_spans || true {
+                SyntaxContext::root()
+            } else {
+                self.ctxt
+            };
 
-        if self.is_dummy() {
+        if self.is_dummy() || s.tcx.sess.opts.unstable_opts.incremental_ignore_spans || true {
             let tag = SpanTag::new(SpanKind::Partial, ctxt, 0);
             tag.encode(s);
             if tag.context().is_none() {
@@ -1523,6 +1527,16 @@ impl<'a, 'tcx> EncodeContext<'a, 'tcx> {
                 let module_children = self.tcx.module_children_local(local_id);
                 record_array!(self.tables.module_children_non_reexports[def_id] <-
                     module_children.iter().map(|child| child.res.def_id().index));
+
+                if module_children.iter().all(|modchild| {
+                    if let Some(def_id) = modchild.res.opt_def_id() {
+                        !find_attr!(tcx, def_id, AttributeKind::RustcStdInternalSymbol)
+                    } else {
+                        true
+                    }
+                }) {
+                    record_array!(self.tables.module_children_reexports2[def_id] <- module_children);
+                }
                 if self.tcx.is_const_trait(def_id) {
                     record_defaulted_array!(self.tables.explicit_implied_const_bounds[def_id]
                         <- self.tcx.explicit_implied_const_bounds(def_id).skip_binder());
@@ -1675,6 +1689,16 @@ impl<'a, 'tcx> EncodeContext<'a, 'tcx> {
             let module_children = tcx.module_children_local(local_def_id);
             record_array!(self.tables.module_children_non_reexports[def_id] <-
                 module_children.iter().map(|child| child.res.def_id().index));
+
+            if module_children.iter().all(|modchild| {
+                if let Some(def_id) = modchild.res.opt_def_id() {
+                    !find_attr!(tcx, def_id, AttributeKind::RustcStdInternalSymbol)
+                } else {
+                    true
+                }
+            }) {
+                record_array!(self.tables.module_children_reexports2[def_id] <- module_children);
+            }
         } else {
             // For non-enum, there is only one variant, and its def_id is the adt's.
             debug_assert_eq!(adt_def.variants().len(), 1);
@@ -1819,7 +1843,8 @@ impl<'a, 'tcx> EncodeContext<'a, 'tcx> {
 
             debug!("EntryBuilder::encode_mir({:?})", def_id);
             if encode_opt {
-                record!(self.tables.optimized_mir[def_id.to_def_id()] <- tcx.optimized_mir(def_id));
+                let optimized_mir = tcx.optimized_mir(def_id);
+                record!(self.tables.optimized_mir[def_id.to_def_id()] <- optimized_mir);
                 self.tables
                     .cross_crate_inlinable
                     .set(def_id.to_def_id().index, self.tcx.cross_crate_inlinable(def_id));

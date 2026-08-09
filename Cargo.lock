@@ -4387,6 +4387,7 @@ dependencies = [
  "rustc_session",
  "rustc_span",
  "rustc_target",
+ "serde_json",
  "tempfile",
  "tracing",
 ]

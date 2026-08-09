@@ -2390,11 +2390,14 @@ impl<'tcx> TyCtxt<'tcx> {
     ) -> Result<&'tcx FnAbi<'tcx, Ty<'tcx>>, &'tcx FnAbiError<'tcx>> {
         // Only deduce attrs in full, optimized builds. Otherwise, avoid the query system overhead
         // of ever invoking the `fn_abi_of_instance_raw` query.
-        if self.sess.opts.optimize != OptLevel::No && self.sess.opts.incremental.is_none() {
-            self.fn_abi_of_instance_raw(query)
-        } else {
-            self.fn_abi_of_instance_no_deduced_attrs(query)
-        }
+
+        // if self.sess.opts.optimize != OptLevel::No && self.sess.opts.incremental.is_none() {
+        // self.fn_abi_of_instance_no_deduced_attrs(query)
+
+        // self.fn_abi_of_instance_raw(query)
+        // } else {
+        self.fn_abi_of_instance_no_deduced_attrs(query)
+        // }
     }
 }
 

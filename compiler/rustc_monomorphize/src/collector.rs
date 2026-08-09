@@ -257,6 +257,7 @@ struct SharedState<'tcx> {
     usage_map: Lock<UsageMap<'tcx>>,
 }
 
+#[derive(Debug)]
 pub(crate) struct UsageMap<'tcx> {
     // Maps every mono item to the mono items used by it.
     pub used_map: UnordMap<MonoItem<'tcx>, Vec<MonoItem<'tcx>>>,
@@ -1376,9 +1377,9 @@ fn collect_items_of_instance<'tcx>(
     // Always gather mentioned items. We try to avoid processing items that we have already added to
     // `used_items` above.
     for item in body.mentioned_items() {
-        if !collector.used_mentioned_items.contains(&item.node) {
-            let item_mono = collector.monomorphize(item.node);
-            visit_mentioned_item(tcx, &item_mono, item.span, &mut mentioned_items);
+        if !collector.used_mentioned_items.contains(&item) {
+            let item_mono = collector.monomorphize(*item);
+            visit_mentioned_item(tcx, &item_mono, DUMMY_SP, &mut mentioned_items);
         }
     }
 
