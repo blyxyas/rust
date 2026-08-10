@@ -1430,6 +1430,7 @@ fn fn_spans(krate: &ast::Crate, name: Symbol) -> Vec<Span> {
     f.spans
 }
 
+/// Used by `-Zdump-incr-dependency-info` unstable option.
 fn dump_incr_dep_info(
     tcx: TyCtxt<'_>,
     all_symbols: &mut FxHashMap<String, Vec<String>>,
@@ -1449,88 +1450,66 @@ fn dump_incr_dep_info(
     if let Some(children) = root.tables.module_children_reexports2.get(&crate_data.blob, item) {
         let local_crate_name = std::env::var("CARGO_CRATE_NAME").unwrap_or("<Cannot>".into());
         for child in children.decode((crate_data, tcx)) {
-            if let Some(def_id) = child.res.opt_def_id() {
-                if crate_data.is_item_mir_available(def_id.index) {
-                    if let Some(mitems) = crate_data
-                        .root
-                        .tables
-                        .optimized_mir
-                        .get(crate_data, def_id.index)
-                        .unwrap()
-                        .decode((crate_data, tcx))
-                        .mentioned_items
-                    {
-                        for mitem in mitems {
-                            match mitem {
-                                MentionedItem::Fn(fn_ty) => {
-                                    if let TyKind::FnDef(def_id, _) = fn_ty.kind() {
-                                        if let TyKind::FnDef(def_id, _) = fn_ty.kind() {
-                                            if let Some(lazy_generics_of) = crate_data
-                                                .root
-                                                .tables
-                                                .generics_of
-                                                .get(crate_data, def_id.index)
-                                            {
-                                                let def_id_generics =
-                                                    lazy_generics_of.decode((crate_data, tcx));
-
-                                                let mut symbols_for_crate = all_symbols
-                                                    .entry(format!(
-                                                        "{}::{}",
-                                                        local_crate_name.clone(),
-                                                        root.name().as_str()
-                                                    ))
-                                                    .or_insert(vec![]);
-                                                symbols_for_crate.push(format!(
-                                                    "{}",
-                                                    DefPath::make(
-                                                        LOCAL_CRATE,
-                                                        def_id.index,
-                                                        |parent| root
-                                                            .tables
-                                                            .def_keys
-                                                            .get(&crate_data.blob, parent)
-                                                            .unwrap()
-                                                            .decode((crate_data, tcx))
-                                                    )
-                                                    .to_string_no_crate_verbose(),
-                                                ));
-                                            }
-                                            //                         if let Some(lazy_generics_of) = crate_data
-                                            //                             .root
-                                            //                             .tables
-                                            //                             .generics_of
-                                            //                             .get(crate_data, def_id.index)
-                                            //                         {
-
-                                            //                         all_symbols.insert(
-                                            //                             local_crate_name.clone(),
-                                            //                             format!(
-                                            //                                 "{}{}",
-                                            //                                 root.name().as_str(),
-                                            //                                 crate_data.def_path(def_id.index)
-                                            //     //                             DefPath::make(LOCAL_CRATE, symbol.index, |parent| root
-                                            //     // .tables
-                                            //     // .def_keys
-                                            //     // .get(&crate_data.blob, parent)
-                                            //     // .unwrap()
-                                            //     // .decode((crate_data, tcx)))
-                                            // .to_string_no_crate_verbose(),
-                                            //                             ),
-                                            //                         );
-                                        }
-                                    }
-                                }
-                                MentionedItem::Closure(_) => {}
-                                MentionedItem::Drop(_) => {}
-                                MentionedItem::UnsizeCast { .. } => {}
-                            }
-                        }
-                    }
-                }
+            if let Some(def_id) = child.res.opt_def_id()
+                && crate_data.is_item_mir_available(def_id.index)
+                && let Some(mentioned_items) = crate_data
+                    .root
+                    .tables
+                    .optimized_mir
+                    .get(crate_data, def_id.index)
+                    .unwrap()
+                    .decode((crate_data, tcx))
+                    .mentioned_items
+            {
+                push_incr_mentioned_items(
+                    tcx,
+                    all_symbols,
+                    &mentioned_items,
+                    &crate_data,
+                    &root,
+                    &local_crate_name,
+                );
             }
         }
     }
 
     Ok(())
+}
+
+/// Push all mentioned items in a [`Body`] into a map.
+/// The given
+fn push_incr_mentioned_items<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    all_symbols: &mut FxHashMap<String, Vec<String>>,
+    mentioned_items: &Vec<MentionedItem<'tcx>>,
+    crate_data: &CrateMetadata,
+    root: &CrateRoot,
+    local_crate_name: &str,
+) {
+    for def_id in mentioned_items.into_iter().filter_map(|mentioned_item| {
+        if let MentionedItem::Fn(fn_ty) = mentioned_item
+            && let TyKind::FnDef(def_id, _) = fn_ty.kind()
+        {
+            Some(def_id)
+        } else {
+            None
+        }
+    }) {
+        // For some reason, we can only ensure that a DefId is reachable if the `generics_of` table is present (even if empty)
+        if let Some(_) = crate_data.root.tables.generics_of.get(crate_data, def_id.index) {
+            let symbols_for_crate = all_symbols
+                .entry(format!("{}::{}", local_crate_name, root.name().as_str()))
+                .or_insert(vec![]);
+            symbols_for_crate.push(format!(
+                "{}",
+                DefPath::make(LOCAL_CRATE, def_id.index, |parent| root
+                    .tables
+                    .def_keys
+                    .get(&crate_data.blob, parent)
+                    .unwrap()
+                    .decode((crate_data, tcx)))
+                .to_string_no_crate_verbose(),
+            ));
+        }
+    }
 }

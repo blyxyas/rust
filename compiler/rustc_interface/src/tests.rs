@@ -712,6 +712,7 @@ fn test_unstable_options_tracking_hash() {
     untracked!(codegen_source_order, true);
     untracked!(deduplicate_diagnostics, false);
     untracked!(dump_dep_graph, true);
+    untracked!(dump_incr_dependency_info, Some(String::from("incr-dep-info.json")));
     untracked!(dump_mir, Some(String::from("abc")));
     untracked!(dump_mir_dataflow, true);
     untracked!(dump_mir_dir, String::from("abc"));
