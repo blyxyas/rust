@@ -49,7 +49,6 @@ use rustc_macros::{
     TypeVisitable, extension,
 };
 use rustc_serialize::{Decodable, Encodable};
-use rustc_session::config::OptLevel;
 pub use rustc_session::lint::RegisteredTools;
 use rustc_span::def_id::{LocalModId, ModId};
 use rustc_span::hygiene::MacroKind;

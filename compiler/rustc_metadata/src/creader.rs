@@ -1,11 +1,9 @@
 //! Validates all used crates and extern libraries and loads their metadata
 
 use std::collections::BTreeMap;
-use std::io::Write;
 use std::path::Path;
 use std::str::FromStr;
-use std::time::Instant;
-use std::{cmp, env, fs, io, iter};
+use std::{cmp, env, fs, iter};
 
 use rustc_ast::expand::allocator::{ALLOC_ERROR_HANDLER, AllocatorKind, global_fn_name};
 use rustc_ast::{self as ast, *};
@@ -16,18 +14,16 @@ use rustc_data_structures::sync::{self, FreezeReadGuard, FreezeWriteGuard};
 use rustc_data_structures::unord::UnordMap;
 use rustc_expand::base::SyntaxExtension;
 use rustc_hir as hir;
-use rustc_hir::def::DefKind;
 use rustc_hir::def_id::{
     CRATE_DEF_INDEX, CrateNum, DefIndex, LOCAL_CRATE, LocalDefId, StableCrateId,
 };
 // shallow_lint_levels_on
-use rustc_hir::definitions::{DefKey, DefPath, Definitions, PerParentDisambiguatorState};
+use rustc_hir::definitions::{DefPath, Definitions};
 use rustc_index::IndexVec;
-use rustc_middle::bug;
-use rustc_middle::metadata::Reexport;
 use rustc_middle::mir::MentionedItem;
 use rustc_middle::ty::data_structures::IndexSet;
-use rustc_middle::ty::{GenericArgs, Instance, TyCtxt, TyCtxtFeed, TyKind};
+use rustc_middle::ty::{TyCtxt, TyCtxtFeed};
+use rustc_middle::{bug, ty};
 use rustc_proc_macro::bridge::client::Client as ProcMacroClient;
 use rustc_session::config::mitigation_coverage::DeniedPartialMitigationLevel;
 use rustc_session::config::{
@@ -40,7 +36,7 @@ use rustc_session::search_paths::PathKind;
 use rustc_session::{Session, lint};
 use rustc_span::def_id::DefId;
 use rustc_span::edition::Edition;
-use rustc_span::{DUMMY_SP, Ident, Span, Symbol, kw, sym};
+use rustc_span::{DUMMY_SP, Ident, Span, Symbol, sym};
 use rustc_target::spec::{PanicStrategy, Target};
 use tracing::{debug, info, trace};
 
@@ -880,7 +876,6 @@ impl CStore {
                     tcx,
                     &mut all_symbols,
                     &crate_data,
-                    &crate_data.root,
                     CRATE_DEF_INDEX,
                     dump_incr_dep_info_dir,
                 );
@@ -890,8 +885,7 @@ impl CStore {
                         .create(true)
                         .open(dump_incr_dep_info_dir)
                         .unwrap();
-                    serde_json::to_writer_pretty(&mut f, &all_symbols);
-                    write!(&mut f, ",");
+                    serde_json::to_writer_pretty(&mut f, &all_symbols).unwrap_or_else(|_| bug!());
                 }
             }
         }
@@ -1435,15 +1429,14 @@ fn dump_incr_dep_info(
     tcx: TyCtxt<'_>,
     all_symbols: &mut FxHashMap<String, Vec<String>>,
     crate_data: &CrateMetadata,
-    root: &CrateRoot,
     item: DefIndex,
     dump_incr_dep_info_dir: &String,
-) -> io::Result<()> {
+) {
     let root = &crate_data.root;
 
     if let Some(children) = root.tables.module_children_non_reexports.get(&crate_data.blob, item) {
         for child in children.decode((crate_data, tcx)) {
-            dump_incr_dep_info(tcx, all_symbols, crate_data, &root, child, dump_incr_dep_info_dir);
+            dump_incr_dep_info(tcx, all_symbols, crate_data, child, dump_incr_dep_info_dir);
         }
     }
 
@@ -1457,7 +1450,7 @@ fn dump_incr_dep_info(
                     .tables
                     .optimized_mir
                     .get(crate_data, def_id.index)
-                    .unwrap()
+                    .unwrap_or_else(|| bug!())
                     .decode((crate_data, tcx))
                     .mentioned_items
             {
@@ -1472,8 +1465,7 @@ fn dump_incr_dep_info(
             }
         }
     }
-
-    Ok(())
+    //
 }
 
 /// Push all mentioned items in a [`Body`] into a map.
@@ -1488,7 +1480,7 @@ fn push_incr_mentioned_items<'tcx>(
 ) {
     for def_id in mentioned_items.into_iter().filter_map(|mentioned_item| {
         if let MentionedItem::Fn(fn_ty) = mentioned_item
-            && let TyKind::FnDef(def_id, _) = fn_ty.kind()
+            && let ty::FnDef(def_id, _) = fn_ty.kind()
         {
             Some(def_id)
         } else {
@@ -1506,7 +1498,7 @@ fn push_incr_mentioned_items<'tcx>(
                     .tables
                     .def_keys
                     .get(&crate_data.blob, parent)
-                    .unwrap()
+                    .unwrap_or_else(|| bug!())
                     .decode((crate_data, tcx)))
                 .to_string_no_crate_verbose(),
             ));

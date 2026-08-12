@@ -3,7 +3,6 @@ use rustc_middle::mir::{self, Location, MentionedItem};
 use rustc_middle::ty::adjustment::PointerCoercion;
 use rustc_middle::ty::{self, TyCtxt};
 use rustc_session::Session;
-use rustc_span::Spanned;
 
 use crate::PassPolicy;
 
@@ -38,7 +37,6 @@ impl<'tcx> crate::MirPass<'tcx> for MentionedItems {
 impl<'tcx> Visitor<'tcx> for MentionedItemsVisitor<'_, 'tcx> {
     fn visit_terminator(&mut self, terminator: &mir::Terminator<'tcx>, location: Location) {
         self.super_terminator(terminator, location);
-        let span = || self.body.source_info(location).span;
         match &terminator.kind {
             mir::TerminatorKind::Call { func, .. } | mir::TerminatorKind::TailCall { func, .. } => {
                 let callee_ty = func.ty(self.body, self.tcx);
@@ -64,7 +62,6 @@ impl<'tcx> Visitor<'tcx> for MentionedItemsVisitor<'_, 'tcx> {
 
     fn visit_rvalue(&mut self, rvalue: &mir::Rvalue<'tcx>, location: Location) {
         self.super_rvalue(rvalue, location);
-        let span = || self.body.source_info(location).span;
         match *rvalue {
             // We need to detect unsizing casts that required vtables.
             mir::Rvalue::Cast(

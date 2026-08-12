@@ -1,10 +1,7 @@
 // Decoding metadata from a single crate's metadata
 
-use std::any::type_name;
-use std::intrinsics::caller_location;
 use std::iter::TrustedLen;
 use std::ops::{Deref, DerefMut};
-use std::panic::Location;
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, OnceLock};
 use std::{io, mem};
@@ -180,7 +177,7 @@ pub struct BlobDecodeContext<'a> {
 /// - [`LazyValue`]
 /// - [`LazyArray`]
 /// - [`LazyTable`]
-pub(super) trait LazyDecoder: BlobDecoder {
+pub(crate) trait LazyDecoder: BlobDecoder {
     fn set_lazy_state(&mut self, state: LazyState);
     fn get_lazy_state(&self) -> LazyState;
 
@@ -261,11 +258,11 @@ impl<'a, 'tcx> Deref for MetadataDecodeContext<'a, 'tcx> {
     }
 }
 
-pub(super) trait MetaBlob<'a>: Copy {
+pub(crate) trait MetaBlob<'a>: Copy {
     fn blob(&self) -> &'a MetadataBlob;
 }
 
-pub trait MetaDecoder: Copy {
+pub(crate) trait MetaDecoder: Copy {
     type Context: BlobDecoder + LazyDecoder;
 
     fn decoder(self, pos: usize) -> Self::Context;
@@ -317,7 +314,7 @@ impl<'a, 'tcx> MetaDecoder for (&'a CrateMetadata, TyCtxt<'tcx>) {
 
 impl<T: ParameterizedOverTcx> LazyValue<T> {
     #[inline]
-    pub fn decode<'tcx, M: MetaDecoder>(self, metadata: M) -> T::Value<'tcx>
+    pub(crate) fn decode<'tcx, M: MetaDecoder>(self, metadata: M) -> T::Value<'tcx>
     where
         T::Value<'tcx>: Decodable<M::Context>,
     {
@@ -327,7 +324,7 @@ impl<T: ParameterizedOverTcx> LazyValue<T> {
     }
 }
 
-pub struct DecodeIterator<T, D> {
+pub(crate) struct DecodeIterator<T, D> {
     elem_counter: std::ops::Range<usize>,
     dcx: D,
     _phantom: PhantomData<fn() -> T>,
@@ -357,7 +354,7 @@ unsafe impl<D: Decoder, T: Decodable<D>> TrustedLen for DecodeIterator<T, D> {}
 
 impl<T: ParameterizedOverTcx> LazyArray<T> {
     #[inline]
-    pub fn decode<'tcx, M: MetaDecoder>(
+    pub(crate) fn decode<'tcx, M: MetaDecoder>(
         self,
         metadata: M,
     ) -> DecodeIterator<T::Value<'tcx>, M::Context>
@@ -1364,7 +1361,7 @@ impl CrateMetadata {
         }
     }
 
-    pub fn is_item_mir_available(&self, id: DefIndex) -> bool {
+    pub(crate) fn is_item_mir_available(&self, id: DefIndex) -> bool {
         self.root.tables.optimized_mir.get(self, id).is_some()
     }
 
@@ -1615,7 +1612,7 @@ impl CrateMetadata {
     }
 
     // Returns the path leading to the thing with this `id`.
-    pub fn def_path(&self, id: DefIndex) -> DefPath {
+    pub(crate) fn def_path(&self, id: DefIndex) -> DefPath {
         debug!("def_path(cnum={:?}, id={:?})", self.cnum, id);
         DefPath::make(self.cnum, id, |parent| self.def_key(parent))
     }

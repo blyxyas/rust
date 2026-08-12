@@ -13,7 +13,7 @@ use rustc_data_structures::thousands::usize_with_underscores;
 use rustc_hir::attrs::{AttributeKind, EncodeCrossCrate};
 use rustc_hir::def_id::{CRATE_DEF_ID, LOCAL_CRATE, LocalDefId, LocalDefIdSet};
 use rustc_hir::definitions::DefPathData;
-use rustc_hir::{self as hir, Attribute, find_attr};
+use rustc_hir::{self as hir, find_attr};
 use rustc_hir_pretty::id_to_string;
 use rustc_middle::dep_graph::WorkProductId;
 use rustc_middle::middle::dependency_format::Linkage;
@@ -1530,7 +1530,7 @@ impl<'a, 'tcx> EncodeContext<'a, 'tcx> {
 
                 if module_children.iter().all(|modchild| {
                     if let Some(def_id) = modchild.res.opt_def_id() {
-                        !find_attr!(tcx, def_id, AttributeKind::RustcStdInternalSymbol)
+                        !find_attr!(tcx, def_id, RustcStdInternalSymbol)
                     } else {
                         true
                     }
@@ -1692,7 +1692,7 @@ impl<'a, 'tcx> EncodeContext<'a, 'tcx> {
 
             if module_children.iter().all(|modchild| {
                 if let Some(def_id) = modchild.res.opt_def_id() {
-                    !find_attr!(tcx, def_id, AttributeKind::RustcStdInternalSymbol)
+                    !find_attr!(tcx, def_id, RustcStdInternalSymbol)
                 } else {
                     true
                 }

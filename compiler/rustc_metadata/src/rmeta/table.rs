@@ -4,7 +4,7 @@ use rustc_index::Idx;
 use crate::rmeta::decoder::MetaBlob;
 use crate::rmeta::*;
 
-pub(super) trait IsDefault: Default {
+pub(crate) trait IsDefault: Default {
     fn is_default(&self) -> bool;
 }
 
@@ -50,7 +50,7 @@ impl<T> IsDefault for LazyArray<T> {
 /// Invariant: `Self::default()` should encode as `[0; BYTE_LEN]`,
 /// but this has no impact on safety.
 /// In debug builds, this invariant is checked in `[TableBuilder::set]`
-pub(super) trait FixedSizeEncoding: IsDefault {
+pub(crate) trait FixedSizeEncoding: IsDefault {
     /// This should be `[u8; BYTE_LEN]`;
     /// Cannot use an associated `const BYTE_LEN: usize` instead due to const eval limitations.
     type ByteArray;
@@ -515,7 +515,7 @@ where
     for<'tcx> T::Value<'tcx>: FixedSizeEncoding<ByteArray = [u8; N]>,
 {
     /// Given the metadata, extract out the value at a particular index (if any).
-    pub fn get<'a, 'tcx, M: MetaBlob<'a>>(&self, metadata: M, i: I) -> T::Value<'tcx> {
+    pub(crate) fn get<'a, 'tcx, M: MetaBlob<'a>>(&self, metadata: M, i: I) -> T::Value<'tcx> {
         // Access past the end of the table returns a Default
         if i.index() >= self.len {
             return Default::default();

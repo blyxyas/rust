@@ -85,7 +85,7 @@ pub const METADATA_HEADER: &[u8] = &[b'r', b'u', b's', b't', 0, 0, 0, METADATA_V
 /// Also invalid are nodes being referred in a different
 /// order than they were encoded in.
 #[must_use]
-pub struct LazyValue<T> {
+pub(crate) struct LazyValue<T> {
     position: NonZero<usize>,
     _marker: PhantomData<fn() -> T>,
 }
@@ -106,7 +106,7 @@ impl<T> LazyValue<T> {
 /// the encoding is that of `LazyArray`, with the distinction that
 /// the minimal distance the length of the sequence, i.e.
 /// it's assumed there's no 0-byte element in the sequence.
-pub struct LazyArray<T> {
+pub(crate) struct LazyArray<T> {
     position: NonZero<usize>,
     num_elems: usize,
     _marker: PhantomData<fn() -> T>,
@@ -122,9 +122,6 @@ impl<T> LazyArray<T> {
     fn from_position_and_num_elems(position: NonZero<usize>, num_elems: usize) -> LazyArray<T> {
         LazyArray { position, num_elems, _marker: PhantomData }
     }
-    pub fn len(&self) -> usize {
-        self.num_elems
-    }
 }
 
 /// A list of lazily-decoded values, with the added capability of random access.
@@ -132,7 +129,7 @@ impl<T> LazyArray<T> {
 /// Random-access table (i.e. offering constant-time `get`/`set`), similar to
 /// `LazyArray<T>`, but without requiring encoding or decoding all the values
 /// eagerly and in-order.
-pub struct LazyTable<I, T> {
+pub(crate) struct LazyTable<I, T> {
     position: NonZero<usize>,
     /// The encoded size of the elements of a table is selected at runtime to drop
     /// trailing zeroes. This is the number of bytes used for each table element.
@@ -175,7 +172,7 @@ impl<I, T> Clone for LazyTable<I, T> {
 
 /// Encoding / decoding state for `Lazy`s (`LazyValue`, `LazyArray`, and `LazyTable`).
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
-pub enum LazyState {
+pub(crate) enum LazyState {
     /// Outside of a metadata node.
     NoNode,
 
@@ -364,8 +361,8 @@ macro_rules! define_tables {
     ) => {
         #[derive(MetadataEncodable, LazyDecodable)]
         pub(crate) struct LazyTables {
-            $(pub $name1: LazyTable<$IDX1, $T1>,)+
-            $(pub $name2: LazyTable<$IDX2, Option<$T2>>,)+
+            $($name1: LazyTable<$IDX1, $T1>,)+
+            $(pub(crate) $name2: LazyTable<$IDX2, Option<$T2>>,)+
         }
 
         #[derive(Default)]
@@ -492,7 +489,7 @@ define_tables! {
 }
 
 #[derive(TyEncodable, TyDecodable)]
-struct VariantData {
+pub(crate) struct VariantData {
     idx: VariantIdx,
     discr: ty::VariantDiscr,
     /// If this is unit or tuple-variant/struct, then this is the index of the ctor id.
