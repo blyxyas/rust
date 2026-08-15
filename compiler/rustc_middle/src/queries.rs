@@ -682,6 +682,13 @@ rustc_queries! {
         separate_provide_extern
     }
 
+    query nameres_requested_by_dependee(crate_num: CrateNum) -> &'tcx UnordSet<DefId> {
+        arena_cache
+        cache_on_disk
+        desc { "computing nameres requested by dependee" }
+        feedable
+    }
+
     query mir_coroutine_witnesses(key: DefId) -> Option<&'tcx mir::CoroutineLayout<'tcx>> {
         arena_cache
         desc { "coroutine witness types for `{}`", tcx.def_path_str(key) }

@@ -12,7 +12,7 @@ use rustc_data_structures::fx::FxHashSet;
 use rustc_data_structures::owned_slice::OwnedSlice;
 use rustc_data_structures::svh::Svh;
 use rustc_data_structures::sync::{self, FreezeReadGuard, FreezeWriteGuard};
-use rustc_data_structures::unord::UnordMap;
+use rustc_data_structures::unord::{UnordMap, UnordSet};
 use rustc_expand::base::SyntaxExtension;
 use rustc_hir as hir;
 use rustc_hir::def::DefKind;
@@ -75,6 +75,8 @@ pub struct CStore {
     has_global_allocator: bool,
     /// This crate has a `#[alloc_error_handler]` item.
     has_alloc_error_handler: bool,
+
+    requested_by_dependees: UnordSet<DefId>,
 
     /// Names that were used to load the crates via `extern crate` or paths.
     resolved_externs: UnordMap<Symbol, CrateNum>,
@@ -551,6 +553,7 @@ impl CStore {
             injected_panic_runtime: None,
             allocator_kind: None,
             alloc_error_handler_kind: None,
+            requested_by_dependees: UnordSet::new(),
             has_global_allocator: false,
             has_alloc_error_handler: false,
             resolved_externs: UnordMap::default(),
@@ -874,6 +877,7 @@ impl CStore {
             crate_data: &CrateMetadata,
             root: &CrateRoot,
             item: DefIndex,
+            all_symbols: &mut UnordSet<DefId>,
         ) -> io::Result<()> {
             let root = &crate_data.root;
 
@@ -909,24 +913,21 @@ impl CStore {
                     )
                 });
 
-            info!("{:#?} - {:#?}", crate_data.name(), Instant::now());
             if let Some(children) =
                 root.tables.module_children_non_reexports.get(&crate_data.blob, item)
             {
                 for child in children.decode((crate_data, tcx)) {
-                    print_item(tcx, crate_data, &root, child);
+                    print_item(tcx, crate_data, &root, child, all_symbols).unwrap();
                 }
             }
 
-            let mut all_symbols_without_generics = Vec::new();
             if let Some(children) =
                 root.tables.module_children_reexports2.get(&crate_data.blob, item)
             {
                 for child in children.decode((crate_data, tcx)) {
-                    eprintln!("{} :: {}", child.ident, child.res.descr());
+                    // eprintln!("{} :: {}", child.ident, child.res.descr());
                     if let Some(def_id) = child.res.opt_def_id() {
                         if crate_data.is_item_mir_available(def_id.index) {
-                            eprintln!("^^^^ MIR AVAILABLE");
                             if let Some(mitems) = crate_data
                                 .root
                                 .tables
@@ -939,7 +940,7 @@ impl CStore {
                                 for mitem in mitems {
                                     match mitem {
                                         MentionedItem::Fn(fn_ty) => {
-                                            dbg!("MentionedItem::Fn");
+                                            // dbg!("MentionedItem::Fn");
                                             if let TyKind::FnDef(def_id, _) = fn_ty.kind() {
                                                 if let Some(lazy_generics_of) = crate_data
                                                     .root
@@ -951,50 +952,60 @@ impl CStore {
                                                         lazy_generics_of.decode((crate_data, tcx));
 
                                                     // if def_id_generics.is_empty() {
-                                                    all_symbols_without_generics.push(def_id);
+                                                    all_symbols.insert(*def_id);
                                                     // }
                                                 }
                                             }
                                         }
                                         MentionedItem::Closure(_) => {
-                                            dbg!("MentionedItem::Closure");
+                                            // dbg!("MentionedItem::Closure");
                                         }
                                         MentionedItem::Drop(_) => {
-                                            dbg!("MentionedItem::Drop");
+                                            // dbg!("MentionedItem::Drop");
                                         }
                                         MentionedItem::UnsizeCast { .. } => {
-                                            dbg!("MentionedItem::UnsizeCast");
+                                            // dbg!("MentionedItem::UnsizeCast");
                                         }
                                     }
                                 }
                             }
                         }
-                    } else {
-                    };
+                    }
                 }
 
-                for symbol in all_symbols_without_generics {
-                    eprintln!(
-                        "SYMBOL_MENTIONED = {}{} BY {}",
-                        root.name().as_str(),
-                        DefPath::make(LOCAL_CRATE, symbol.index, |parent| root
-                            .tables
-                            .def_keys
-                            .get(&crate_data.blob, parent)
-                            .unwrap()
-                            .decode((crate_data, tcx)))
-                        .to_string_no_crate_verbose(),
-                        std::env::var("CARGO_CRATE_NAME").unwrap_or("<Cannot>".into())
-                    );
-                }
+                // for symbol in all_symbols_without_generics.items() {
+                //     eprintln!(
+                //         "SYMBOL_MENTIONED = {}{} BY {}",
+                //         root.name().as_str(),
+                //         DefPath::make(LOCAL_CRATE, symbol.index, |parent| root
+                //             .tables
+                //             .def_keys
+                //             .get(&crate_data.blob, parent)
+                //             .unwrap()
+                //             .decode((crate_data, tcx)))
+                //         .to_string_no_crate_verbose(),
+                //         std::env::var("CARGO_CRATE_NAME").unwrap_or("<Cannot>".into())
+                //     );
+                // }
             }
-
             Ok(())
         }
 
         if let Ok(result) = result {
             let crate_data = self.get_crate_data(result);
-            print_item(tcx, &crate_data, &crate_data.root, CRATE_DEF_INDEX);
+            let mut symbols_without_gens = UnordSet::new();
+            print_item(
+                tcx,
+                &crate_data,
+                &crate_data.root,
+                CRATE_DEF_INDEX,
+                &mut symbols_without_gens,
+            )
+            .unwrap();
+
+            if !symbols_without_gens.is_empty() {
+                self.requested_by_dependees = symbols_without_gens;
+            }
         }
 
         result
