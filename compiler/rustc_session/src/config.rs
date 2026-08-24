@@ -2056,6 +2056,7 @@ pub fn rustc_optgroups() -> Vec<RustcOptGroup> {
             "Provide a detailed explanation of an error message",
             "<OPT>",
         ),
+        opt(Stable, Opt, "", "stop-after", "Display this message", ""),
         opt(Stable, Flag, "", "test", "Build a test harness", ""),
         opt(Stable, Opt, "", "target", "Target tuple for which the code is compiled", "<TARGET>"),
         opt(Stable, Multi, "A", "allow", "Set lint allowed", "<LINT>"),

@@ -20,7 +20,6 @@ use rustc_hir::def::DefKind;
 use rustc_hir::def_id::{
     CRATE_DEF_INDEX, CrateNum, DefIndex, LOCAL_CRATE, LocalDefId, StableCrateId,
 };
-// shallow_lint_levels_on
 use rustc_hir::definitions::{DefKey, DefPath, Definitions, PerParentDisambiguatorState};
 use rustc_index::IndexVec;
 use rustc_lint_defs as lint;
@@ -321,6 +320,10 @@ impl CStore {
         self.has_crate_resolve_with_fail
     }
 
+    pub fn requested_by_dependees(&self) -> &UnordSet<DefId> {
+        &self.requested_by_dependees
+    }
+
     pub fn report_unused_deps(&self, tcx: TyCtxt<'_>) {
         let json_unused_externs = tcx.sess.opts.json_unused_externs;
 
@@ -581,6 +584,7 @@ impl CStore {
     fn register_crate<'tcx>(
         &mut self,
         tcx: TyCtxt<'tcx>,
+        feed: TyCtxtFeed<'tcx, CrateNum>,
         host_lib: Option<Library>,
         origin: CrateOrigin<'_>,
         lib: Library,
@@ -597,7 +601,6 @@ impl CStore {
         let private_dep = self.is_private_dep(&tcx.sess.opts.externs, name, private_dep);
 
         // Claim this crate number and cache it
-        let feed = self.intern_stable_crate_id(tcx, &crate_root)?;
         let cnum = feed.key();
 
         info!(
@@ -850,7 +853,40 @@ impl CStore {
             }
             (LoadResult::Loaded(library), host_library) => {
                 info!("register newly loaded library for `{}`", name);
-                self.register_crate(tcx, host_library, origin, library, dep_kind, name, private_dep)
+
+                let crate_root = library.metadata.get_root();
+                let feed = self.intern_stable_crate_id(tcx, &crate_root).unwrap();
+
+                let cnum = self.register_crate(
+                    tcx,
+                    feed,
+                    host_library,
+                    origin,
+                    library,
+                    dep_kind,
+                    name,
+                    private_dep,
+                );
+
+                if let Ok(cnum) = cnum {
+                    let crate_data = self.get_crate_data(cnum);
+
+                    let mut symbols_without_gens = UnordSet::new();
+                    print_item(
+                        tcx,
+                        &crate_data,
+                        &crate_data.root,
+                        CRATE_DEF_INDEX,
+                        &mut symbols_without_gens,
+                    )
+                    .unwrap();
+
+                    if !symbols_without_gens.is_empty() {
+                        self.requested_by_dependees = symbols_without_gens;
+                    }
+                }
+
+                cnum
             }
             _ => panic!(),
         };
@@ -972,23 +1008,6 @@ impl CStore {
                 // }
             }
             Ok(())
-        }
-
-        if let Ok(result) = result {
-            let crate_data = self.get_crate_data(result);
-            let mut symbols_without_gens = UnordSet::new();
-            print_item(
-                tcx,
-                &crate_data,
-                &crate_data.root,
-                CRATE_DEF_INDEX,
-                &mut symbols_without_gens,
-            )
-            .unwrap();
-
-            if !symbols_without_gens.is_empty() {
-                self.requested_by_dependees = symbols_without_gens;
-            }
         }
 
         result
@@ -1461,6 +1480,9 @@ impl CStore {
         def_id: LocalDefId,
         definitions: &Definitions,
     ) -> Option<CrateNum> {
+        // if tcx.sess.opts.unstable_opts.stop_after.is_some() {
+        //     return None;
+        // }
         match item.kind {
             ast::ItemKind::ExternCrate(orig_name, ident) => {
                 debug!("resolving extern crate stmt. ident: {} orig_name: {:?}", ident, orig_name);
