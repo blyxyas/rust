@@ -571,32 +571,19 @@ impl DiagnosticSpanLine {
                 let sf = &*lines.file;
                 // This should always be true, but check it just in case
 
-                if !lines.lines.chunks(2).all(|[l_1, l_2]| l_1.line_index < l_2.line_index) {
-                    let span_lines = lines
-                        .lines
-                        .iter()
-                        .map(|line| {
-                            DiagnosticSpanLine::line_from_source_file(
-                                sf,
-                                line.line_index,
-                                line.start_col.0 + 1,
-                                line.end_col.0 + 1,
-                            )
-                        })
-                        .collect();
-                    return Some(span_lines);
-                } else {
-                    let mut lines: Vec<DiagnosticSpanLine> = Vec::new();
-                    return sf
-                        .get_lines(lines.first()?.line_index, lines.last()?.line_index)
+                return Some(
+                    sf.get_lines(lines.lines.first()?.line_index, lines.lines.last()?.line_index)
                         .iter()
                         .enumerate()
-                        .map(|(i, line)| DiagnosticSpanLine {
-                            text: line.to_string(),
-                            highlight_start: lines.lines[i].start_col,
-                            highlight_end: lines.lines[i].end_col,
-                        });
-                }
+                        .map(|(i, line)| {
+                            DiagnosticSpanLine {
+                                text: line.to_string(),
+                                highlight_start: lines.lines[i].start_col.0 + 1, // Add one as this is 1-based
+                                highlight_end: lines.lines[i].end_col.0 + 1,
+                            }
+                        })
+                        .collect::<Vec<DiagnosticSpanLine>>(),
+                );
             })
             .unwrap_or_default()
     }
