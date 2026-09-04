@@ -281,7 +281,6 @@ pub fn exported_non_generic_symbols_helper<'tcx>(
                 ));
             }
         };
-
         for id in crate_items.free_items() {
             try_emit_offload_kernel(id.owner_id.to_def_id(), &mut seen);
         }

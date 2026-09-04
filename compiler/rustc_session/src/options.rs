@@ -2887,6 +2887,8 @@ written to standard error output)"),
         "rename non-exported Rust symbols when building staticlibs to avoid conflicts"),
     staticlib_prefer_dynamic: bool = (false, parse_bool, [TRACKED],
         "prefer dynamic linking to static linking for staticlibs (default: no)"),
+    stop_after: Option<String> = (None, parse_opt_string, [UNTRACKED],
+        "Stop after a certain compile stage"),
     strict_init_checks: bool = (false, parse_bool, [TRACKED],
         "control if mem::uninitialized and mem::zeroed panic on more UB"),
     #[rustc_lint_opt_deny_field_access("use `Session::teach` instead of this field")]

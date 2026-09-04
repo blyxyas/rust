@@ -1145,15 +1145,30 @@ fn run_required_analyses(tcx: TyCtxt<'_>) {
     });
 
     rustc_hir_analysis::check_crate(tcx);
+    use rustc_middle::middle::dead_code::DeadCodeLivenessSummary;
     // Freeze definitions as we don't add new ones at this point.
     // We need to wait until now since we synthesize a by-move body
     // for all coroutine-closures.
     //
     // This improves performance by allowing lock-free access to them.
+    // let binding = DeadCodeLivenessSummary::default();
     tcx.untracked().definitions.freeze();
+    // let live_symbols = &tcx
+    //     .live_symbols_and_ignored_derived_traits(())
+    //     .unwrap_or(&binding)
+    //     .pre_deferred_seeding
+    //     .live_symbols;
 
     sess.time("MIR_borrow_checking", || {
         tcx.par_hir_body_owners(|def_id| {
+            // eprintln!(
+            //     "{}{}",
+            //     tcx.crate_name(LOCAL_CRATE),
+            //     tcx.def_path(def_id.to_def_id()).to_string_no_crate_verbose()
+            // );
+            // if !live_symbols.contains(&def_id) {
+            //     return;
+            // }
             let not_typeck_child = !tcx.is_typeck_child(def_id.to_def_id());
             if not_typeck_child {
                 // Child unsafety and borrowck happens together with the parent
