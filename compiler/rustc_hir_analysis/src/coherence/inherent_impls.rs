@@ -7,6 +7,7 @@
 //! `tcx.inherent_impls(def_id)`). That value, however,
 //! is computed by selecting an idea from this table.
 
+use rustc_data_structures::unord::UnordSet;
 use rustc_hir as hir;
 use rustc_hir::def::DefKind;
 use rustc_hir::def_id::{DefId, LocalDefId};
@@ -25,8 +26,17 @@ pub(crate) fn crate_inherent_impls(
 ) -> (&'_ CrateInherentImpls, Result<(), ErrorGuaranteed>) {
     let mut collect = InherentCollect { tcx, impls_map: Default::default() };
 
+    // let live_symbols = if let Ok(live_symbols) = tcx.live_symbols_and_ignored_derived_traits(()) {
+    //     &live_symbols.final_result.live_symbols
+    // } else {
+    //     &UnordSet::default()
+    // };
+
     let mut res = Ok(());
     for id in tcx.hir_free_items() {
+        // if !live_symbols.is_empty() && live_symbols.contains(&id.owner_id.def_id) {
+        //     continue;
+        // }
         res = res.and(collect.check_item(id));
     }
 

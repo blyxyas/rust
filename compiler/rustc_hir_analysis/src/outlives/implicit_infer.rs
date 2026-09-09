@@ -1,4 +1,5 @@
 use rustc_data_structures::fx::FxIndexMap;
+use rustc_data_structures::unord::UnordSet;
 use rustc_hir::def::DefKind;
 use rustc_hir::def_id::DefId;
 use rustc_middle::ty::{self, GenericArg, GenericArgKind, Ty, TyCtxt};
@@ -18,6 +19,12 @@ pub(super) fn infer_clauses(
 
     let mut global_inferred_outlives = FxIndexMap::default();
 
+    // let live_symbols = if let Ok(live_symbols) = tcx.live_symbols_and_ignored_derived_traits(()) {
+    //         &live_symbols.final_result.live_symbols
+    //     } else {
+    //         &UnordSet::default()
+    //     };
+
     // If new clauses were added then we need to re-calculate
     // all crates since there could be new implied clauses.
     for i in 0.. {
@@ -26,6 +33,9 @@ pub(super) fn infer_clauses(
         // Visit all the crates and infer clauses
         for id in tcx.hir_free_items() {
             let item_did = id.owner_id;
+            // if !live_symbols.is_empty() && live_symbols.contains(&item_did.def_id) {
+            //     continue;
+            // }
 
             debug!("InferVisitor::visit_item(item={:?})", item_did);
 

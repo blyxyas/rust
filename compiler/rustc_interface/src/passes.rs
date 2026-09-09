@@ -10,12 +10,14 @@ use rustc_attr_parsing::{AttributeParser, ShouldEmit};
 use rustc_codegen_ssa::traits::CodegenBackend;
 use rustc_codegen_ssa::{CompiledModules, CrateInfo};
 use rustc_crate_store::Untracked;
+use rustc_data_structures::fx::FxHashSet;
 use rustc_data_structures::indexmap::IndexMap;
 use rustc_data_structures::steal::Steal;
 use rustc_data_structures::sync::{
     AppendOnlyIndexVec, DynSend, DynSync, FreezeLock, WorkerLocal, par_fns,
 };
 use rustc_data_structures::thousands;
+use rustc_data_structures::unord::UnordSet;
 use rustc_errors::timings::TimingSection;
 use rustc_errors::{Diag, DiagCtxtHandle, Diagnostic, Level};
 use rustc_expand::base::{ExtCtxt, LintStoreExpand};
@@ -1135,6 +1137,12 @@ fn run_required_analyses(tcx: TyCtxt<'_>) {
     });
 
     rustc_hir_analysis::check_crate(tcx);
+
+    let live_symbols = if let Ok(live_symbols) = tcx.live_symbols_and_ignored_derived_traits(()) {
+        &live_symbols.final_result.live_symbols
+    } else {
+        &UnordSet::default()
+    };
     // Freeze definitions as we don't add new ones at this point.
     // We need to wait until now since we synthesize a by-move body
     // for all coroutine-closures.
@@ -1144,6 +1152,10 @@ fn run_required_analyses(tcx: TyCtxt<'_>) {
 
     sess.time("MIR_borrow_checking", || {
         tcx.par_hir_body_owners(|def_id| {
+            if !live_symbols.is_empty() && live_symbols.contains(&def_id) {
+                return;
+            }
+
             let not_typeck_child = !tcx.is_typeck_child(def_id.to_def_id());
             if not_typeck_child {
                 // Child unsafety and borrowck happens together with the parent
@@ -1153,7 +1165,7 @@ fn run_required_analyses(tcx: TyCtxt<'_>) {
                 return;
             }
             if not_typeck_child {
-                tcx.ensure_ok().mir_borrowck(def_id);
+                // tcx.ensure_ok().mir_borrowck(def_id);
                 tcx.ensure_ok().check_transmutes(def_id);
                 if !tcx.sess.opts.unstable_opts.offload.is_empty() {
                     tcx.ensure_ok().check_offloads(def_id);

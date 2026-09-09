@@ -1,5 +1,6 @@
 use core::ops::ControlFlow;
 
+use rustc_data_structures::unord::UnordSet;
 use rustc_errors::{Applicability, StashKey, Suggestions};
 use rustc_hir::def_id::{DefId, LocalDefId};
 use rustc_hir::intravisit::VisitorExt;

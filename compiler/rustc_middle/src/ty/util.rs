@@ -657,6 +657,7 @@ impl<'tcx> TyCtxt<'tcx> {
     /// for example, we really wind up fetching the `typeck` of the enclosing fn item.
     pub fn typeck_root_def_id(self, def_id: DefId) -> DefId {
         let mut def_id = def_id;
+
         while self.is_typeck_child(def_id) {
             def_id = self.parent(def_id);
         }

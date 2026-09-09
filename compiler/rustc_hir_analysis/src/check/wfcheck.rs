@@ -6,6 +6,7 @@ use rustc_abi::{ExternAbi, ScalableElt};
 use rustc_ast as ast;
 use rustc_data_structures::fx::{FxHashSet, FxIndexMap, FxIndexSet};
 use rustc_data_structures::transitive_relation::TransitiveRelationBuilder;
+use rustc_data_structures::unord::UnordSet;
 use rustc_errors::codes::*;
 use rustc_errors::{Applicability, ErrorGuaranteed, msg, pluralize, struct_span_code_err};
 use rustc_hir as hir;
@@ -2528,23 +2529,41 @@ impl<'tcx> WfCheckingCtxt<'_, 'tcx> {
 }
 
 pub(super) fn check_type_wf(tcx: TyCtxt<'_>, (): ()) -> Result<(), ErrorGuaranteed> {
+    // let live_symbols = if let Ok(live_symbols) = tcx.live_symbols_and_ignored_derived_traits(()) {
+    //         &live_symbols.final_result.live_symbols
+    //     } else {
+    //         &UnordSet::default()
+    //     };
+
     let items = tcx.hir_crate_items(());
-    let res =
-        items
-            .par_items(|item| tcx.ensure_result().check_well_formed(item.owner_id.def_id))
-            .and(
-                items.par_impl_items(|item| {
-                    tcx.ensure_result().check_well_formed(item.owner_id.def_id)
-                }),
-            )
-            .and(items.par_trait_items(|item| {
-                tcx.ensure_result().check_well_formed(item.owner_id.def_id)
-            }))
-            .and(items.par_foreign_items(|item| {
-                tcx.ensure_result().check_well_formed(item.owner_id.def_id)
-            }))
-            .and(items.par_nested_bodies(|item| tcx.ensure_result().check_well_formed(item)))
-            .and(items.par_opaques(|item| tcx.ensure_result().check_well_formed(item)));
+    let res = items
+        .par_items(|item| {
+            // if !live_symbols.is_empty() && live_symbols.contains(&item.owner_id.def_id) {
+            //     return Ok(());
+            // }
+
+            tcx.ensure_result().check_well_formed(item.owner_id.def_id)
+        })
+        .and(items.par_impl_items(|item| {
+            // if !live_symbols.is_empty() && live_symbols.contains(&item.owner_id.def_id) {
+            //     return Ok(());
+            // }
+            tcx.ensure_result().check_well_formed(item.owner_id.def_id)
+        }))
+        .and(items.par_trait_items(|item| {
+            // if !live_symbols.is_empty() && live_symbols.contains(&item.owner_id.def_id) {
+            //     return Ok(());
+            // }
+            tcx.ensure_result().check_well_formed(item.owner_id.def_id)
+        }))
+        .and(items.par_foreign_items(|item| {
+            // if !live_symbols.is_empty() && live_symbols.contains(&item.owner_id.def_id) {
+            //     return Ok(());
+            // }
+            tcx.ensure_result().check_well_formed(item.owner_id.def_id)
+        }))
+        .and(items.par_nested_bodies(|item| tcx.ensure_result().check_well_formed(item)))
+        .and(items.par_opaques(|item| tcx.ensure_result().check_well_formed(item)));
 
     super::entry::check_for_entry_fn(tcx)?;
 

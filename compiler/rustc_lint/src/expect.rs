@@ -1,4 +1,5 @@
 use rustc_data_structures::fx::FxHashSet;
+use rustc_data_structures::unord::UnordSet;
 use rustc_lint_defs::builtin::UNFULFILLED_LINT_EXPECTATIONS;
 use rustc_lint_defs::{LintExpectationId, StableLintExpectationId};
 use rustc_middle::lint::LintExpectation;
@@ -15,9 +16,17 @@ pub(crate) fn provide(providers: &mut Providers) {
 fn lint_expectations(tcx: TyCtxt<'_>, (): ()) -> Vec<(StableLintExpectationId, LintExpectation)> {
     let krate = tcx.hir_crate_items(());
 
+    let live_symbols = if let Ok(live_symbols) = tcx.live_symbols_and_ignored_derived_traits(()) {
+        &live_symbols.final_result.live_symbols
+    } else {
+        &UnordSet::default()
+    };
     let mut expectations = Vec::new();
 
     for owner in krate.owners() {
+        if !live_symbols.is_empty() && live_symbols.contains(&owner.def_id) {
+            continue;
+        }
         let lints = tcx.shallow_lint_levels_on(owner);
         expectations.extend_from_slice(&lints.expectations);
     }

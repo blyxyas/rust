@@ -82,6 +82,7 @@ mod outlives;
 mod variance;
 
 use rustc_abi::{CVariadicStatus, ExternAbi};
+use rustc_data_structures::unord::UnordSet;
 use rustc_hir as hir;
 use rustc_hir::def::DefKind;
 use rustc_middle::mir::interpret::GlobalId;
@@ -148,6 +149,12 @@ pub fn provide(providers: &mut Providers) {
 pub fn check_crate(tcx: TyCtxt<'_>) {
     let _prof_timer = tcx.sess.timer("type_check_crate");
 
+    // let live_symbols = if let Ok(live_symbols) = tcx.live_symbols_and_ignored_derived_traits(()) {
+    //         &live_symbols.final_result.live_symbols
+    //     } else {
+    //         &UnordSet::default()
+    //     };
+
     tcx.sess.time("coherence_checking", || {
         // When discarding query call results, use an explicit type to indicate
         // what we are intending to discard, to help future type-based refactoring.
@@ -156,6 +163,10 @@ pub fn check_crate(tcx: TyCtxt<'_>) {
         let _: R = tcx.ensure_result().check_type_wf(());
 
         for &trait_def_id in tcx.all_local_trait_impls(()).keys() {
+            // These are only local, that's why expect local
+            // if !live_symbols.is_empty() && live_symbols.contains(&trait_def_id.expect_local()) {
+            //     continue;
+            // }
             let _: R = tcx.ensure_result().coherent_trait(trait_def_id);
         }
         // these queries are executed for side-effects (error reporting):
@@ -165,6 +176,10 @@ pub fn check_crate(tcx: TyCtxt<'_>) {
 
     tcx.par_hir_body_owners(|item_def_id| {
         let def_kind = tcx.def_kind(item_def_id);
+        // if !live_symbols.is_empty() && live_symbols.contains(&item_def_id) {
+        //     return;
+        // }
+
         // Make sure we evaluate all static and (non-associated) const items, even if unused.
         // If any of these fail to evaluate, we do not want this crate to pass compilation.
         match def_kind {
@@ -204,6 +219,9 @@ pub fn check_crate(tcx: TyCtxt<'_>) {
     // front end reach the nested body owner first, computing (and caching) an error type for
     // the anon const that then conflicts with the type fed later on.
     tcx.par_hir_body_owners(|item_def_id| {
+        // if !live_symbols.is_empty() && live_symbols.contains(&item_def_id) {
+        //     return;
+        // }
         // Ensure we generate the new `DefId` before finishing `check_crate`.
         // Afterwards we freeze the list of `DefId`s.
         if tcx.needs_coroutine_by_move_body_def_id(item_def_id.to_def_id()) {

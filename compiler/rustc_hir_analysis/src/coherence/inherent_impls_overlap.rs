@@ -1,4 +1,5 @@
 use rustc_data_structures::fx::{FxIndexMap, FxIndexSet, IndexEntry};
+use rustc_data_structures::unord::UnordSet;
 use rustc_errors::codes::*;
 use rustc_errors::struct_span_code_err;
 use rustc_hir as hir;
@@ -16,9 +17,18 @@ pub(crate) fn crate_inherent_impls_overlap_check(
     tcx: TyCtxt<'_>,
     (): (),
 ) -> Result<(), ErrorGuaranteed> {
+    let live_symbols = if let Ok(live_symbols) = tcx.live_symbols_and_ignored_derived_traits(()) {
+        &live_symbols.final_result.live_symbols
+    } else {
+        &UnordSet::default()
+    };
     let mut inherent_overlap_checker = InherentOverlapChecker { tcx };
     let mut res = Ok(());
     for id in tcx.hir_free_items() {
+        if !live_symbols.is_empty() && live_symbols.contains(&id.owner_id.def_id) {
+            continue;
+        }
+
         res = res.and(inherent_overlap_checker.check_item(id));
     }
     res

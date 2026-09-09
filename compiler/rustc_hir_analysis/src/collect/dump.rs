@@ -1,3 +1,4 @@
+use rustc_data_structures::unord::UnordSet;
 use rustc_hir as hir;
 use rustc_hir::def::DefKind;
 use rustc_hir::def_id::LocalDefId;
@@ -115,8 +116,16 @@ pub(crate) fn clauses_and_item_bounds(tcx: TyCtxt<'_>) {
 }
 
 pub(crate) fn def_parents(tcx: TyCtxt<'_>) {
+    let live_symbols = if let Ok(live_symbols) = tcx.live_symbols_and_ignored_derived_traits(()) {
+        &live_symbols.final_result.live_symbols
+    } else {
+        &UnordSet::default()
+    };
     for iid in tcx.hir_free_items() {
         let did = iid.owner_id.def_id;
+        if !live_symbols.is_empty() && live_symbols.contains(&did) {
+            continue;
+        }
         if find_attr!(tcx, did, RustcDumpDefParents) {
             struct AnonConstFinder<'tcx> {
                 tcx: TyCtxt<'tcx>,
@@ -161,8 +170,17 @@ pub(crate) fn def_parents(tcx: TyCtxt<'_>) {
 }
 
 pub(crate) fn vtables<'tcx>(tcx: TyCtxt<'tcx>) {
+    let live_symbols = if let Ok(live_symbols) = tcx.live_symbols_and_ignored_derived_traits(()) {
+        &live_symbols.final_result.live_symbols
+    } else {
+        &UnordSet::default()
+    };
     for id in tcx.hir_free_items() {
         let def_id = id.owner_id.def_id;
+
+        if !live_symbols.is_empty() && live_symbols.contains(&def_id) {
+            continue;
+        }
 
         let Some(&attr_span) = find_attr!(tcx, def_id, RustcDumpVtable(span) => span) else {
             continue;
