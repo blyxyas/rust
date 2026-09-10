@@ -39,7 +39,6 @@
 // tidy-alphabetical-end
 
 use std::mem;
-use std::panic::Location;
 use std::sync::Arc;
 
 use rustc_ast::mut_visit::{self, MutVisitor};
@@ -746,7 +745,6 @@ fn index_ast<'tcx>(
 }
 
 #[instrument(level = "trace", skip(tcx))]
-#[track_caller]
 fn lower_to_hir(tcx: TyCtxt<'_>, def_id: LocalDefId) -> hir::MaybeOwner<'_> {
     tcx.ensure_done().resolve_type_relative_delegations(());
 
@@ -755,19 +753,12 @@ fn lower_to_hir(tcx: TyCtxt<'_>, def_id: LocalDefId) -> hir::MaybeOwner<'_> {
     tracing::info!("{:#?}", tcx.crate_name(LOCAL_CRATE));
     // }
 
-    if cstore
-        .requested_by_dependees()
-        .iter()
-        .any(|item| tcx.crate_name(item.krate).as_str() == tcx.crate_name(LOCAL_CRATE).as_str())
-    {
-        panic!();
-    }
     let ast_index = tcx.index_ast(());
     let resolver_and_node = ast_index.get(def_id).map(Steal::steal);
 
     let fallback_to_ancestor = |parent_id| {
         // The item did not exist in the AST, it was created while lowering another item.
-        // `parent_id` may be different from the direct parent of `def_id`,s
+        // `parent_id` may be different from the direct parent of `def_id`,
         // for instance use-trees are lowered by the first sibling.
         let mut parent_info = tcx.lower_to_hir(parent_id);
         if let hir::MaybeOwner::NonOwner(hir_id) = parent_info {

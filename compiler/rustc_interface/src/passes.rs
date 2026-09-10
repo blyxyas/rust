@@ -1085,7 +1085,6 @@ fn run_required_analyses(tcx: TyCtxt<'_>) {
     if tcx.sess.opts.unstable_opts.input_stats {
         rustc_passes::input_stats::print_hir_stats(tcx);
     }
-
     // When using rustdoc's "jump to def" feature, it enters this code and `check_crate`
     // is not defined. So we need to cfg it out.
     #[cfg(all(not(doc), debug_assertions))]

@@ -319,13 +319,6 @@ pub fn run_compiler(at_args: &[String], callbacks: &mut (dyn Callbacks + Send)) 
                 dump_feature_usage_metrics(tcx, metrics_dir);
             }
 
-            if let Some(ref after) = sess.opts.unstable_opts.stop_after
-                && after == "analysis"
-            {
-                dbg!("stopping after analysis...");
-                return None;
-            }
-
             if callbacks.after_analysis(compiler, tcx) == Compilation::Stop {
                 return None;
             }

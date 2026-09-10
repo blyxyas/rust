@@ -82,17 +82,13 @@ mod outlives;
 mod variance;
 
 use rustc_abi::{CVariadicStatus, ExternAbi};
-use rustc_data_structures::unord::UnordSet;
 use rustc_hir as hir;
 use rustc_hir::def::DefKind;
-use rustc_hir::def_id::{DefIdSet, LOCAL_CRATE};
-use rustc_metadata::creader::CStore;
 use rustc_middle::mir::interpret::GlobalId;
 use rustc_middle::query::Providers;
 use rustc_middle::ty::{Const, Ty, TyCtxt};
 use rustc_middle::{middle, ty};
 use rustc_session::diagnostics::feature_err;
-use rustc_span::def_id::DefId;
 use rustc_span::{ErrorGuaranteed, Span};
 use rustc_trait_selection::traits;
 
@@ -152,7 +148,6 @@ pub fn provide(providers: &mut Providers) {
 pub fn check_crate(tcx: TyCtxt<'_>) {
     let _prof_timer = tcx.sess.timer("type_check_crate");
 
-    let cstore = &CStore::from_tcx(tcx);
     tcx.sess.time("coherence_checking", || {
         // When discarding query call results, use an explicit type to indicate
         // what we are intending to discard, to help future type-based refactoring.
@@ -161,9 +156,6 @@ pub fn check_crate(tcx: TyCtxt<'_>) {
         let _: R = tcx.ensure_result().check_type_wf(());
 
         for &trait_def_id in tcx.all_local_trait_impls(()).keys() {
-            if cstore.requested_by_dependees().contains(&trait_def_id) {
-                panic!();
-            }
             let _: R = tcx.ensure_result().coherent_trait(trait_def_id);
         }
         // these queries are executed for side-effects (error reporting):
