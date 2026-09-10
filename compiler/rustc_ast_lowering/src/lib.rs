@@ -757,7 +757,7 @@ fn lower_to_hir(tcx: TyCtxt<'_>, def_id: LocalDefId) -> hir::MaybeOwner<'_> {
 
     if cstore
         .requested_by_dependees()
-        .items()
+        .iter()
         .any(|item| tcx.crate_name(item.krate).as_str() == tcx.crate_name(LOCAL_CRATE).as_str())
     {
         panic!();

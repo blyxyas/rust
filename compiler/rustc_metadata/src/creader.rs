@@ -79,7 +79,7 @@ pub struct CStore {
 
     /// Cached map from hash to CrateNum, to avoid scanning metas during crate resolution.
     hash_to_cnum: UnordMap<Svh, CrateNum>,
-    requested_by_dependees: UnordSet<DefId>,
+    requested_by_dependees: FxHashSet<DefId>,
 
     /// Names that were used to load the crates via `extern crate` or paths.
     resolved_externs: UnordMap<Symbol, CrateNum>,
@@ -320,7 +320,7 @@ impl CStore {
         self.has_crate_resolve_with_fail
     }
 
-    pub fn requested_by_dependees(&self) -> &UnordSet<DefId> {
+    pub fn requested_by_dependees(&self) -> &FxHashSet<DefId> {
         &self.requested_by_dependees
     }
 
@@ -542,7 +542,7 @@ impl CStore {
             injected_panic_runtime: None,
             allocator_kind: None,
             alloc_error_handler_kind: None,
-            requested_by_dependees: UnordSet::new(),
+            requested_by_dependees: FxHashSet::default(),
             has_global_allocator: false,
             has_alloc_error_handler: false,
             hash_to_cnum: UnordMap::default(),
@@ -871,7 +871,7 @@ impl CStore {
                 if let Ok(cnum) = cnum {
                     let crate_data = self.get_crate_data(cnum);
 
-                    let mut symbols_without_gens = UnordSet::new();
+                    let mut symbols_without_gens = FxHashSet::default();
                     print_item(
                         tcx,
                         &crate_data,
@@ -896,7 +896,7 @@ impl CStore {
             crate_data: &CrateMetadata,
             root: &CrateRoot,
             item: DefIndex,
-            all_symbols: &mut UnordSet<DefId>,
+            all_symbols: &mut FxHashSet<DefId>,
         ) -> io::Result<()> {
             let root = &crate_data.root;
 
@@ -992,20 +992,21 @@ impl CStore {
                     }
                 }
 
-                // for symbol in all_symbols_without_generics.items() {
-                //     eprintln!(
-                //         "SYMBOL_MENTIONED = {}{} BY {}",
-                //         root.name().as_str(),
-                //         DefPath::make(LOCAL_CRATE, symbol.index, |parent| root
-                //             .tables
-                //             .def_keys
-                //             .get(&crate_data.blob, parent)
-                //             .unwrap()
-                //             .decode((crate_data, tcx)))
-                //         .to_string_no_crate_verbose(),
-                //         std::env::var("CARGO_CRATE_NAME").unwrap_or("<Cannot>".into())
-                //     );
-                // }
+                for symbol in all_symbols.iter() {
+                    // eprintln!(
+                    //     "SYMBOL_MENTIONED = {}{} BY {}",
+                    //     root.name().as_str(),
+                    //     DefPath::make(LOCAL_CRATE, symbol.index, |parent| root
+                    //         .tables
+                    //         .def_keys
+                    //         .get(&crate_data.blob, parent)
+                    //         .unwrap()
+                    //         .decode((crate_data, tcx)))
+                    //     .to_string_no_crate_verbose(),
+                    //     std::env::var("CARGO_CRATE_NAME").unwrap_or("<Cannot>".into())
+                    // );
+                }
+                eprintln!("symbols mentioned / all symbols : {} / {} = {:.3}%", all_symbols.len(), root.tables.def_keys.len(), (all_symbols.len() as f64 / root.tables.def_keys.len() as f64)* 100.0);
             }
             Ok(())
         }

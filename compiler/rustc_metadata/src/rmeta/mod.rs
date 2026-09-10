@@ -150,6 +150,10 @@ impl<I, T> LazyTable<I, T> {
     ) -> LazyTable<I, T> {
         LazyTable { position, width, len, _marker: PhantomData }
     }
+
+    pub fn len(&self) -> usize {
+        self.len
+    }
 }
 
 impl<T> Copy for LazyValue<T> {}
