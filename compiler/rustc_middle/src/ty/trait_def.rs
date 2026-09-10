@@ -363,17 +363,17 @@ pub(super) fn incoherent_impls_provider(tcx: TyCtxt<'_>, simp: SimplifiedType) -
 }
 
 pub(super) fn traits_provider(tcx: TyCtxt<'_>, _: LocalCrate) -> &[DefId] {
-    let live_symbols = if let Ok(live_symbols) = tcx.live_symbols_and_ignored_derived_traits(()) {
-        &live_symbols.final_result.live_symbols
-    } else {
-        &UnordSet::default()
-    };
+    // let live_symbols = if let Ok(live_symbols) = tcx.live_symbols_and_ignored_derived_traits(()) {
+    //     &live_symbols.final_result.live_symbols
+    // } else {
+    //     &UnordSet::default()
+    // };
 
     let mut traits = Vec::new();
     for id in tcx.hir_free_items() {
-        if !live_symbols.is_empty() && live_symbols.contains(&id.owner_id.def_id) {
-            continue;
-        }
+        // if !live_symbols.is_empty() && live_symbols.contains(&id.owner_id.def_id) {
+        //     continue;
+        // }
 
         if matches!(tcx.def_kind(id.owner_id), DefKind::Trait | DefKind::TraitAlias) {
             traits.push(id.owner_id.to_def_id())
