@@ -26,7 +26,7 @@ use rustc_index::IndexVec;
 use rustc_lint_defs as lint;
 use rustc_lint_defs::builtin::UNUSED_CRATE_DEPENDENCIES;
 use rustc_middle::bug;
-use rustc_middle::metadata::Reexport;
+use rustc_middle::middle::resolve::Reexport;
 use rustc_middle::mir::MentionedItem;
 use rustc_middle::ty::data_structures::IndexSet;
 use rustc_middle::ty::{GenericArgs, Instance, TyCtxt, TyCtxtFeed, TyKind};
@@ -942,7 +942,21 @@ impl CStore {
                 root.tables.module_children_reexports2.get(&crate_data.blob, item)
             {
                 for child in children.decode((crate_data, tcx)) {
-                    // eprintln!("{} :: {}", child.ident, child.res.descr());
+                    if child.ident.as_str() == "run_if" {
+                        eprintln!("{},{} :: {}", root.name().as_str(), child.ident, child.res.descr());
+                        eprintln!(
+                        "SYMBOL_MENTIONED = {}{} BY {}",
+                        root.name().as_str(),
+                        DefPath::make(LOCAL_CRATE, child.res.def_id().index, |parent| root
+                            .tables
+                            .def_keys
+                            .get(&crate_data.blob, parent)
+                            .unwrap()
+                            .decode((crate_data, tcx)))
+                        .to_string_no_crate_verbose(),
+                        std::env::var("CARGO_CRATE_NAME").unwrap_or("<Cannot>".into())
+                            );
+                    }
                     if let Some(def_id) = child.res.opt_def_id() {
                         if crate_data.is_item_mir_available(def_id.index) {
                             if let Some(mitems) = crate_data

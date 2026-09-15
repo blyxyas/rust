@@ -427,6 +427,7 @@ impl<'a, 'tcx> TyDecoder<'tcx> for MetadataDecodeContext<'a, 'tcx> {
     where
         F: FnOnce(&mut Self) -> Ty<'tcx>,
     {
+        dbg!("@");
         let tcx = self.tcx;
 
         let key = ty::CReaderCacheKey { cnum: Some(self.cdata.cnum), pos: shorthand };
@@ -444,6 +445,7 @@ impl<'a, 'tcx> TyDecoder<'tcx> for MetadataDecodeContext<'a, 'tcx> {
     where
         F: FnOnce(&mut Self) -> R,
     {
+        dbg!("@");
         let new_opaque = self.blob_decoder.opaque.split_at(pos);
         let old_opaque = mem::replace(&mut self.blob_decoder.opaque, new_opaque);
         let old_state = mem::replace(&mut self.blob_decoder.lazy_state, LazyState::NoNode);
@@ -454,6 +456,7 @@ impl<'a, 'tcx> TyDecoder<'tcx> for MetadataDecodeContext<'a, 'tcx> {
     }
 
     fn decode_alloc_id(&mut self) -> rustc_middle::mir::interpret::AllocId {
+        dbg!("@");
         let ads = self.alloc_decoding_session;
         ads.decode_alloc_id(self)
     }
@@ -707,6 +710,7 @@ impl<'a, 'tcx> Decodable<MetadataDecodeContext<'a, 'tcx>> for &'tcx [(ty::Clause
 
 impl<D: LazyDecoder, T> Decodable<D> for LazyValue<T> {
     fn decode(decoder: &mut D) -> Self {
+        dbg!("@");
         decoder.read_lazy()
     }
 }
@@ -714,6 +718,7 @@ impl<D: LazyDecoder, T> Decodable<D> for LazyValue<T> {
 impl<D: LazyDecoder, T> Decodable<D> for LazyArray<T> {
     #[inline]
     fn decode(decoder: &mut D) -> Self {
+        dbg!("@");
         let len = decoder.read_usize();
         if len == 0 { LazyArray::default() } else { decoder.read_lazy_array(len) }
     }
@@ -721,6 +726,7 @@ impl<D: LazyDecoder, T> Decodable<D> for LazyArray<T> {
 
 impl<I: Idx, D: LazyDecoder, T> Decodable<D> for LazyTable<I, T> {
     fn decode(decoder: &mut D) -> Self {
+        dbg!("@");
         let width = decoder.read_usize();
         let len = decoder.read_usize();
         decoder.read_lazy_table(width, len)

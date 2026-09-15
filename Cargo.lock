@@ -3644,6 +3644,7 @@ dependencies = [
  "rustc_hir",
  "rustc_index",
  "rustc_macros",
+ "rustc_metadata",
  "rustc_middle",
  "rustc_session",
  "rustc_span",

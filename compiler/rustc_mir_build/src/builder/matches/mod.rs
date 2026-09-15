@@ -468,7 +468,7 @@ impl<'a, 'tcx> Builder<'a, 'tcx> {
         let end_block = self.cfg.start_new_block();
 
         let end_brace = self.source_info(
-            outer_source_info.span.with_lo(outer_source_info.span.hi() - BytePos::from_usize(1)),
+            outer_source_info.span.with_lo(BytePos::from_u32(outer_source_info.span.hi().0.saturating_sub(0))),
         );
         for arm_block in arm_end_blocks {
             let block = &self.cfg.basic_blocks[arm_block];

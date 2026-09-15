@@ -410,6 +410,7 @@ pub struct CacheDecoder<'a, 'tcx> {
 impl<'a, 'tcx> CacheDecoder<'a, 'tcx> {
     #[inline]
     fn file_index_to_file(&self, index: SourceFileIndex) -> Arc<SourceFile> {
+        dbg!("@");
         let CacheDecoder { tcx, file_index_to_file, file_index_to_stable_id, .. } = *self;
 
         Arc::clone(file_index_to_file.borrow_mut().entry(index).or_insert_with(|| {
@@ -444,6 +445,7 @@ impl<'a, 'tcx> CacheDecoder<'a, 'tcx> {
         read_and_intern_str_or_byte_str_this: impl Fn(&mut Self) -> S,
         read_and_intern_str_or_byte_str_opaque: impl Fn(&mut MemDecoder<'a>) -> S,
     ) -> S {
+        dbg!("@");
         let tag = self.read_u8();
 
         match tag {
@@ -469,6 +471,7 @@ where
     V: Decodable<D>,
     D: Decoder,
 {
+        dbg!("@");
     let start_pos = decoder.position();
 
     let actual_tag = T::decode(decoder);
@@ -489,6 +492,8 @@ impl<'a, 'tcx> TyDecoder<'tcx> for CacheDecoder<'a, 'tcx> {
     where
         F: FnOnce(&mut Self) -> Ty<'tcx>,
     {
+        dbg!("@");
+
         let tcx = self.tcx;
 
         let cache_key = ty::CReaderCacheKey { cnum: None, pos: shorthand };
@@ -507,6 +512,8 @@ impl<'a, 'tcx> TyDecoder<'tcx> for CacheDecoder<'a, 'tcx> {
     where
         F: FnOnce(&mut Self) -> R,
     {
+        dbg!("@");
+
         debug_assert!(pos < self.opaque.len());
 
         let new_opaque = self.opaque.split_at(pos);
@@ -538,12 +545,14 @@ crate::implement_ty_decoder!(CacheDecoder<'a, 'tcx>);
 // into specializations this way, given how `CacheDecoder` and the decoding traits currently work.
 impl<'a, 'tcx> Decodable<CacheDecoder<'a, 'tcx>> for Vec<u8> {
     fn decode(d: &mut CacheDecoder<'a, 'tcx>) -> Self {
+        dbg!("@");
         Decodable::decode(&mut d.opaque)
     }
 }
 
 impl<'a, 'tcx> SpanDecoder for CacheDecoder<'a, 'tcx> {
     fn decode_syntax_context(&mut self) -> SyntaxContext {
+        dbg!("@");
         let syntax_contexts = self.syntax_contexts;
         rustc_span::hygiene::decode_syntax_context(self, self.hygiene_context, |this, id| {
             // This closure is invoked if we haven't already decoded the data for the `SyntaxContext` we are deserializing.
@@ -557,6 +566,7 @@ impl<'a, 'tcx> SpanDecoder for CacheDecoder<'a, 'tcx> {
     }
 
     fn decode_expn_id(&mut self) -> ExpnId {
+        dbg!("@");
         let hash = ExpnHash::decode(self);
         if hash.is_root() {
             return ExpnId::root();
@@ -601,6 +611,7 @@ impl<'a, 'tcx> SpanDecoder for CacheDecoder<'a, 'tcx> {
     }
 
     fn decode_span(&mut self) -> Span {
+        dbg!("@");
         let ctxt = SyntaxContext::decode(self);
         let parent = Option::<LocalDefId>::decode(self);
         let tag: u8 = Decodable::decode(self);
@@ -636,6 +647,8 @@ impl<'a, 'tcx> SpanDecoder for CacheDecoder<'a, 'tcx> {
     }
 
     fn decode_crate_num(&mut self) -> CrateNum {
+        dbg!("@");
+
         let stable_id = StableCrateId::decode(self);
         let cnum = self.tcx.stable_crate_id_to_crate_num(stable_id);
         cnum
@@ -645,6 +658,8 @@ impl<'a, 'tcx> SpanDecoder for CacheDecoder<'a, 'tcx> {
     // compilation sessions. We use the `DefPathHash`, which is stable across
     // sessions, to map the old `DefId` to the new one.
     fn decode_def_id(&mut self) -> DefId {
+        dbg!("@");
+
         // Load the `DefPathHash` which is was we encoded the `DefId` as.
         let def_path_hash = DefPathHash::decode(self);
 
@@ -660,12 +675,16 @@ impl<'a, 'tcx> SpanDecoder for CacheDecoder<'a, 'tcx> {
     }
 
     fn decode_attr_id(&mut self) -> rustc_span::AttrId {
+        dbg!("@");
+
         panic!("cannot decode `AttrId` with `CacheDecoder`");
     }
 }
 
 impl<'a, 'tcx> BlobDecoder for CacheDecoder<'a, 'tcx> {
     fn decode_symbol(&mut self) -> Symbol {
+        dbg!("@");
+
         self.decode_symbol_or_byte_symbol(
             Symbol::new,
             |this| Symbol::intern(this.read_str()),
@@ -674,6 +693,8 @@ impl<'a, 'tcx> BlobDecoder for CacheDecoder<'a, 'tcx> {
     }
 
     fn decode_byte_symbol(&mut self) -> ByteSymbol {
+        dbg!("@");
+
         self.decode_symbol_or_byte_symbol(
             ByteSymbol::new,
             |this| ByteSymbol::intern(this.read_byte_str()),
@@ -686,6 +707,8 @@ impl<'a, 'tcx> BlobDecoder for CacheDecoder<'a, 'tcx> {
     // because we would not know how to transform the `DefIndex` to the current
     // context.
     fn decode_def_index(&mut self) -> DefIndex {
+        dbg!("@");
+
         panic!("trying to decode `DefIndex` outside the context of a `DefId`")
     }
 }
@@ -693,6 +716,8 @@ impl<'a, 'tcx> BlobDecoder for CacheDecoder<'a, 'tcx> {
 impl<'a, 'tcx> Decodable<CacheDecoder<'a, 'tcx>> for &'tcx UnordSet<LocalDefId> {
     #[inline]
     fn decode(d: &mut CacheDecoder<'a, 'tcx>) -> Self {
+        dbg!("@");
+
         RefDecodable::decode(d)
     }
 }
@@ -702,6 +727,8 @@ impl<'a, 'tcx> Decodable<CacheDecoder<'a, 'tcx>>
 {
     #[inline]
     fn decode(d: &mut CacheDecoder<'a, 'tcx>) -> Self {
+        dbg!("@");
+
         RefDecodable::decode(d)
     }
 }
@@ -711,6 +738,8 @@ impl<'a, 'tcx> Decodable<CacheDecoder<'a, 'tcx>>
 {
     #[inline]
     fn decode(d: &mut CacheDecoder<'a, 'tcx>) -> Self {
+        dbg!("@");
+
         RefDecodable::decode(d)
     }
 }
@@ -718,6 +747,8 @@ impl<'a, 'tcx> Decodable<CacheDecoder<'a, 'tcx>>
 impl<'a, 'tcx> Decodable<CacheDecoder<'a, 'tcx>> for &'tcx [(ty::Clause<'tcx>, Span)] {
     #[inline]
     fn decode(d: &mut CacheDecoder<'a, 'tcx>) -> Self {
+        dbg!("@");
+
         RefDecodable::decode(d)
     }
 }
@@ -725,6 +756,8 @@ impl<'a, 'tcx> Decodable<CacheDecoder<'a, 'tcx>> for &'tcx [(ty::Clause<'tcx>, S
 impl<'a, 'tcx> Decodable<CacheDecoder<'a, 'tcx>> for &'tcx [rustc_ast::InlineAsmTemplatePiece] {
     #[inline]
     fn decode(d: &mut CacheDecoder<'a, 'tcx>) -> Self {
+        dbg!("@");
+
         RefDecodable::decode(d)
     }
 }
@@ -732,6 +765,8 @@ impl<'a, 'tcx> Decodable<CacheDecoder<'a, 'tcx>> for &'tcx [rustc_ast::InlineAsm
 impl<'a, 'tcx> Decodable<CacheDecoder<'a, 'tcx>> for &'tcx [Spanned<MonoItem<'tcx>>] {
     #[inline]
     fn decode(d: &mut CacheDecoder<'a, 'tcx>) -> Self {
+        dbg!("@");
+
         RefDecodable::decode(d)
     }
 }
@@ -741,6 +776,8 @@ impl<'a, 'tcx> Decodable<CacheDecoder<'a, 'tcx>>
 {
     #[inline]
     fn decode(d: &mut CacheDecoder<'a, 'tcx>) -> Self {
+        dbg!("@");
+
         RefDecodable::decode(d)
     }
 }
@@ -748,6 +785,8 @@ impl<'a, 'tcx> Decodable<CacheDecoder<'a, 'tcx>>
 impl<'a, 'tcx> Decodable<CacheDecoder<'a, 'tcx>> for &'tcx rustc_ast::tokenstream::TokenStream {
     #[inline]
     fn decode(d: &mut CacheDecoder<'a, 'tcx>) -> Self {
+        dbg!("@");
+
         RefDecodable::decode(d)
     }
 }
@@ -757,6 +796,7 @@ macro_rules! impl_ref_decoder {
         $(impl<'a, $tcx> Decodable<CacheDecoder<'a, $tcx>> for &$tcx [$ty] {
             #[inline]
             fn decode(d: &mut CacheDecoder<'a, $tcx>) -> Self {
+        dbg!("@");
                 RefDecodable::decode(d)
             }
         })*
