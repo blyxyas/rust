@@ -855,9 +855,6 @@ impl CStore {
             (LoadResult::Loaded(library), host_library) => {
                 info!("register newly loaded library for `{}`", name);
 
-                let crate_root = library.metadata.get_root();
-                let feed = self.intern_stable_crate_id(tcx, &crate_root).unwrap();
-
                 let cnum = self.register_crate(
                     tcx,
                     host_library,
