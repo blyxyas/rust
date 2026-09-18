@@ -870,6 +870,7 @@ impl CStore {
 
                     let mut symbols_without_gens = FxHashSet::default();
                     print_item(
+                        cnum,
                         tcx,
                         &crate_data,
                         &crate_data.root,
@@ -890,6 +891,7 @@ impl CStore {
         };
 
         fn print_item(
+            cnum: CrateNum,
             tcx: TyCtxt<'_>,
             crate_data: &CrateMetadata,
             root: &CrateRoot,
@@ -934,7 +936,7 @@ impl CStore {
                 root.tables.module_children_non_reexports.get(&crate_data.blob, item)
             {
                 for child in children.decode((crate_data, tcx)) {
-                    print_item(tcx, crate_data, &root, child, all_symbols).unwrap();
+                    print_item(cnum, tcx, crate_data, &root, child, all_symbols).unwrap();
                 }
             }
 
@@ -942,9 +944,8 @@ impl CStore {
                 root.tables.module_children_reexports2.get(&crate_data.blob, item)
             {
                 for child in children.decode((crate_data, tcx)) {
-                    if child.ident.as_str() == "run_if" {
-                        eprintln!("{},{} :: {}", root.name().as_str(), child.ident, child.res.descr());
-                        eprintln!(
+                    eprintln!("{},{} :: {}", root.name().as_str(), child.ident, child.res.descr());
+                    eprintln!(
                         "SYMBOL_MENTIONED = {}{} BY {}",
                         root.name().as_str(),
                         DefPath::make(LOCAL_CRATE, child.res.def_id().index, |parent| root
@@ -954,20 +955,42 @@ impl CStore {
                             .unwrap()
                             .decode((crate_data, tcx)))
                         .to_string_no_crate_verbose(),
-                        std::env::var("CARGO_CRATE_NAME").unwrap_or("<Cannot>".into())
-                            );
+                        std::env::var("CARGO_CRATE_NAME").unwrap_or("<Cannot>".into()));
+                    let to_ignore = ["run_if", "boxed", "schedule_configs"];
+                    if to_ignore.contains(&child.ident.as_str()) && false {
+                        continue;
+                        // eprintln!(
+                        // "SYMBOL_MENTIONED = {}{} BY {}",
+                        // root.name().as_str(),
+                        // DefPath::make(LOCAL_CRATE, child.res.def_id().index, |parent| root
+                        //     .tables
+                        //     .def_keys
+                        //     .get(&crate_data.blob, parent)
+                        //     .unwrap()
+                        //     .decode((crate_data, tcx)))
+                        // .to_string_no_crate_verbose(),
+                        // std::env::var("CARGO_CRATE_NAME").unwrap_or("<Cannot>".into())
+                        //     );
                     }
                     if let Some(def_id) = child.res.opt_def_id() {
                         if crate_data.is_item_mir_available(def_id.index) {
-                            if let Some(mitems) = crate_data
+                            dbg!("MIR");
+
+                            if matches!(crate_data.def_kind(def_id.index), DefKind::AssocFn) && crate_data.root.tables.defaultness.get(crate_data, def_id.index).has_value() {
+                                dbg!("ASSOC MIAAAAUU");
+                                continue;
+                            // for trait_ in crate_data.root.traits.decode((crate_data, tcx)) {
+                                // if let Some(item) = tcx.opt_associated_item(DefId { index: trait_, krate: cnum}) {
+                                    // dbg!("ASSOC");
+                        // }
+                            }
+                            if let Some(Some(mitems)) = crate_data
                                 .root
                                 .tables
                                 .optimized_mir
                                 .get(crate_data, def_id.index)
-                                .unwrap()
-                                .decode((crate_data, tcx))
-                                .mentioned_items
-                            {
+                                .map(|mir| {mir.decode((crate_data, tcx)).mentioned_items.is_some_and(|x| {dbg!(x.len()); true}); mir.decode((crate_data, tcx)).mentioned_items } )
+                            
                                 for mitem in mitems {
                                     match mitem {
                                         MentionedItem::Fn(fn_ty) => {

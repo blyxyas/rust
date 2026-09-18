@@ -427,7 +427,7 @@ impl<'a, 'tcx> TyDecoder<'tcx> for MetadataDecodeContext<'a, 'tcx> {
     where
         F: FnOnce(&mut Self) -> Ty<'tcx>,
     {
-        dbg!("@");
+        // ////dbg!("@");
         let tcx = self.tcx;
 
         let key = ty::CReaderCacheKey { cnum: Some(self.cdata.cnum), pos: shorthand };
@@ -445,7 +445,7 @@ impl<'a, 'tcx> TyDecoder<'tcx> for MetadataDecodeContext<'a, 'tcx> {
     where
         F: FnOnce(&mut Self) -> R,
     {
-        dbg!("@");
+        ////dbg!("@");
         let new_opaque = self.blob_decoder.opaque.split_at(pos);
         let old_opaque = mem::replace(&mut self.blob_decoder.opaque, new_opaque);
         let old_state = mem::replace(&mut self.blob_decoder.lazy_state, LazyState::NoNode);
@@ -456,7 +456,7 @@ impl<'a, 'tcx> TyDecoder<'tcx> for MetadataDecodeContext<'a, 'tcx> {
     }
 
     fn decode_alloc_id(&mut self) -> rustc_middle::mir::interpret::AllocId {
-        dbg!("@");
+        ////dbg!("@");
         let ads = self.alloc_decoding_session;
         ads.decode_alloc_id(self)
     }
@@ -494,12 +494,12 @@ impl<'a, 'tcx> SpanDecoder for MetadataDecodeContext<'a, 'tcx> {
 
     #[track_caller]
     fn decode_syntax_context(&mut self) -> SyntaxContext {
-        // dbg!("Decoding syntax context");
+        // ////dbg!("Decoding syntax context");
         let cdata = self.cdata;
         let tcx = self.tcx;
 
         let cname = cdata.root.name();
-        // dbg!("INside decode context");
+        // ////dbg!("INside decode context");
         let x =
             rustc_span::hygiene::decode_syntax_context(self, &cdata.hygiene_context, |_, id| {
                 debug!("SpecializedDecoder<SyntaxContext>: decoding {}", id);
@@ -557,7 +557,7 @@ impl<'a, 'tcx> SpanDecoder for MetadataDecodeContext<'a, 'tcx> {
             };
             self.with_position(position, SpanData::decode)
         } else {
-            // dbg!(Location::caller());
+            // //dbg!(Location::caller());
             SpanData::decode(self)
         };
         data.span()
@@ -603,7 +603,7 @@ impl<'a, 'tcx> Decodable<MetadataDecodeContext<'a, 'tcx>> for SpanData {
     fn decode(decoder: &mut MetadataDecodeContext<'a, 'tcx>) -> SpanData {
         let tag = SpanTag::decode(decoder);
         if tag.context().is_none() {
-            // dbg!(Location::caller());
+            // //dbg!(Location::caller());
         }
         let ctxt = tag.context().unwrap_or_else(|| SyntaxContext::decode(decoder));
 
@@ -710,7 +710,7 @@ impl<'a, 'tcx> Decodable<MetadataDecodeContext<'a, 'tcx>> for &'tcx [(ty::Clause
 
 impl<D: LazyDecoder, T> Decodable<D> for LazyValue<T> {
     fn decode(decoder: &mut D) -> Self {
-        dbg!("@");
+        //dbg!("@");
         decoder.read_lazy()
     }
 }
@@ -718,7 +718,7 @@ impl<D: LazyDecoder, T> Decodable<D> for LazyValue<T> {
 impl<D: LazyDecoder, T> Decodable<D> for LazyArray<T> {
     #[inline]
     fn decode(decoder: &mut D) -> Self {
-        dbg!("@");
+        //dbg!("@");
         let len = decoder.read_usize();
         if len == 0 { LazyArray::default() } else { decoder.read_lazy_array(len) }
     }
@@ -726,7 +726,7 @@ impl<D: LazyDecoder, T> Decodable<D> for LazyArray<T> {
 
 impl<I: Idx, D: LazyDecoder, T> Decodable<D> for LazyTable<I, T> {
     fn decode(decoder: &mut D) -> Self {
-        dbg!("@");
+        //dbg!("@");
         let width = decoder.read_usize();
         let len = decoder.read_usize();
         decoder.read_lazy_table(width, len)
@@ -1101,7 +1101,7 @@ impl CrateMetadata {
         if cnum == LOCAL_CRATE { self.cnum } else { self.cnum_map[cnum] }
     }
 
-    fn def_kind(&self, item_id: DefIndex) -> DefKind {
+    pub fn def_kind(&self, item_id: DefIndex) -> DefKind {
         self.root
             .tables
             .def_kind

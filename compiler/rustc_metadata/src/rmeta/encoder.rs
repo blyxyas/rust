@@ -1556,6 +1556,17 @@ impl<'a, 'tcx> EncodeContext<'a, 'tcx> {
                     self.tcx.explicit_implied_clauses_of(def_id).skip_binder());
             }
             if let DefKind::Trait | DefKind::Impl { .. } = def_kind {
+                let module_children = self.tcx.module_children_local(local_id);
+                if module_children.iter().all(|modchild| {
+                    if let Some(def_id) = modchild.res.opt_def_id() {
+                        !find_attr!(tcx, def_id, AttributeKind::RustcStdInternalSymbol)
+                    } else {
+                        true
+                    }
+                }) {
+                    record_array!(self.tables.module_children_reexports2[def_id] <- module_children);
+                }
+
                 let associated_item_def_ids = self.tcx.associated_item_def_ids(def_id);
                 record_array!(self.tables.associated_item_or_field_def_ids[def_id] <-
                     associated_item_def_ids.iter().map(|&def_id| {
@@ -1667,6 +1678,16 @@ impl<'a, 'tcx> EncodeContext<'a, 'tcx> {
                 assert!(def_id.is_local());
                 def_id.index
             }));
+            // let module_children = self.tcx.module_children_local(local_id);
+            // if module_children.iter().all(|modchild| {
+            //         if let Some(def_id) = modchild.res.opt_def_id() {
+            //             !find_attr!(tcx, def_id, AttributeKind::RustcStdInternalSymbol)
+            //         } else {
+            //             true
+            //         }
+            //     }) {
+            //         record_array!(self.tables.module_children_reexports2[def_id] <- module_children);
+            //     }
         }
 
         for (def_id, res_map) in &tcx.resolutions(()).doc_link_resolutions {

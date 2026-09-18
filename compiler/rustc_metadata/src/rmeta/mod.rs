@@ -280,8 +280,8 @@ pub(crate) struct CrateRoot {
     fake_doc_items: LazyArray<DefIndex>,
     native_libraries: LazyArray<NativeLib>,
     foreign_modules: LazyArray<ForeignModule>,
-    traits: LazyArray<DefIndex>,
-    impls: LazyArray<TraitImpls>,
+    pub traits: LazyArray<DefIndex>,
+    pub impls: LazyArray<TraitImpls>,
     incoherent_impls: LazyArray<IncoherentImpls>,
     interpret_alloc_index: LazyArray<u64>,
     proc_macro_data: Option<ProcMacroData>,
@@ -427,8 +427,7 @@ define_tables! {
     attributes: Table<DefIndex, LazyArray<hir::Attribute>>,
     // For non-reexported names in a module every name is associated with a separate `DefId`,
     // so we can take their names, visibilities etc from other encoded tables.
-    module_children_non_reexports: Table<DefIndex
-    , LazyArray<DefIndex>>,
+    module_children_non_reexports: Table<DefIndex, LazyArray<DefIndex>>,
     module_children_reexports2: Table<DefIndex, LazyArray<ModChild>>,
     associated_item_or_field_def_ids: Table<DefIndex, LazyArray<DefIndex>>,
     def_kind: Table<DefIndex, DefKind>,
