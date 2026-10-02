@@ -94,5 +94,7 @@ Options:
           Make bootstrap to behave as it's running on the CI environment or not [possible values: true, false]
       --skip-std-check-if-no-download-rustc
           Skip checking the standard library if `rust.download-rustc` isn't available. This is mostly for RA as building the stage1 compiler to check the library tree on each code change might be too much for some computers
+      --list-expanded-paths
+          Whether to list the expanded paths when testing, useful if you want to distribute different tests to different machines using the one running
   -h, --help
           Print help (see more with '--help')

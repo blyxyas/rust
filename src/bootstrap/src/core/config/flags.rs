@@ -200,6 +200,12 @@ pub struct Flags {
     /// on each code change might be too much for some computers.
     #[arg(global = true, long)]
     pub skip_std_check_if_no_download_rustc: bool,
+
+    /// Whether to list the expanded paths when testing, useful if you want to
+    /// distribute different tests to different machines using the one running
+    // bootstrap as coordinator.
+    #[arg(global = true, long)]
+    pub list_expanded_paths: bool,
 }
 
 impl Flags {

@@ -1,6 +1,6 @@
 # Print an optspec for argparse to handle cmd's options that are independent of any subcommand.
 function __fish_x_global_optspecs
-	string join \n v/verbose q/quiet i/incremental config= build-dir= build= host= target= exclude= skip= include-default-paths rustc-error-format= on-fail= dry-run dump-bootstrap-shims stage= keep-stage= keep-stage-std= src= j/jobs= warnings= json-output compile-time-deps color= bypass-bootstrap-lock rust-profile-generate= rust-profile-use= llvm-profile-use= llvm-profile-generate enable-bolt-settings skip-stage0-validation reproducible-artifact= set= ci= skip-std-check-if-no-download-rustc h/help
+	string join \n v/verbose q/quiet i/incremental config= build-dir= build= host= target= exclude= skip= include-default-paths rustc-error-format= on-fail= dry-run dump-bootstrap-shims stage= keep-stage= keep-stage-std= src= j/jobs= warnings= json-output compile-time-deps color= bypass-bootstrap-lock rust-profile-generate= rust-profile-use= llvm-profile-use= llvm-profile-generate enable-bolt-settings skip-stage0-validation reproducible-artifact= set= ci= skip-std-check-if-no-download-rustc list-expanded-paths h/help
 end
 
 function __fish_x_needs_command
@@ -59,6 +59,7 @@ complete -c x -n "__fish_x_needs_command" -l llvm-profile-generate -d 'generate 
 complete -c x -n "__fish_x_needs_command" -l enable-bolt-settings -d 'Enable BOLT link flags'
 complete -c x -n "__fish_x_needs_command" -l skip-stage0-validation -d 'Skip stage0 compiler validation'
 complete -c x -n "__fish_x_needs_command" -l skip-std-check-if-no-download-rustc -d 'Skip checking the standard library if `rust.download-rustc` isn\'t available. This is mostly for RA as building the stage1 compiler to check the library tree on each code change might be too much for some computers'
+complete -c x -n "__fish_x_needs_command" -l list-expanded-paths -d 'Whether to list the expanded paths when testing, useful if you want to distribute different tests to different machines using the one running'
 complete -c x -n "__fish_x_needs_command" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c x -n "__fish_x_needs_command" -a "build" -d 'Compile either the compiler or libraries'
 complete -c x -n "__fish_x_needs_command" -a "b" -d 'Compile either the compiler or libraries'
@@ -117,6 +118,7 @@ complete -c x -n "__fish_x_using_subcommand build" -l llvm-profile-generate -d '
 complete -c x -n "__fish_x_using_subcommand build" -l enable-bolt-settings -d 'Enable BOLT link flags'
 complete -c x -n "__fish_x_using_subcommand build" -l skip-stage0-validation -d 'Skip stage0 compiler validation'
 complete -c x -n "__fish_x_using_subcommand build" -l skip-std-check-if-no-download-rustc -d 'Skip checking the standard library if `rust.download-rustc` isn\'t available. This is mostly for RA as building the stage1 compiler to check the library tree on each code change might be too much for some computers'
+complete -c x -n "__fish_x_using_subcommand build" -l list-expanded-paths -d 'Whether to list the expanded paths when testing, useful if you want to distribute different tests to different machines using the one running'
 complete -c x -n "__fish_x_using_subcommand build" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c x -n "__fish_x_using_subcommand b" -l config -d 'TOML configuration file for build' -r -F
 complete -c x -n "__fish_x_using_subcommand b" -l build-dir -d 'Build directory, overrides `build.build-dir` in `bootstrap.toml`' -r -f -a "(__fish_complete_directories)"
@@ -154,6 +156,7 @@ complete -c x -n "__fish_x_using_subcommand b" -l llvm-profile-generate -d 'gene
 complete -c x -n "__fish_x_using_subcommand b" -l enable-bolt-settings -d 'Enable BOLT link flags'
 complete -c x -n "__fish_x_using_subcommand b" -l skip-stage0-validation -d 'Skip stage0 compiler validation'
 complete -c x -n "__fish_x_using_subcommand b" -l skip-std-check-if-no-download-rustc -d 'Skip checking the standard library if `rust.download-rustc` isn\'t available. This is mostly for RA as building the stage1 compiler to check the library tree on each code change might be too much for some computers'
+complete -c x -n "__fish_x_using_subcommand b" -l list-expanded-paths -d 'Whether to list the expanded paths when testing, useful if you want to distribute different tests to different machines using the one running'
 complete -c x -n "__fish_x_using_subcommand b" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c x -n "__fish_x_using_subcommand check" -l config -d 'TOML configuration file for build' -r -F
 complete -c x -n "__fish_x_using_subcommand check" -l build-dir -d 'Build directory, overrides `build.build-dir` in `bootstrap.toml`' -r -f -a "(__fish_complete_directories)"
@@ -192,6 +195,7 @@ complete -c x -n "__fish_x_using_subcommand check" -l llvm-profile-generate -d '
 complete -c x -n "__fish_x_using_subcommand check" -l enable-bolt-settings -d 'Enable BOLT link flags'
 complete -c x -n "__fish_x_using_subcommand check" -l skip-stage0-validation -d 'Skip stage0 compiler validation'
 complete -c x -n "__fish_x_using_subcommand check" -l skip-std-check-if-no-download-rustc -d 'Skip checking the standard library if `rust.download-rustc` isn\'t available. This is mostly for RA as building the stage1 compiler to check the library tree on each code change might be too much for some computers'
+complete -c x -n "__fish_x_using_subcommand check" -l list-expanded-paths -d 'Whether to list the expanded paths when testing, useful if you want to distribute different tests to different machines using the one running'
 complete -c x -n "__fish_x_using_subcommand check" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c x -n "__fish_x_using_subcommand c" -l config -d 'TOML configuration file for build' -r -F
 complete -c x -n "__fish_x_using_subcommand c" -l build-dir -d 'Build directory, overrides `build.build-dir` in `bootstrap.toml`' -r -f -a "(__fish_complete_directories)"
@@ -230,6 +234,7 @@ complete -c x -n "__fish_x_using_subcommand c" -l llvm-profile-generate -d 'gene
 complete -c x -n "__fish_x_using_subcommand c" -l enable-bolt-settings -d 'Enable BOLT link flags'
 complete -c x -n "__fish_x_using_subcommand c" -l skip-stage0-validation -d 'Skip stage0 compiler validation'
 complete -c x -n "__fish_x_using_subcommand c" -l skip-std-check-if-no-download-rustc -d 'Skip checking the standard library if `rust.download-rustc` isn\'t available. This is mostly for RA as building the stage1 compiler to check the library tree on each code change might be too much for some computers'
+complete -c x -n "__fish_x_using_subcommand c" -l list-expanded-paths -d 'Whether to list the expanded paths when testing, useful if you want to distribute different tests to different machines using the one running'
 complete -c x -n "__fish_x_using_subcommand c" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c x -n "__fish_x_using_subcommand clippy" -s A -d 'clippy lints to allow' -r
 complete -c x -n "__fish_x_using_subcommand clippy" -s D -d 'clippy lints to deny' -r
@@ -273,6 +278,7 @@ complete -c x -n "__fish_x_using_subcommand clippy" -l llvm-profile-generate -d 
 complete -c x -n "__fish_x_using_subcommand clippy" -l enable-bolt-settings -d 'Enable BOLT link flags'
 complete -c x -n "__fish_x_using_subcommand clippy" -l skip-stage0-validation -d 'Skip stage0 compiler validation'
 complete -c x -n "__fish_x_using_subcommand clippy" -l skip-std-check-if-no-download-rustc -d 'Skip checking the standard library if `rust.download-rustc` isn\'t available. This is mostly for RA as building the stage1 compiler to check the library tree on each code change might be too much for some computers'
+complete -c x -n "__fish_x_using_subcommand clippy" -l list-expanded-paths -d 'Whether to list the expanded paths when testing, useful if you want to distribute different tests to different machines using the one running'
 complete -c x -n "__fish_x_using_subcommand clippy" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c x -n "__fish_x_using_subcommand fix" -l config -d 'TOML configuration file for build' -r -F
 complete -c x -n "__fish_x_using_subcommand fix" -l build-dir -d 'Build directory, overrides `build.build-dir` in `bootstrap.toml`' -r -f -a "(__fish_complete_directories)"
@@ -310,6 +316,7 @@ complete -c x -n "__fish_x_using_subcommand fix" -l llvm-profile-generate -d 'ge
 complete -c x -n "__fish_x_using_subcommand fix" -l enable-bolt-settings -d 'Enable BOLT link flags'
 complete -c x -n "__fish_x_using_subcommand fix" -l skip-stage0-validation -d 'Skip stage0 compiler validation'
 complete -c x -n "__fish_x_using_subcommand fix" -l skip-std-check-if-no-download-rustc -d 'Skip checking the standard library if `rust.download-rustc` isn\'t available. This is mostly for RA as building the stage1 compiler to check the library tree on each code change might be too much for some computers'
+complete -c x -n "__fish_x_using_subcommand fix" -l list-expanded-paths -d 'Whether to list the expanded paths when testing, useful if you want to distribute different tests to different machines using the one running'
 complete -c x -n "__fish_x_using_subcommand fix" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c x -n "__fish_x_using_subcommand fmt" -l config -d 'TOML configuration file for build' -r -F
 complete -c x -n "__fish_x_using_subcommand fmt" -l build-dir -d 'Build directory, overrides `build.build-dir` in `bootstrap.toml`' -r -f -a "(__fish_complete_directories)"
@@ -348,6 +355,7 @@ complete -c x -n "__fish_x_using_subcommand fmt" -l llvm-profile-generate -d 'ge
 complete -c x -n "__fish_x_using_subcommand fmt" -l enable-bolt-settings -d 'Enable BOLT link flags'
 complete -c x -n "__fish_x_using_subcommand fmt" -l skip-stage0-validation -d 'Skip stage0 compiler validation'
 complete -c x -n "__fish_x_using_subcommand fmt" -l skip-std-check-if-no-download-rustc -d 'Skip checking the standard library if `rust.download-rustc` isn\'t available. This is mostly for RA as building the stage1 compiler to check the library tree on each code change might be too much for some computers'
+complete -c x -n "__fish_x_using_subcommand fmt" -l list-expanded-paths -d 'Whether to list the expanded paths when testing, useful if you want to distribute different tests to different machines using the one running'
 complete -c x -n "__fish_x_using_subcommand fmt" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c x -n "__fish_x_using_subcommand doc" -l config -d 'TOML configuration file for build' -r -F
 complete -c x -n "__fish_x_using_subcommand doc" -l build-dir -d 'Build directory, overrides `build.build-dir` in `bootstrap.toml`' -r -f -a "(__fish_complete_directories)"
@@ -386,6 +394,7 @@ complete -c x -n "__fish_x_using_subcommand doc" -l llvm-profile-generate -d 'ge
 complete -c x -n "__fish_x_using_subcommand doc" -l enable-bolt-settings -d 'Enable BOLT link flags'
 complete -c x -n "__fish_x_using_subcommand doc" -l skip-stage0-validation -d 'Skip stage0 compiler validation'
 complete -c x -n "__fish_x_using_subcommand doc" -l skip-std-check-if-no-download-rustc -d 'Skip checking the standard library if `rust.download-rustc` isn\'t available. This is mostly for RA as building the stage1 compiler to check the library tree on each code change might be too much for some computers'
+complete -c x -n "__fish_x_using_subcommand doc" -l list-expanded-paths -d 'Whether to list the expanded paths when testing, useful if you want to distribute different tests to different machines using the one running'
 complete -c x -n "__fish_x_using_subcommand doc" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c x -n "__fish_x_using_subcommand d" -l config -d 'TOML configuration file for build' -r -F
 complete -c x -n "__fish_x_using_subcommand d" -l build-dir -d 'Build directory, overrides `build.build-dir` in `bootstrap.toml`' -r -f -a "(__fish_complete_directories)"
@@ -424,6 +433,7 @@ complete -c x -n "__fish_x_using_subcommand d" -l llvm-profile-generate -d 'gene
 complete -c x -n "__fish_x_using_subcommand d" -l enable-bolt-settings -d 'Enable BOLT link flags'
 complete -c x -n "__fish_x_using_subcommand d" -l skip-stage0-validation -d 'Skip stage0 compiler validation'
 complete -c x -n "__fish_x_using_subcommand d" -l skip-std-check-if-no-download-rustc -d 'Skip checking the standard library if `rust.download-rustc` isn\'t available. This is mostly for RA as building the stage1 compiler to check the library tree on each code change might be too much for some computers'
+complete -c x -n "__fish_x_using_subcommand d" -l list-expanded-paths -d 'Whether to list the expanded paths when testing, useful if you want to distribute different tests to different machines using the one running'
 complete -c x -n "__fish_x_using_subcommand d" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c x -n "__fish_x_using_subcommand test" -l test-args -d 'extra arguments to be passed for the test tool being used (e.g. libtest, compiletest or rustdoc)' -r
 complete -c x -n "__fish_x_using_subcommand test" -l compiletest-rustc-args -d 'extra options to pass the compiler when running compiletest tests' -r
@@ -481,6 +491,7 @@ complete -c x -n "__fish_x_using_subcommand test" -l llvm-profile-generate -d 'g
 complete -c x -n "__fish_x_using_subcommand test" -l enable-bolt-settings -d 'Enable BOLT link flags'
 complete -c x -n "__fish_x_using_subcommand test" -l skip-stage0-validation -d 'Skip stage0 compiler validation'
 complete -c x -n "__fish_x_using_subcommand test" -l skip-std-check-if-no-download-rustc -d 'Skip checking the standard library if `rust.download-rustc` isn\'t available. This is mostly for RA as building the stage1 compiler to check the library tree on each code change might be too much for some computers'
+complete -c x -n "__fish_x_using_subcommand test" -l list-expanded-paths -d 'Whether to list the expanded paths when testing, useful if you want to distribute different tests to different machines using the one running'
 complete -c x -n "__fish_x_using_subcommand test" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c x -n "__fish_x_using_subcommand t" -l test-args -d 'extra arguments to be passed for the test tool being used (e.g. libtest, compiletest or rustdoc)' -r
 complete -c x -n "__fish_x_using_subcommand t" -l compiletest-rustc-args -d 'extra options to pass the compiler when running compiletest tests' -r
@@ -538,6 +549,7 @@ complete -c x -n "__fish_x_using_subcommand t" -l llvm-profile-generate -d 'gene
 complete -c x -n "__fish_x_using_subcommand t" -l enable-bolt-settings -d 'Enable BOLT link flags'
 complete -c x -n "__fish_x_using_subcommand t" -l skip-stage0-validation -d 'Skip stage0 compiler validation'
 complete -c x -n "__fish_x_using_subcommand t" -l skip-std-check-if-no-download-rustc -d 'Skip checking the standard library if `rust.download-rustc` isn\'t available. This is mostly for RA as building the stage1 compiler to check the library tree on each code change might be too much for some computers'
+complete -c x -n "__fish_x_using_subcommand t" -l list-expanded-paths -d 'Whether to list the expanded paths when testing, useful if you want to distribute different tests to different machines using the one running'
 complete -c x -n "__fish_x_using_subcommand t" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c x -n "__fish_x_using_subcommand miri" -l test-args -d 'extra arguments to be passed for the test tool being used (e.g. libtest, compiletest or rustdoc)' -r
 complete -c x -n "__fish_x_using_subcommand miri" -l config -d 'TOML configuration file for build' -r -F
@@ -580,6 +592,7 @@ complete -c x -n "__fish_x_using_subcommand miri" -l llvm-profile-generate -d 'g
 complete -c x -n "__fish_x_using_subcommand miri" -l enable-bolt-settings -d 'Enable BOLT link flags'
 complete -c x -n "__fish_x_using_subcommand miri" -l skip-stage0-validation -d 'Skip stage0 compiler validation'
 complete -c x -n "__fish_x_using_subcommand miri" -l skip-std-check-if-no-download-rustc -d 'Skip checking the standard library if `rust.download-rustc` isn\'t available. This is mostly for RA as building the stage1 compiler to check the library tree on each code change might be too much for some computers'
+complete -c x -n "__fish_x_using_subcommand miri" -l list-expanded-paths -d 'Whether to list the expanded paths when testing, useful if you want to distribute different tests to different machines using the one running'
 complete -c x -n "__fish_x_using_subcommand miri" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c x -n "__fish_x_using_subcommand bench" -l test-args -r
 complete -c x -n "__fish_x_using_subcommand bench" -l config -d 'TOML configuration file for build' -r -F
@@ -617,6 +630,7 @@ complete -c x -n "__fish_x_using_subcommand bench" -l llvm-profile-generate -d '
 complete -c x -n "__fish_x_using_subcommand bench" -l enable-bolt-settings -d 'Enable BOLT link flags'
 complete -c x -n "__fish_x_using_subcommand bench" -l skip-stage0-validation -d 'Skip stage0 compiler validation'
 complete -c x -n "__fish_x_using_subcommand bench" -l skip-std-check-if-no-download-rustc -d 'Skip checking the standard library if `rust.download-rustc` isn\'t available. This is mostly for RA as building the stage1 compiler to check the library tree on each code change might be too much for some computers'
+complete -c x -n "__fish_x_using_subcommand bench" -l list-expanded-paths -d 'Whether to list the expanded paths when testing, useful if you want to distribute different tests to different machines using the one running'
 complete -c x -n "__fish_x_using_subcommand bench" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c x -n "__fish_x_using_subcommand clean" -l stage -d 'Clean a specific stage without touching other artifacts. By default, every stage is cleaned if this option is not used' -r
 complete -c x -n "__fish_x_using_subcommand clean" -l config -d 'TOML configuration file for build' -r -F
@@ -654,6 +668,7 @@ complete -c x -n "__fish_x_using_subcommand clean" -l llvm-profile-generate -d '
 complete -c x -n "__fish_x_using_subcommand clean" -l enable-bolt-settings -d 'Enable BOLT link flags'
 complete -c x -n "__fish_x_using_subcommand clean" -l skip-stage0-validation -d 'Skip stage0 compiler validation'
 complete -c x -n "__fish_x_using_subcommand clean" -l skip-std-check-if-no-download-rustc -d 'Skip checking the standard library if `rust.download-rustc` isn\'t available. This is mostly for RA as building the stage1 compiler to check the library tree on each code change might be too much for some computers'
+complete -c x -n "__fish_x_using_subcommand clean" -l list-expanded-paths -d 'Whether to list the expanded paths when testing, useful if you want to distribute different tests to different machines using the one running'
 complete -c x -n "__fish_x_using_subcommand clean" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c x -n "__fish_x_using_subcommand dist" -l config -d 'TOML configuration file for build' -r -F
 complete -c x -n "__fish_x_using_subcommand dist" -l build-dir -d 'Build directory, overrides `build.build-dir` in `bootstrap.toml`' -r -f -a "(__fish_complete_directories)"
@@ -690,6 +705,7 @@ complete -c x -n "__fish_x_using_subcommand dist" -l llvm-profile-generate -d 'g
 complete -c x -n "__fish_x_using_subcommand dist" -l enable-bolt-settings -d 'Enable BOLT link flags'
 complete -c x -n "__fish_x_using_subcommand dist" -l skip-stage0-validation -d 'Skip stage0 compiler validation'
 complete -c x -n "__fish_x_using_subcommand dist" -l skip-std-check-if-no-download-rustc -d 'Skip checking the standard library if `rust.download-rustc` isn\'t available. This is mostly for RA as building the stage1 compiler to check the library tree on each code change might be too much for some computers'
+complete -c x -n "__fish_x_using_subcommand dist" -l list-expanded-paths -d 'Whether to list the expanded paths when testing, useful if you want to distribute different tests to different machines using the one running'
 complete -c x -n "__fish_x_using_subcommand dist" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c x -n "__fish_x_using_subcommand install" -l config -d 'TOML configuration file for build' -r -F
 complete -c x -n "__fish_x_using_subcommand install" -l build-dir -d 'Build directory, overrides `build.build-dir` in `bootstrap.toml`' -r -f -a "(__fish_complete_directories)"
@@ -726,6 +742,7 @@ complete -c x -n "__fish_x_using_subcommand install" -l llvm-profile-generate -d
 complete -c x -n "__fish_x_using_subcommand install" -l enable-bolt-settings -d 'Enable BOLT link flags'
 complete -c x -n "__fish_x_using_subcommand install" -l skip-stage0-validation -d 'Skip stage0 compiler validation'
 complete -c x -n "__fish_x_using_subcommand install" -l skip-std-check-if-no-download-rustc -d 'Skip checking the standard library if `rust.download-rustc` isn\'t available. This is mostly for RA as building the stage1 compiler to check the library tree on each code change might be too much for some computers'
+complete -c x -n "__fish_x_using_subcommand install" -l list-expanded-paths -d 'Whether to list the expanded paths when testing, useful if you want to distribute different tests to different machines using the one running'
 complete -c x -n "__fish_x_using_subcommand install" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c x -n "__fish_x_using_subcommand run" -l args -d 'arguments for the tool' -r
 complete -c x -n "__fish_x_using_subcommand run" -l config -d 'TOML configuration file for build' -r -F
@@ -763,6 +780,7 @@ complete -c x -n "__fish_x_using_subcommand run" -l llvm-profile-generate -d 'ge
 complete -c x -n "__fish_x_using_subcommand run" -l enable-bolt-settings -d 'Enable BOLT link flags'
 complete -c x -n "__fish_x_using_subcommand run" -l skip-stage0-validation -d 'Skip stage0 compiler validation'
 complete -c x -n "__fish_x_using_subcommand run" -l skip-std-check-if-no-download-rustc -d 'Skip checking the standard library if `rust.download-rustc` isn\'t available. This is mostly for RA as building the stage1 compiler to check the library tree on each code change might be too much for some computers'
+complete -c x -n "__fish_x_using_subcommand run" -l list-expanded-paths -d 'Whether to list the expanded paths when testing, useful if you want to distribute different tests to different machines using the one running'
 complete -c x -n "__fish_x_using_subcommand run" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c x -n "__fish_x_using_subcommand r" -l args -d 'arguments for the tool' -r
 complete -c x -n "__fish_x_using_subcommand r" -l config -d 'TOML configuration file for build' -r -F
@@ -800,6 +818,7 @@ complete -c x -n "__fish_x_using_subcommand r" -l llvm-profile-generate -d 'gene
 complete -c x -n "__fish_x_using_subcommand r" -l enable-bolt-settings -d 'Enable BOLT link flags'
 complete -c x -n "__fish_x_using_subcommand r" -l skip-stage0-validation -d 'Skip stage0 compiler validation'
 complete -c x -n "__fish_x_using_subcommand r" -l skip-std-check-if-no-download-rustc -d 'Skip checking the standard library if `rust.download-rustc` isn\'t available. This is mostly for RA as building the stage1 compiler to check the library tree on each code change might be too much for some computers'
+complete -c x -n "__fish_x_using_subcommand r" -l list-expanded-paths -d 'Whether to list the expanded paths when testing, useful if you want to distribute different tests to different machines using the one running'
 complete -c x -n "__fish_x_using_subcommand r" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c x -n "__fish_x_using_subcommand setup" -l config -d 'TOML configuration file for build' -r -F
 complete -c x -n "__fish_x_using_subcommand setup" -l build-dir -d 'Build directory, overrides `build.build-dir` in `bootstrap.toml`' -r -f -a "(__fish_complete_directories)"
@@ -836,6 +855,7 @@ complete -c x -n "__fish_x_using_subcommand setup" -l llvm-profile-generate -d '
 complete -c x -n "__fish_x_using_subcommand setup" -l enable-bolt-settings -d 'Enable BOLT link flags'
 complete -c x -n "__fish_x_using_subcommand setup" -l skip-stage0-validation -d 'Skip stage0 compiler validation'
 complete -c x -n "__fish_x_using_subcommand setup" -l skip-std-check-if-no-download-rustc -d 'Skip checking the standard library if `rust.download-rustc` isn\'t available. This is mostly for RA as building the stage1 compiler to check the library tree on each code change might be too much for some computers'
+complete -c x -n "__fish_x_using_subcommand setup" -l list-expanded-paths -d 'Whether to list the expanded paths when testing, useful if you want to distribute different tests to different machines using the one running'
 complete -c x -n "__fish_x_using_subcommand setup" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c x -n "__fish_x_using_subcommand vendor" -l sync -d 'Additional `Cargo.toml` to sync and vendor' -r -F
 complete -c x -n "__fish_x_using_subcommand vendor" -l config -d 'TOML configuration file for build' -r -F
@@ -874,6 +894,7 @@ complete -c x -n "__fish_x_using_subcommand vendor" -l llvm-profile-generate -d 
 complete -c x -n "__fish_x_using_subcommand vendor" -l enable-bolt-settings -d 'Enable BOLT link flags'
 complete -c x -n "__fish_x_using_subcommand vendor" -l skip-stage0-validation -d 'Skip stage0 compiler validation'
 complete -c x -n "__fish_x_using_subcommand vendor" -l skip-std-check-if-no-download-rustc -d 'Skip checking the standard library if `rust.download-rustc` isn\'t available. This is mostly for RA as building the stage1 compiler to check the library tree on each code change might be too much for some computers'
+complete -c x -n "__fish_x_using_subcommand vendor" -l list-expanded-paths -d 'Whether to list the expanded paths when testing, useful if you want to distribute different tests to different machines using the one running'
 complete -c x -n "__fish_x_using_subcommand vendor" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c x -n "__fish_x_using_subcommand perf; and not __fish_seen_subcommand_from eprintln samply cachegrind benchmark compare" -l config -d 'TOML configuration file for build' -r -F
 complete -c x -n "__fish_x_using_subcommand perf; and not __fish_seen_subcommand_from eprintln samply cachegrind benchmark compare" -l build-dir -d 'Build directory, overrides `build.build-dir` in `bootstrap.toml`' -r -f -a "(__fish_complete_directories)"
@@ -910,6 +931,7 @@ complete -c x -n "__fish_x_using_subcommand perf; and not __fish_seen_subcommand
 complete -c x -n "__fish_x_using_subcommand perf; and not __fish_seen_subcommand_from eprintln samply cachegrind benchmark compare" -l enable-bolt-settings -d 'Enable BOLT link flags'
 complete -c x -n "__fish_x_using_subcommand perf; and not __fish_seen_subcommand_from eprintln samply cachegrind benchmark compare" -l skip-stage0-validation -d 'Skip stage0 compiler validation'
 complete -c x -n "__fish_x_using_subcommand perf; and not __fish_seen_subcommand_from eprintln samply cachegrind benchmark compare" -l skip-std-check-if-no-download-rustc -d 'Skip checking the standard library if `rust.download-rustc` isn\'t available. This is mostly for RA as building the stage1 compiler to check the library tree on each code change might be too much for some computers'
+complete -c x -n "__fish_x_using_subcommand perf; and not __fish_seen_subcommand_from eprintln samply cachegrind benchmark compare" -l list-expanded-paths -d 'Whether to list the expanded paths when testing, useful if you want to distribute different tests to different machines using the one running'
 complete -c x -n "__fish_x_using_subcommand perf; and not __fish_seen_subcommand_from eprintln samply cachegrind benchmark compare" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c x -n "__fish_x_using_subcommand perf; and not __fish_seen_subcommand_from eprintln samply cachegrind benchmark compare" -a "eprintln" -d 'Run `profile_local eprintln`. This executes the compiler on the given benchmarks and stores its stderr output'
 complete -c x -n "__fish_x_using_subcommand perf; and not __fish_seen_subcommand_from eprintln samply cachegrind benchmark compare" -a "samply" -d 'Run `profile_local samply` This executes the compiler on the given benchmarks and profiles it with `samply`. You need to install `samply`, e.g. using `cargo install --locked samply`'
@@ -955,6 +977,7 @@ complete -c x -n "__fish_x_using_subcommand perf; and __fish_seen_subcommand_fro
 complete -c x -n "__fish_x_using_subcommand perf; and __fish_seen_subcommand_from eprintln" -l enable-bolt-settings -d 'Enable BOLT link flags'
 complete -c x -n "__fish_x_using_subcommand perf; and __fish_seen_subcommand_from eprintln" -l skip-stage0-validation -d 'Skip stage0 compiler validation'
 complete -c x -n "__fish_x_using_subcommand perf; and __fish_seen_subcommand_from eprintln" -l skip-std-check-if-no-download-rustc -d 'Skip checking the standard library if `rust.download-rustc` isn\'t available. This is mostly for RA as building the stage1 compiler to check the library tree on each code change might be too much for some computers'
+complete -c x -n "__fish_x_using_subcommand perf; and __fish_seen_subcommand_from eprintln" -l list-expanded-paths -d 'Whether to list the expanded paths when testing, useful if you want to distribute different tests to different machines using the one running'
 complete -c x -n "__fish_x_using_subcommand perf; and __fish_seen_subcommand_from eprintln" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c x -n "__fish_x_using_subcommand perf; and __fish_seen_subcommand_from samply" -l include -d 'Select the benchmarks that you want to run (separated by commas). If unspecified, all benchmarks will be executed' -r
 complete -c x -n "__fish_x_using_subcommand perf; and __fish_seen_subcommand_from samply" -l exclude -d 'Select the benchmarks matching a prefix in this comma-separated list that you don\'t want to run' -r
@@ -995,6 +1018,7 @@ complete -c x -n "__fish_x_using_subcommand perf; and __fish_seen_subcommand_fro
 complete -c x -n "__fish_x_using_subcommand perf; and __fish_seen_subcommand_from samply" -l enable-bolt-settings -d 'Enable BOLT link flags'
 complete -c x -n "__fish_x_using_subcommand perf; and __fish_seen_subcommand_from samply" -l skip-stage0-validation -d 'Skip stage0 compiler validation'
 complete -c x -n "__fish_x_using_subcommand perf; and __fish_seen_subcommand_from samply" -l skip-std-check-if-no-download-rustc -d 'Skip checking the standard library if `rust.download-rustc` isn\'t available. This is mostly for RA as building the stage1 compiler to check the library tree on each code change might be too much for some computers'
+complete -c x -n "__fish_x_using_subcommand perf; and __fish_seen_subcommand_from samply" -l list-expanded-paths -d 'Whether to list the expanded paths when testing, useful if you want to distribute different tests to different machines using the one running'
 complete -c x -n "__fish_x_using_subcommand perf; and __fish_seen_subcommand_from samply" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c x -n "__fish_x_using_subcommand perf; and __fish_seen_subcommand_from cachegrind" -l include -d 'Select the benchmarks that you want to run (separated by commas). If unspecified, all benchmarks will be executed' -r
 complete -c x -n "__fish_x_using_subcommand perf; and __fish_seen_subcommand_from cachegrind" -l exclude -d 'Select the benchmarks matching a prefix in this comma-separated list that you don\'t want to run' -r
@@ -1035,6 +1059,7 @@ complete -c x -n "__fish_x_using_subcommand perf; and __fish_seen_subcommand_fro
 complete -c x -n "__fish_x_using_subcommand perf; and __fish_seen_subcommand_from cachegrind" -l enable-bolt-settings -d 'Enable BOLT link flags'
 complete -c x -n "__fish_x_using_subcommand perf; and __fish_seen_subcommand_from cachegrind" -l skip-stage0-validation -d 'Skip stage0 compiler validation'
 complete -c x -n "__fish_x_using_subcommand perf; and __fish_seen_subcommand_from cachegrind" -l skip-std-check-if-no-download-rustc -d 'Skip checking the standard library if `rust.download-rustc` isn\'t available. This is mostly for RA as building the stage1 compiler to check the library tree on each code change might be too much for some computers'
+complete -c x -n "__fish_x_using_subcommand perf; and __fish_seen_subcommand_from cachegrind" -l list-expanded-paths -d 'Whether to list the expanded paths when testing, useful if you want to distribute different tests to different machines using the one running'
 complete -c x -n "__fish_x_using_subcommand perf; and __fish_seen_subcommand_from cachegrind" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c x -n "__fish_x_using_subcommand perf; and __fish_seen_subcommand_from benchmark" -l include -d 'Select the benchmarks that you want to run (separated by commas). If unspecified, all benchmarks will be executed' -r
 complete -c x -n "__fish_x_using_subcommand perf; and __fish_seen_subcommand_from benchmark" -l exclude -d 'Select the benchmarks matching a prefix in this comma-separated list that you don\'t want to run' -r
@@ -1075,6 +1100,7 @@ complete -c x -n "__fish_x_using_subcommand perf; and __fish_seen_subcommand_fro
 complete -c x -n "__fish_x_using_subcommand perf; and __fish_seen_subcommand_from benchmark" -l enable-bolt-settings -d 'Enable BOLT link flags'
 complete -c x -n "__fish_x_using_subcommand perf; and __fish_seen_subcommand_from benchmark" -l skip-stage0-validation -d 'Skip stage0 compiler validation'
 complete -c x -n "__fish_x_using_subcommand perf; and __fish_seen_subcommand_from benchmark" -l skip-std-check-if-no-download-rustc -d 'Skip checking the standard library if `rust.download-rustc` isn\'t available. This is mostly for RA as building the stage1 compiler to check the library tree on each code change might be too much for some computers'
+complete -c x -n "__fish_x_using_subcommand perf; and __fish_seen_subcommand_from benchmark" -l list-expanded-paths -d 'Whether to list the expanded paths when testing, useful if you want to distribute different tests to different machines using the one running'
 complete -c x -n "__fish_x_using_subcommand perf; and __fish_seen_subcommand_from benchmark" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c x -n "__fish_x_using_subcommand perf; and __fish_seen_subcommand_from compare" -l database-path -r
 complete -c x -n "__fish_x_using_subcommand perf; and __fish_seen_subcommand_from compare" -l config -d 'TOML configuration file for build' -r -F
@@ -1112,4 +1138,5 @@ complete -c x -n "__fish_x_using_subcommand perf; and __fish_seen_subcommand_fro
 complete -c x -n "__fish_x_using_subcommand perf; and __fish_seen_subcommand_from compare" -l enable-bolt-settings -d 'Enable BOLT link flags'
 complete -c x -n "__fish_x_using_subcommand perf; and __fish_seen_subcommand_from compare" -l skip-stage0-validation -d 'Skip stage0 compiler validation'
 complete -c x -n "__fish_x_using_subcommand perf; and __fish_seen_subcommand_from compare" -l skip-std-check-if-no-download-rustc -d 'Skip checking the standard library if `rust.download-rustc` isn\'t available. This is mostly for RA as building the stage1 compiler to check the library tree on each code change might be too much for some computers'
+complete -c x -n "__fish_x_using_subcommand perf; and __fish_seen_subcommand_from compare" -l list-expanded-paths -d 'Whether to list the expanded paths when testing, useful if you want to distribute different tests to different machines using the one running'
 complete -c x -n "__fish_x_using_subcommand perf; and __fish_seen_subcommand_from compare" -s h -l help -d 'Print help (see more with \'--help\')'

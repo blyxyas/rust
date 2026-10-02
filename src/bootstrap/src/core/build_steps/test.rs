@@ -3399,6 +3399,10 @@ fn run_cargo_test<'a>(
     // we don't want to use it in our tests for now.
     cargo.rustdocflag("-Znext-solver=coherence");
 
+    if builder.sess.config.list_expanded_testing_paths {
+        crate::info!("Testing paths: [:?]", &crates);
+    }
+
     let mut cargo = prepare_cargo_test(cargo, libtest_args, crates, target, builder);
     let _time = helpers::timeit(builder);
 

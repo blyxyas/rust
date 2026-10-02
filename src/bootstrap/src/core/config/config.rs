@@ -319,6 +319,7 @@ pub(crate) struct Config {
     /// The paths to work with. For example: with `./x check foo bar` we get
     /// `paths=["foo", "bar"]`.
     pub paths: Vec<PathBuf>,
+    pub list_expanded_testing_paths: bool,
 
     /// Command for visual diff display, e.g. `diff-tool --color=always`.
     pub compiletest_diff_tool: Option<String>,
@@ -419,6 +420,7 @@ impl Config {
             free_args: flags_free_args,
             ci: flags_ci,
             skip_std_check_if_no_download_rustc: flags_skip_std_check_if_no_download_rustc,
+            list_expanded_paths: list_expanded_testing_paths,
         } = flags;
 
         #[cfg(feature = "tracing")]
@@ -1472,6 +1474,7 @@ NOTE: Please add `--stage 2` to your command line, or if you're sure you want to
             libdir: install_libdir.map(PathBuf::from),
             libgccjit_libs_dir: gcc_libgccjit_libs_dir,
             library_docs_private_items: build_library_docs_private_items.unwrap_or(false),
+            list_expanded_testing_paths,
             lld_enabled,
             lldb: build_lldb,
             llvm_allow_old_toolchain: llvm_allow_old_toolchain.unwrap_or(false),
