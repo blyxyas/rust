@@ -23,6 +23,7 @@ use std::{cmp, env, fs};
 use build_helper::ci::CiEnv;
 use build_helper::git::{GitConfig, PathFreshness, check_path_modifications};
 use serde::Deserialize;
+use serde_derive::Deserialize as DeriveDeserialize;
 #[cfg(feature = "tracing")]
 use tracing::{instrument, span};
 
@@ -77,6 +78,13 @@ pub const RUSTC_IF_UNCHANGED_ALLOWED_PATHS: &[&str] = &[
     ":!triagebot.toml",
     ":!src/bootstrap/defaults",
 ];
+
+#[derive(Clone, DeriveDeserialize)]
+pub struct ServerAndPath {
+    pub ip: String,
+    pub path: PathBuf,
+    pub origin: bool,
+}
 
 /// Global configuration for the entire build and/or bootstrap.
 ///
@@ -138,6 +146,7 @@ pub(crate) struct Config {
     /// defaults to `bootstrap.toml`
     pub config: Option<PathBuf>,
     pub jobs: Option<u32>,
+    pub servers: Option<Vec<ServerAndPath>>,
     pub cmd: Subcommand,
     pub quiet: bool,
     pub incremental: bool,
@@ -544,6 +553,7 @@ impl Config {
             android_ndk: build_android_ndk,
             optimized_compiler_builtins: build_optimized_compiler_builtins,
             jobs: build_jobs,
+            servers: servers,
             compiletest_diff_tool: build_compiletest_diff_tool,
             tidy_extra_checks: build_tidy_extra_checks,
             ccache: build_ccache,
@@ -1588,6 +1598,7 @@ NOTE: Please add `--stage 2` to your command line, or if you're sure you want to
             sanitizers: build_sanitizers.unwrap_or(false),
             save_toolstates: rust_save_toolstates.map(PathBuf::from),
             sde: build_sde.map(PathBuf::from),
+            servers,
             skip,
             skip_std_check_if_no_download_rustc: flags_skip_std_check_if_no_download_rustc,
             src,

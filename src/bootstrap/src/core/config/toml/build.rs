@@ -10,7 +10,7 @@ use std::collections::{HashMap, HashSet};
 use std::path::PathBuf;
 
 use crate::core::config::macros::define_config;
-use crate::core::config::{Allocator, CompilerBuiltins, DebuggerPath, StringOrBool};
+use crate::core::config::{Allocator, CompilerBuiltins, DebuggerPath, ServerAndPath, StringOrBool};
 
 define_config! {
     /// TOML representation of various global build decisions.
@@ -68,6 +68,7 @@ define_config! {
         android_ndk: Option<PathBuf> = "android-ndk",
         optimized_compiler_builtins: Option<CompilerBuiltins> = "optimized-compiler-builtins",
         jobs: Option<u32> = "jobs",
+        servers: Option<Vec<ServerAndPath>> = "servers",
         compiletest_diff_tool: Option<String> = "compiletest-diff-tool",
         compiletest_allow_stage0: Option<bool> = "compiletest-allow-stage0",
         tidy_extra_checks: Option<String> = "tidy-extra-checks",

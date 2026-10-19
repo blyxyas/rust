@@ -1,0 +1,7 @@
+	modified:   compiler/rustc_codegen_ssa/src/back/write.rs
+	modified:   compiler/rustc_driver_impl/src/lib.rs
+	modified:   compiler/rustc_interface/src/passes.rs
+	modified:   compiler/rustc_session/src/config.rs
+	modified:   compiler/rustc_session/src/options.rs
+	modified:   compiler/rustc_session/src/session.rs
+	modified:   tests/run-make/unstable-go-to-stage/rmake.rs

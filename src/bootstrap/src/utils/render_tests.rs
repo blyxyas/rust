@@ -8,7 +8,7 @@
 
 use std::fs::File;
 use std::io::{BufRead, BufReader, Read, Write};
-use std::process::ChildStdout;
+use std::process::{ChildStdout, Command};
 use std::time::Duration;
 
 use termcolor::{Color, ColorSpec, WriteColor};
@@ -39,6 +39,34 @@ pub(crate) fn try_run_tests(
     stream: bool,
     record_failed_tests: RecordFailedTests,
 ) -> bool {
+    if let Some(ref servers) = builder.sess.config.servers {
+        let args = cmd.get_args().collect::<Vec<_>>();
+        let requested: Vec<_> = args
+            .chunk_by(|key, val| *key == "-p" || *key == "--manifest-path")
+            .filter(|chunk| chunk.len() == 2)
+            .collect();
+
+        if requested.len() >= 1 {
+            for (idx, requested_window) in
+                requested.chunks(requested.len().div_ceil(servers.len())).enumerate()
+            {
+                if !servers[idx].origin {
+                    let arg = format!("cd {} && rsync -ar --delete --relative --exclude 'build' --exclude '.git' --mkpath -vz {}:git/rust /home/moon/git/rust", &servers[idx].path.display(),
+                        &servers.iter().find(|server| server.origin).unwrap().ip);
+                    dbg!(Command::new("ssh")
+                    .arg(&servers[idx].ip)
+                        .arg(dbg!(arg))
+                        .output());
+                        
+                        dbg!(Command::new("ssh")
+                        .arg(dbg!(&servers[idx].ip))
+                        .arg(format!("cd {} ; ./x t compiler library -j16 &> /var/log/distr-test.log", &servers[idx].path.display(),))
+                        .output());
+                    }   
+            }
+        }
+    }
+
     if run_tests(builder, cmd, stream, record_failed_tests) {
         return true;
     }
@@ -68,6 +96,7 @@ fn run_tests(
     // run this on another thread since the builder is not Sync.
     let renderer =
         Renderer::new(streaming_command.stdout.take().unwrap(), builder, record_failed_tests);
+
     if stream {
         renderer.stream_all();
     } else {
