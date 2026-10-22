@@ -8,7 +8,7 @@
 
 use std::fs::File;
 use std::io::{BufRead, BufReader, Read, Write};
-use std::process::{ChildStdout, Command};
+use std::process::{ChildStdout, Command, Stdio};
 use std::time::Duration;
 
 use termcolor::{Color, ColorSpec, WriteColor};
@@ -51,18 +51,46 @@ pub(crate) fn try_run_tests(
                 requested.chunks(requested.len().div_ceil(servers.len())).enumerate()
             {
                 if !servers[idx].origin {
-                    let arg = format!("cd {} && rsync -ar --delete --relative --exclude 'build' --exclude '.git' --mkpath -vz {}:git/rust /home/moon/git/rust", &servers[idx].path.display(),
-                        &servers.iter().find(|server| server.origin).unwrap().ip);
-                    dbg!(Command::new("ssh")
-                    .arg(&servers[idx].ip)
-                        .arg(dbg!(arg))
-                        .output());
-                        
-                        dbg!(Command::new("ssh")
+                    let arg = format!(
+                        "cd {} && rsync -ar --delete --relative --exclude 'build' --exclude '.git' --exclude 'bootstrap.toml' --mkpath -vz {}:git/rust /home/moon/",
+                        &servers[idx].path.display(),
+                        &servers.iter().find(|server| server.origin).unwrap().ip
+                    );
+                    Command::new("ssh").arg(&servers[idx].ip).arg(dbg!(arg)).output();
+
+                    let mut child = Command::new("ssh")
                         .arg(dbg!(&servers[idx].ip))
-                        .arg(format!("cd {} ; ./x t compiler library -j16 &> /var/log/distr-test.log", &servers[idx].path.display(),))
-                        .output());
-                    }   
+                        .arg(format!(
+                            "cd {} ; ./x t compiler library -j16 &> /var/log/distr-test.log",
+                            &servers[idx].path.display(),
+                        ))
+                        .stdout(Stdio::piped())
+                        .stderr(Stdio::piped())
+                        .spawn()
+                        .unwrap();
+
+                    let stdout_pipe = child.stdout.take().unwrap();
+                    let stderr_pipe = child.stderr.take().unwrap();
+
+                    let stdout_reader = BufReader::new(stdout_pipe);
+                    let stderr_reader = BufReader::new(stderr_pipe);
+
+                    let stdout_thread = std::thread::spawn(move || {
+                        for line in stdout_reader.lines() {
+                            if let Ok(line) = line {
+                                println!("{}", line);
+                            }
+                        }
+                    });
+
+                    let stderr_thread = std::thread::spawn(move || {
+                        for line in stderr_reader.lines() {
+                            if let Ok(line) = line {
+                                eprintln!("{}", line);
+                            }
+                        }
+                    });
+                }
             }
         }
     }
