@@ -31,7 +31,7 @@ impl Linker {
         codegen_backend: &dyn CodegenBackend,
         metadata: EncodedMetadata,
     ) -> Linker {
-        let (ongoing_codegen, crate_info) = passes::run_codegen(codegen_backend, tcx);
+        let (ongoing_codegen, crate_info) = passes::start_codegen(codegen_backend, tcx);
 
         Linker {
             dep_graph: tcx.dep_graph.clone(),
