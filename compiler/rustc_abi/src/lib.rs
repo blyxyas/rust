@@ -1811,7 +1811,7 @@ impl NumScalableVectors {
 
 #[cfg(feature = "nightly")]
 impl IntoDiagArg for NumScalableVectors {
-    fn into_diag_arg(self, _: &mut Option<std::path::PathBuf>) -> DiagArgValue {
+    fn into_diag_arg(self) -> DiagArgValue {
         DiagArgValue::Str(std::borrow::Cow::Borrowed(match self.0 {
             0 => panic!("`NumScalableVectors(0)` is illformed"),
             1 => "one",

@@ -1,7 +1,6 @@
 // ignore-tidy-file-filelength
 
 use std::borrow::Cow;
-use std::path::PathBuf;
 
 use rustc_ast::token::{self, InvisibleOrigin, MetaVarKind, Token};
 use rustc_ast_pretty::pprust;
@@ -4048,13 +4047,13 @@ pub(crate) enum Case {
 }
 
 impl IntoDiagArg for Case {
-    fn into_diag_arg(self, path: &mut Option<PathBuf>) -> DiagArgValue {
+    fn into_diag_arg(self) -> DiagArgValue {
         match self {
             Case::Upper => "uppercase",
             Case::Lower => "lowercase",
             Case::Mixed => "the correct case",
         }
-        .into_diag_arg(path)
+        .into_diag_arg()
     }
 }
 

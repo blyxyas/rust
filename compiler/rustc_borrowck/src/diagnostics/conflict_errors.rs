@@ -1479,11 +1479,7 @@ impl<'diag, 'tcx> MirBorrowckCtxt<'_, 'diag, 'tcx> {
                 {
                     let ty::Adt(def, _) = clause.self_ty().skip_binder().kind() else { continue };
                     type_spans.push(self.infcx.tcx.def_span(def.did()));
-                    types.insert(
-                        self.infcx
-                            .tcx
-                            .short_string(clause.self_ty().skip_binder(), &mut err.long_ty_path()),
-                    );
+                    types.insert(self.infcx.tcx.short_string(clause.self_ty().skip_binder()));
                 }
                 let mut span: MultiSpan = type_spans.clone().into();
                 for sp in type_spans {

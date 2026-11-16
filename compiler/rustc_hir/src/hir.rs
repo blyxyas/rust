@@ -2165,7 +2165,7 @@ impl fmt::Display for ConstContext {
 }
 
 impl IntoDiagArg for ConstContext {
-    fn into_diag_arg(self, _: &mut Option<std::path::PathBuf>) -> DiagArgValue {
+    fn into_diag_arg(self) -> DiagArgValue {
         DiagArgValue::Str(Cow::Borrowed(match self {
             ConstContext::ConstFn => "constant function",
             ConstContext::Static(_) => "static",

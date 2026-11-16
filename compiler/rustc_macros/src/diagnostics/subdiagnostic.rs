@@ -217,8 +217,6 @@ impl<'parent, 'a> SubdiagnosticDeriveVariantBuilder<'parent, 'a> {
 
     /// Generates the code for a field with no attributes.
     fn generate_field_arg(&mut self, binding_info: &BindingInfo<'_>) -> TokenStream {
-        let diag = &self.parent.diag;
-
         let field = binding_info.ast();
         let mut field_binding = binding_info.binding.clone();
         field_binding.set_span(field.ty.span());
@@ -229,7 +227,7 @@ impl<'parent, 'a> SubdiagnosticDeriveVariantBuilder<'parent, 'a> {
         quote! {
             sub_args.insert(
                 stringify!(#ident).into(),
-                rustc_errors::IntoDiagArg::into_diag_arg(#field_binding, &mut #diag.long_ty_path)
+                rustc_errors::IntoDiagArg::into_diag_arg(#field_binding)
             );
         }
     }

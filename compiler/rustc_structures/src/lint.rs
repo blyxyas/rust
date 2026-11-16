@@ -84,10 +84,7 @@ impl fmt::Display for LintName {
 
 #[cfg(feature = "nightly")]
 impl rustc_error_messages::IntoDiagArg for LintName {
-    fn into_diag_arg(
-        self,
-        _: &mut Option<std::path::PathBuf>,
-    ) -> rustc_error_messages::DiagArgValue {
-        self.to_string().into_diag_arg(&mut None)
+    fn into_diag_arg(self) -> rustc_error_messages::DiagArgValue {
+        self.to_string().into_diag_arg()
     }
 }

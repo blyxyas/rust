@@ -1,5 +1,3 @@
-use std::path::PathBuf;
-
 use rustc_attr_ir::diagnostic::{CustomDiagnostic, FilterOptions, FormatArgs};
 use rustc_attr_ir::find_attr;
 use rustc_hir as hir;
@@ -35,7 +33,6 @@ impl<'tcx> TypeErrCtxt<'_, 'tcx> {
         &self,
         trait_pred: ty::PolyTraitClause<'tcx>,
         obligation: &PredicateObligation<'tcx>,
-        long_ty_path: &mut Option<PathBuf>,
     ) -> CustomDiagnostic {
         if trait_pred.polarity() != ty::ClausePolarity::Positive {
             return CustomDiagnostic::default();
@@ -46,7 +43,7 @@ impl<'tcx> TypeErrCtxt<'_, 'tcx> {
             return CustomDiagnostic::default();
         }
         let (filter_options, format_args) =
-            self.on_unimplemented_components(trait_pred, obligation, long_ty_path, true);
+            self.on_unimplemented_components(trait_pred, obligation, true);
         if let Some(command) = find_attr!(self.tcx, trait_pred.def_id(), OnUnimplemented {directive, ..} => directive.as_deref()).flatten() {
             command.eval(
                 Some(&filter_options),
@@ -61,7 +58,6 @@ impl<'tcx> TypeErrCtxt<'_, 'tcx> {
         &self,
         trait_pred: ty::PolyTraitClause<'tcx>,
         obligation: &PredicateObligation<'tcx>,
-        long_ty_path: &mut Option<PathBuf>,
         print_infer_ty_var: bool,
     ) -> (FilterOptions, FormatArgs) {
         let (def_id, args) = (trait_pred.def_id(), trait_pred.skip_binder().trait_ref.args);
@@ -250,7 +246,7 @@ impl<'tcx> TypeErrCtxt<'_, 'tcx> {
                             {
                                 format!("{}", param.name)
                             } else {
-                                self.tcx.short_string(ty, long_ty_path)
+                                self.tcx.short_string(ty)
                             }
                         } else {
                             trait_pred.trait_ref.args[param.index as usize].to_string()

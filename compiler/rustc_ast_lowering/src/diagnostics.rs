@@ -621,7 +621,7 @@ pub(crate) enum ResolvingRestrictionKind {
 }
 
 impl IntoDiagArg for ResolvingRestrictionKind {
-    fn into_diag_arg(self, _: &mut Option<std::path::PathBuf>) -> DiagArgValue {
+    fn into_diag_arg(self) -> DiagArgValue {
         use std::borrow::Cow;
         match self {
             ResolvingRestrictionKind::Impl => DiagArgValue::Str(Cow::Borrowed("impl")),

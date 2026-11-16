@@ -2,7 +2,7 @@ use std::borrow::Cow;
 use std::fs::File;
 use std::hash::{DefaultHasher, Hash, Hasher};
 use std::io::{Read, Write};
-use std::path::PathBuf;
+use std::path::PathBuf ;
 
 use rustc_errors::pluralize;
 use rustc_hir as hir;
@@ -263,26 +263,21 @@ impl<'tcx> TyCtxt<'tcx> {
     }
 
     /// When calling this after a `Diag` is constructed, the preferred way of doing so is
-    /// `tcx.short_string(ty, diag.long_ty_path())`. The diagnostic itself is the one that keeps
+    /// `tcx.short_string(ty)`. The diagnostic itself is the one that keeps
     /// the existence of a "long type" anywhere in the diagnostic, so the note telling the user
     /// where we wrote the file to is only printed once. The path will use the type namespace.
-    pub fn short_string<T>(self, t: T, path: &mut Option<PathBuf>) -> String
+    pub fn short_string<T>(self, t: T) -> String
     where
         T: Copy + Hash + for<'a> Print<FmtPrinter<'a, 'tcx>>,
     {
-        self.short_string_namespace(t, path, hir::def::Namespace::TypeNS)
+        self.short_string_namespace(t, hir::def::Namespace::TypeNS)
     }
 
     /// When calling this after a `Diag` is constructed, the preferred way of doing so is
-    /// `tcx.short_string(ty, diag.long_ty_path())`. The diagnostic itself is the one that keeps
+    /// `tcx.short_string(ty)`. The diagnostic itself is the one that keeps
     /// the existence of a "long type" anywhere in the diagnostic, so the note telling the user
     /// where we wrote the file to is only printed once.
-    pub fn short_string_namespace<T>(
-        self,
-        t: T,
-        path: &mut Option<PathBuf>,
-        namespace: hir::def::Namespace,
-    ) -> String
+    pub fn short_string_namespace<T>(self, t: T, namespace: hir::def::Namespace) -> String
     where
         T: Copy + Hash + for<'a> Print<FmtPrinter<'a, 'tcx>>,
     {
@@ -306,7 +301,7 @@ impl<'tcx> TyCtxt<'tcx> {
         let mut s = DefaultHasher::new();
         t.hash(&mut s);
         let hash = s.finish();
-        *path = Some(path.take().unwrap_or_else(|| {
+        *path = Some(self.dcx().take().unwrap_or_else(|| {
             self.output_filenames(()).temp_path_for_diagnostic(&format!("long-type-{hash}.txt"))
         }));
         let Ok(mut file) =
@@ -341,4 +336,37 @@ impl<'tcx> TyCtxt<'tcx> {
             | ty::AliasTermKind::InherentConstImpl { def_id } => self.def_path_str(def_id),
         }
     }
+}
+
+/// Returns whether a given string is short enough to fit in the terminal, used for deciding
+/// if a long type should be printed.
+fn is_string_too_long<'tcx, T>(
+    tcx: TyCtxt<'tcx>,
+    namespace: hir::def::Namespace,
+    t: T,
+    s: &str,
+) -> Option<(PathBuf, String)>
+where
+    T: Copy + Hash + for<'a> Print<FmtPrinter<'a, 'tcx>>,
+{
+    if !tcx.sess.opts.unstable_opts.write_long_types_to_disk || tcx.sess.opts.verbose {
+        return None;
+    }
+
+    let width = tcx.sess.diagnostic_width();
+    let length_limit = width / 2;
+    if s.len() <= width * 2 / 3 {
+        return None;
+    }
+    let short = tcx.string_with_limit(t, length_limit, namespace);
+    if s == short {
+        return None;
+    }
+    // Ensure we create an unique file for the type passed in when we create a file.
+    let mut s = DefaultHasher::new();
+    t.hash(&mut s);
+    let hash = s.finish();
+    let path = tcx.output_filenames(()).temp_path_for_diagnostic(&format!("long-type-{hash}.txt"));
+
+    Some((path, short))
 }

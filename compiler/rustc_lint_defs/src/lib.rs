@@ -252,7 +252,7 @@ impl Level {
 }
 
 impl IntoDiagArg for Level {
-    fn into_diag_arg(self, _: &mut Option<std::path::PathBuf>) -> DiagArgValue {
+    fn into_diag_arg(self) -> DiagArgValue {
         DiagArgValue::Str(Cow::Borrowed(self.to_cmd_flag()))
     }
 }

@@ -957,15 +957,13 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
         }
 
         let callee_ty = self.deeply_resolve_ignoring_regions(callee_ty);
-        let mut path = None;
         let mut err = self.dcx().create_err(diagnostics::InvalidCallee {
             span: callee_expr.span,
             found: match &unit_variant {
                 Some((_, kind, path)) => format!("{kind} `{path}`"),
-                None => format!("`{}`", self.tcx.short_string(callee_ty, &mut path)),
+                None => format!("`{}`", self.tcx.short_string(callee_ty)),
             },
         });
-        *err.long_ty_path() = path;
         if callee_ty.references_error() {
             err.downgrade_to_delayed_bug();
         }

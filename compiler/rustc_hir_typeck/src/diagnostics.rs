@@ -96,7 +96,7 @@ pub(crate) enum ReturnLikeStatementKind {
 }
 
 impl IntoDiagArg for ReturnLikeStatementKind {
-    fn into_diag_arg(self, _: &mut Option<std::path::PathBuf>) -> DiagArgValue {
+    fn into_diag_arg(self) -> DiagArgValue {
         let kind = match self {
             Self::Return => "return",
             Self::Become => "become",

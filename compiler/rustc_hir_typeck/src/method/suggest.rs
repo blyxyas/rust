@@ -5,7 +5,6 @@
 
 use core::ops::ControlFlow;
 use std::borrow::Cow;
-use std::path::PathBuf;
 
 use hir::Expr;
 use rustc_ast::ast::Mutability;
@@ -482,16 +481,14 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
         &self,
         rcvr_ty: Ty<'tcx>,
         rcvr_expr: &hir::Expr<'tcx>,
-        mut long_ty_path: Option<PathBuf>,
     ) -> Diag<'_> {
         let mut err = struct_span_code_err!(
             self.dcx(),
             rcvr_expr.span,
             E0599,
             "cannot write into `{}`",
-            self.tcx.short_string(rcvr_ty, &mut long_ty_path),
+            self.tcx.short_string(rcvr_ty),
         );
-        *err.long_ty_path() = long_ty_path;
         err.span_note(
             rcvr_expr.span,
             "must implement `io::Write`, `fmt::Write`, or have a `write_fmt` method",
@@ -755,7 +752,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
                     span.push_span_label(sugg_let.span,
                             format!("`{rcvr_name}` of type `{self_ty}` that has method `{method_name}` defined earlier here"));
 
-                    let ty = self.tcx.short_string(ty, err.long_ty_path());
+                    let ty = self.tcx.short_string(ty);
                     span.push_span_label(
                         self.tcx.hir_span(recv_id),
                         format!("earlier `{rcvr_name}` shadowed here with type `{ty}`"),
@@ -1145,7 +1142,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
             ty::Adt(def, _) if def.did().is_local() => Some(self.tcx.def_span(def.did())),
             _ => None,
         };
-        let rcvr_ty_str = self.tcx.short_string(rcvr_ty, err.long_ty_path());
+        let rcvr_ty_str = self.tcx.short_string(rcvr_ty);
         let mut tracker = TraitBoundDuplicateTracker::new();
         for (predicate, _parent_pred, _cause) in unsatisfied_predicates {
             if let ty::PredicateKind::Clause(ty::ClauseKind::Trait(pred)) =
@@ -1259,7 +1256,6 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
             return guar;
         }
 
-        let mut ty_file = None;
         let mode = no_match_data.mode;
         let is_method = mode == Mode::MethodCall;
         let item_kind = if is_method {
@@ -1271,13 +1267,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
         };
 
         if let Err(guar) = self.report_failed_method_call_on_numerical_infer_var(
-            tcx,
-            rcvr_ty,
-            source,
-            span,
-            item_kind,
-            item_ident,
-            &mut ty_file,
+            tcx, rcvr_ty, source, span, item_kind, item_ident,
         ) {
             return guar;
         }
@@ -1288,7 +1278,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
                 || tcx.is_diagnostic_item(sym::writeln_macro, def_id)
         }) && item_ident.name == sym::write_fmt;
         let mut err = if is_write && let SelfSource::MethodCall(rcvr_expr) = source {
-            self.create_missing_writer_err(rcvr_ty, rcvr_expr, ty_file)
+            self.create_missing_writer_err(rcvr_ty, rcvr_expr)
         } else {
             self.create_no_assoc_err(
                 rcvr_ty,
@@ -1452,7 +1442,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
         unsatisfied_predicates: &UnsatisfiedPredicates<'tcx>,
         find_candidate_for_method: &mut bool,
     ) {
-        let ty_str = self.tcx.short_string(rcvr_ty, err.long_ty_path());
+        let ty_str = self.tcx.short_string(rcvr_ty);
         if unsatisfied_predicates.is_empty() {
             err.span_label(span, format!("{item_kind} not found in `{ty_str}`"));
             let is_string_or_ref_str = match rcvr_ty.kind() {
@@ -1717,7 +1707,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
         bound_spans: &mut SortedMap<OrdSpan, Vec<String>>,
     ) {
         let tcx = self.tcx;
-        let rcvr_ty_str = self.tcx.short_string(rcvr_ty, err.long_ty_path());
+        let rcvr_ty_str = self.tcx.short_string(rcvr_ty);
         let mut type_params = FxIndexMap::default();
 
         // Pick out the list of unimplemented traits on the receiver.
@@ -2173,9 +2163,8 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
                             // Avoid crashing.
                             return (None, None, Vec::new());
                         }
-                        let CustomDiagnostic { message, label, notes, .. } = self
-                            .err_ctxt()
-                            .on_unimplemented_note(trait_ref, &obligation, err.long_ty_path());
+                        let CustomDiagnostic { message, label, notes, .. } =
+                            self.err_ctxt().on_unimplemented_note(trait_ref, &obligation);
                         (message, label, notes)
                     })
                     .unwrap()
@@ -2183,7 +2172,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
                 (None, None, Vec::new())
             };
             let primary_message = primary_message.unwrap_or_else(|| {
-                let ty_str = self.tcx.short_string(rcvr_ty, err.long_ty_path());
+                let ty_str = self.tcx.short_string(rcvr_ty);
                 format!(
                     "the {item_kind} `{item_ident}` exists for {actual_prefix} `{ty_str}`, \
                      but its trait bounds were not satisfied"
@@ -2987,7 +2976,6 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
         span: Span,
         item_kind: &str,
         item_name: Ident,
-        long_ty_path: &mut Option<PathBuf>,
     ) -> Result<(), ErrorGuaranteed> {
         let found_candidate = all_traits(self.tcx)
             .into_iter()
@@ -3019,14 +3007,13 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
             && !actual.has_concrete_skeleton()
             && let SelfSource::MethodCall(expr) = source
         {
-            let ty_str = self.tcx.short_string(actual, long_ty_path);
+            let ty_str = self.tcx.short_string(actual);
             let mut err = struct_span_code_err!(
                 self.dcx(),
                 span,
                 E0689,
                 "can't call {item_kind} `{item_name}` on ambiguous numeric type `{ty_str}`"
             );
-            *err.long_ty_path() = long_ty_path.take();
             let concrete_type = if actual.is_integral() { "i32" } else { "f32" };
             match expr.kind {
                 ExprKind::Lit(lit) => {
@@ -3912,7 +3899,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
         }
 
         if tcx.ty_is_opaque_future(rcvr_ty) && item_ident.name == sym::poll {
-            let ty_str = self.tcx.short_string(rcvr_ty, err.long_ty_path());
+            let ty_str = self.tcx.short_string(rcvr_ty);
             err.help(format!(
                 "method `poll` found on `Pin<&mut {ty_str}>`, \
                 see documentation for `std::pin::Pin`"

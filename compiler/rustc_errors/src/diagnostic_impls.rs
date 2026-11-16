@@ -8,7 +8,7 @@ use crate::diagnostic::DiagLocation;
 use crate::{Diag, Subdiagnostic};
 
 impl IntoDiagArg for DiagLocation {
-    fn into_diag_arg(self, _: &mut Option<std::path::PathBuf>) -> DiagArgValue {
+    fn into_diag_arg(self) -> DiagArgValue {
         DiagArgValue::Str(Cow::from(self.to_string()))
     }
 }
@@ -29,7 +29,7 @@ impl<S> FromIterator<S> for DiagSymbolList<S> {
 }
 
 impl<S: std::fmt::Display> IntoDiagArg for DiagSymbolList<S> {
-    fn into_diag_arg(self, _: &mut Option<std::path::PathBuf>) -> DiagArgValue {
+    fn into_diag_arg(self) -> DiagArgValue {
         DiagArgValue::StrListSepByAnd(
             self.0.into_iter().map(|sym| Cow::Owned(format!("`{sym}`"))).collect(),
         )

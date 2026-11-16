@@ -297,7 +297,7 @@ pub enum MirDialect {
 }
 
 impl IntoDiagArg for MirDialect {
-    fn into_diag_arg(self, _path: &mut Option<PathBuf>) -> DiagArgValue {
+    fn into_diag_arg(self) -> DiagArgValue {
         let arg = match self {
             MirDialect::Analysis => "analysis",
             MirDialect::Built => "built",
@@ -316,7 +316,7 @@ pub enum MirPhase {
 }
 
 impl IntoDiagArg for MirPhase {
-    fn into_diag_arg(self, _path: &mut Option<PathBuf>) -> DiagArgValue {
+    fn into_diag_arg(self) -> DiagArgValue {
         let arg = match self {
             MirPhase::Initial => "initial",
             MirPhase::PostCleanup => "post-cleanup",

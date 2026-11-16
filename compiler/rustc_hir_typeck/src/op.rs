@@ -339,9 +339,8 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
     ) -> Ty<'tcx> {
         let (_, trait_def_id) = lang_item_for_binop(self.tcx, op);
 
-        let mut path = None;
-        let lhs_ty_str = self.tcx.short_string(lhs_ty, &mut path);
-        let rhs_ty_str = self.tcx.short_string(rhs_ty, &mut path);
+        let lhs_ty_str = self.tcx.short_string(lhs_ty);
+        let rhs_ty_str = self.tcx.short_string(rhs_ty);
 
         let (mut err, output_def_id) = match op {
             // Try and detect when `+=` was incorrectly
@@ -442,7 +441,6 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
                 (err, output_def_id)
             }
         };
-        *err.long_ty_path() = path;
 
         // Try to suggest a semicolon if it's `A \n *B` where `B` is a place expr
         let maybe_missing_semi = self.check_for_missing_semi(expr, &mut err);
@@ -773,8 +771,8 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
             )
             .is_ok()
         {
-            let lhs = self.tcx.short_string(lhs_adjusted_ty, err.long_ty_path());
-            let rhs = self.tcx.short_string(rhs_adjusted_ty, err.long_ty_path());
+            let lhs = self.tcx.short_string(lhs_adjusted_ty);
+            let rhs = self.tcx.short_string(rhs_adjusted_ty);
             let op = op.as_str();
             err.note(format!("an implementation for `{lhs} {op} {rhs}` exists"));
 
@@ -846,7 +844,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
             let msg = format!(
                 "`{}` can be used on `{}` if you dereference the left-hand side",
                 op.as_str(),
-                self.tcx.short_string(lhs_deref_ty, err.long_ty_path()),
+                self.tcx.short_string(lhs_deref_ty),
             );
             err.span_suggestion_verbose(
                 lhs_expr.span.shrink_to_lo(),
@@ -980,8 +978,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
             Err(errors) => {
                 let actual = self.deeply_resolve_ignoring_regions(operand_ty);
                 let guar = actual.error_reported().err().unwrap_or_else(|| {
-                    let mut file = None;
-                    let ty_str = self.tcx.short_string(actual, &mut file);
+                    let ty_str = self.tcx.short_string(actual);
                     let mut err = struct_span_code_err!(
                         self.dcx(),
                         ex.span,
@@ -989,7 +986,6 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
                         "cannot apply unary operator `{}` to type `{ty_str}`",
                         op.as_str(),
                     );
-                    *err.long_ty_path() = file;
                     err.span_label(
                         ex.span,
                         format!("cannot apply unary operator `{}`", op.as_str()),

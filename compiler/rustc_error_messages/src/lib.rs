@@ -332,11 +332,11 @@ pub trait IntoDiagArg {
     /// for displaying on the terminal. This path comes from the `Diag` itself. When rendering
     /// values that come from `TyCtxt`, like `Ty<'_>`, they can use `TyCtxt::short_string`. If a
     /// value has no shortening logic that could be used, the argument can be safely ignored.
-    fn into_diag_arg(self, path: &mut Option<std::path::PathBuf>) -> DiagArgValue;
+    fn into_diag_arg(self) -> DiagArgValue;
 }
 
 impl IntoDiagArg for DiagArgValue {
-    fn into_diag_arg(self, _: &mut Option<std::path::PathBuf>) -> DiagArgValue {
+    fn into_diag_arg(self) -> DiagArgValue {
         self
     }
 }

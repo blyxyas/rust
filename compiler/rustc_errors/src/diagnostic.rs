@@ -1,4 +1,5 @@
 use std::borrow::Cow;
+use std::cell::RefCell;
 use std::fmt::{self, Debug};
 use std::hash::Hash;
 use std::ops::{Deref, DerefMut};
@@ -197,7 +198,6 @@ pub struct DiagInner {
     pub suggestions: Suggestions,
     pub args: DiagArgMap,
     pub is_lint: Option<IsLint>,
-    pub long_ty_path: Option<PathBuf>,
     /// With `-Ztrack_diagnostics` enabled,
     /// we print where in rustc this error was emitted.
     pub emitted_at: DiagLocation,
@@ -220,7 +220,7 @@ impl DiagInner {
             suggestions: Suggestions::Enabled(vec![]),
             args: Default::default(),
             is_lint: None,
-            long_ty_path: None,
+            long_ty_path: RefCell::new(None),
             emitted_at: DiagLocation::caller(),
         }
     }
@@ -260,7 +260,7 @@ impl DiagInner {
 
     pub(crate) fn arg(&mut self, name: impl Into<DiagArgName>, arg: impl IntoDiagArg) {
         let name = name.into();
-        let value = arg.into_diag_arg(&mut self.long_ty_path);
+        let value = arg.into_diag_arg();
         // This assertion is to avoid subdiagnostics overwriting an existing diagnostic arg.
         debug_assert!(
             !self.args.contains_key(&name) || self.args.get(&name) == Some(&value),
@@ -1139,7 +1139,7 @@ impl<'a> Diag<'a> {
     /// `cancel`, etc. Afterwards, `drop` is the only code that will be run on
     /// `self`.
     fn take_diag(&mut self) -> DiagInner {
-        if let Some(path) = &self.long_ty_path {
+        if let Some(path) = &self.long_ty_path.take() {
             self.note(format!(
                 "the full name for the type has been written to '{}'",
                 path.display()
@@ -1147,32 +1147,6 @@ impl<'a> Diag<'a> {
             self.note("consider using `--verbose` to print the full type name to the console");
         }
         *self.diag.take().unwrap()
-    }
-
-    /// This method allows us to access the path of the file where "long types" are written to.
-    ///
-    /// When calling `Diag::emit`, as part of that we will check if a `long_ty_path` has been set,
-    /// and if it has been then we add a note mentioning the file where the "long types" were
-    /// written to.
-    ///
-    /// When calling `tcx.short_string()` after a `Diag` is constructed, the preferred way of doing
-    /// so is `tcx.short_string(ty, diag.long_ty_path())`. The diagnostic itself is the one that
-    /// keeps the existence of a "long type" anywhere in the diagnostic, so the note telling the
-    /// user where we wrote the file to is only printed once at most, *and* it makes it much harder
-    /// to forget to set it.
-    ///
-    /// If the diagnostic hasn't been created before a "short ty string" is created, then you should
-    /// ensure that this method is called to set it `*diag.long_ty_path() = path`.
-    ///
-    /// As a rule of thumb, if you see or add at least one `tcx.short_string()` call anywhere, in a
-    /// scope, `diag.long_ty_path()` should be called once somewhere close by.
-    pub fn long_ty_path(&mut self) -> &mut Option<PathBuf> {
-        &mut self.long_ty_path
-    }
-
-    pub fn with_long_ty_path(mut self, long_ty_path: Option<PathBuf>) -> Self {
-        self.long_ty_path = long_ty_path;
-        self
     }
 
     /// Emit the diagnostic. Will also abort appropriately if the level is `Bug` or `Fatal`.

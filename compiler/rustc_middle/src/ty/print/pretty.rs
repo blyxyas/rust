@@ -3017,9 +3017,9 @@ where
 pub struct TraitRefPrintOnlyTraitPath<'tcx>(ty::TraitRef<'tcx>);
 
 impl<'tcx> rustc_errors::IntoDiagArg for TraitRefPrintOnlyTraitPath<'tcx> {
-    fn into_diag_arg(self, path: &mut Option<std::path::PathBuf>) -> rustc_errors::DiagArgValue {
+    fn into_diag_arg(self) -> rustc_errors::DiagArgValue {
         ty::tls::with(|tcx| {
-            let trait_ref = tcx.short_string(tcx.lift(self), path);
+            let trait_ref = tcx.short_string(tcx.lift(self));
             rustc_errors::DiagArgValue::Str(std::borrow::Cow::Owned(trait_ref))
         })
     }
@@ -3037,9 +3037,9 @@ impl<'tcx> fmt::Debug for TraitRefPrintOnlyTraitPath<'tcx> {
 pub struct TraitRefPrintSugared<'tcx>(ty::TraitRef<'tcx>);
 
 impl<'tcx> rustc_errors::IntoDiagArg for TraitRefPrintSugared<'tcx> {
-    fn into_diag_arg(self, path: &mut Option<std::path::PathBuf>) -> rustc_errors::DiagArgValue {
+    fn into_diag_arg(self) -> rustc_errors::DiagArgValue {
         ty::tls::with(|tcx| {
-            let trait_ref = tcx.short_string(tcx.lift(self), path);
+            let trait_ref = tcx.short_string(tcx.lift(self));
             rustc_errors::DiagArgValue::Str(std::borrow::Cow::Owned(trait_ref))
         })
     }

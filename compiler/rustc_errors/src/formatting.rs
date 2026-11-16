@@ -74,7 +74,7 @@ impl DiagMessageAddArg for EagerDiagMessageBuilder {
         arg: impl IntoDiagArg,
     ) -> EagerDiagMessageBuilder {
         let name = name.into();
-        let value = arg.into_diag_arg(&mut None);
+        let value = arg.into_diag_arg();
         debug_assert!(
             !self.args.contains_key(&name) || self.args.get(&name) == Some(&value),
             "arg {} already exists",

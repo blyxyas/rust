@@ -1409,7 +1409,7 @@ impl Subdiagnostic for FoundItemConfigureOut {
         let mut multispan: MultiSpan = self.span.into();
         match self.item_was {
             ItemWas::BehindFeature { feature, span } => {
-                let value = feature.into_diag_arg(&mut None);
+                let value = feature.into_diag_arg();
                 let msg = msg!("the item is gated behind the `{$feature}` feature")
                     .arg("feature", value)
                     .format();

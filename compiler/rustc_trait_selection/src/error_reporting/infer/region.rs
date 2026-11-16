@@ -232,7 +232,7 @@ impl<'a, 'tcx> TypeErrCtxt<'a, 'tcx> {
             SubregionOrigin::Subtype(ref trace) => RegionOriginNote::WithRequirement {
                 span: trace.cause.span,
                 requirement: ObligationCauseAsDiagArg(trace.cause.clone()),
-                expected_found: self.values_str(trace.values, &trace.cause, err.long_ty_path()),
+                expected_found: self.values_str(trace.values, &trace.cause),
             }
             .add_to_diag(err),
             SubregionOrigin::Reborrow(span) => RegionOriginNote::Plain {
@@ -996,9 +996,9 @@ impl<'a, 'tcx> TypeErrCtxt<'a, 'tcx> {
         if let SubregionOrigin::Subtype(ref sup_trace) = sup_origin
             && let SubregionOrigin::Subtype(ref sub_trace) = sub_origin
             && let Some((sup_expected, sup_found)) =
-                self.values_str(sup_trace.values, &sup_trace.cause, err.long_ty_path())
+                self.values_str(sup_trace.values, &sup_trace.cause)
             && let Some((sub_expected, sub_found)) =
-                self.values_str(sub_trace.values, &sub_trace.cause, err.long_ty_path())
+                self.values_str(sub_trace.values, &sub_trace.cause)
             && sub_expected == sup_expected
             && sub_found == sup_found
         {

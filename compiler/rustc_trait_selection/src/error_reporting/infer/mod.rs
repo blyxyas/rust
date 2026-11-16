@@ -47,7 +47,6 @@
 
 use std::borrow::Cow;
 use std::ops::ControlFlow;
-use std::path::PathBuf;
 use std::{cmp, fmt, iter};
 
 use rustc_abi::ExternAbi;
@@ -353,7 +352,7 @@ impl<'a, 'tcx> TypeErrCtxt<'a, 'tcx> {
                             format!("this is an iterator with items of type `{}`", args.type_at(0)),
                         );
                     } else if !span.overlaps(cause.span) {
-                        let expected_ty = self.tcx.short_string(expected_ty, err.long_ty_path());
+                        let expected_ty = self.tcx.short_string(expected_ty);
                         err.span_label(span, format!("this expression has type `{expected_ty}`"));
                     }
                 }
@@ -1631,7 +1630,7 @@ impl<'a, 'tcx> TypeErrCtxt<'a, 'tcx> {
                         (false, Mismatch::Fixed("existential projection"))
                     }
                 };
-                let Some(vals) = self.values_str(values, cause, diag.long_ty_path()) else {
+                let Some(vals) = self.values_str(values, cause) else {
                     // Derived error. Cancel the emitter.
                     // NOTE(eddyb) this was `.cancel()`, but `diag`
                     // is borrowed, so we can't fully defuse it.
@@ -1997,7 +1996,6 @@ impl<'a, 'tcx> TypeErrCtxt<'a, 'tcx> {
         &self,
         trace: &TypeTrace<'tcx>,
         terr: TypeError<'tcx>,
-        long_ty_path: &mut Option<PathBuf>,
     ) -> Vec<TypeErrorAdditionalDiags> {
         let mut suggestions = Vec::new();
         let span = trace.cause.span;
@@ -2074,8 +2072,7 @@ impl<'a, 'tcx> TypeErrCtxt<'a, 'tcx> {
         })
         | ObligationCauseCode::BlockTailExpression(.., source)) = code
             && let hir::MatchSource::TryDesugar(_) = source
-            && let Some((expected_ty, found_ty)) =
-                self.values_str(trace.values, &trace.cause, long_ty_path)
+            && let Some((expected_ty, found_ty)) = self.values_str(trace.values, &trace.cause)
         {
             suggestions.push(TypeErrorAdditionalDiags::TryCannotConvert {
                 found: found_ty.content(),
@@ -2235,7 +2232,6 @@ impl<'a, 'tcx> TypeErrCtxt<'a, 'tcx> {
         debug!("report_and_explain_type_error(trace={:?}, terr={:?})", trace, terr);
 
         let span = trace.cause.span;
-        let mut path = None;
 
         self.simplify_pin_macro_arg_ty_mismatch(&mut trace);
 
@@ -2249,10 +2245,9 @@ impl<'a, 'tcx> TypeErrCtxt<'a, 'tcx> {
         let failure_code = trace.cause.as_failure_code_diag(
             terr,
             span,
-            self.type_error_additional_suggestions(&trace, terr, &mut path),
+            self.type_error_additional_suggestions(&trace, terr),
         );
         let mut diag = self.dcx().create_err(failure_code);
-        *diag.long_ty_path() = path;
 
         // Add custom notes
         for note in on_type_error_notes {
@@ -2336,11 +2331,10 @@ impl<'a, 'tcx> TypeErrCtxt<'a, 'tcx> {
         &self,
         values: ValuePairs<'tcx>,
         cause: &ObligationCause<'tcx>,
-        long_ty_path: &mut Option<PathBuf>,
     ) -> Option<(DiagStyledString, DiagStyledString)> {
         match values {
             ValuePairs::Regions(exp_found) => self.expected_found_str(exp_found),
-            ValuePairs::Terms(exp_found) => self.expected_found_str_term(exp_found, long_ty_path),
+            ValuePairs::Terms(exp_found) => self.expected_found_str_term(exp_found),
             ValuePairs::Aliases(exp_found) => self.expected_found_str(exp_found),
             ValuePairs::ExistentialTraitRef(exp_found) => self.expected_found_str(exp_found),
             ValuePairs::ExistentialProjection(exp_found) => self.expected_found_str(exp_found),
@@ -2380,7 +2374,6 @@ impl<'a, 'tcx> TypeErrCtxt<'a, 'tcx> {
     fn expected_found_str_term(
         &self,
         exp_found: ty::error::ExpectedFound<ty::Term<'tcx>>,
-        long_ty_path: &mut Option<PathBuf>,
     ) -> Option<(DiagStyledString, DiagStyledString)> {
         let exp_found = self.deeply_resolve_ignoring_regions(exp_found);
         if exp_found.references_error() {
@@ -2402,11 +2395,11 @@ impl<'a, 'tcx> TypeErrCtxt<'a, 'tcx> {
                     // We aren't explicitly asking for `--verbose` output, and we are storing long
                     // types to disk, so we try to shorten the output.
                     if exp_s.len() > len && fnd_s.len() > len {
-                        let exp_short = self.tcx.short_string(expected, long_ty_path);
-                        let fnd_short = self.tcx.short_string(found, long_ty_path);
+                        let exp_short = self.tcx.short_string(expected);
+                        let fnd_short = self.tcx.short_string(found);
                         // We use a crude shortening on the highlighted strings themselves. This
                         // doesn't ensure that the two strings will look different, or that the
-                        // output is very readable, but at least keeps the highlighting around.
+                        // output is very readablea, but at least keeps the highlighting around.
                         exp.shorten();
                         fnd.shorten();
                         if exp_short != fnd_short {
@@ -2426,14 +2419,14 @@ impl<'a, 'tcx> TypeErrCtxt<'a, 'tcx> {
                     } else {
                         if exp_s.len() > len {
                             exp.shorten();
-                            let exp_short = self.tcx.short_string(expected, long_ty_path);
+                            let exp_short = self.tcx.short_string(expected);
                             if exp.0.len() <= 1 {
                                 exp = DiagStyledString::highlighted(exp_short);
                             }
                         }
                         if fnd_s.len() > len {
                             fnd.shorten();
-                            let fnd_short = self.tcx.short_string(found, long_ty_path);
+                            let fnd_short = self.tcx.short_string(found);
                             if fnd.0.len() <= 1 {
                                 fnd = DiagStyledString::highlighted(fnd_short);
                             }
@@ -2704,7 +2697,7 @@ impl<'tcx> ObligationCause<'tcx> {
 pub struct ObligationCauseAsDiagArg<'tcx>(pub ObligationCause<'tcx>);
 
 impl IntoDiagArg for ObligationCauseAsDiagArg<'_> {
-    fn into_diag_arg(self, _: &mut Option<std::path::PathBuf>) -> rustc_errors::DiagArgValue {
+    fn into_diag_arg(self) -> rustc_errors::DiagArgValue {
         let kind = match self.0.code() {
             ObligationCauseCode::CompareImplItem { kind: ty::AssocKind::Fn { .. }, .. } => {
                 "method_compat"

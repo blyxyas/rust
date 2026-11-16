@@ -215,7 +215,6 @@ impl<'a, 'tcx> TypeErrCtxt<'a, 'tcx> {
 
         let predicate = self.deeply_resolve_ignoring_regions(obligation.predicate);
         let span = obligation.cause.span;
-        let mut long_ty_path = None;
 
         debug!(?predicate, obligation.cause.code = ?obligation.cause.code());
 
@@ -325,9 +324,8 @@ impl<'a, 'tcx> TypeErrCtxt<'a, 'tcx> {
                         span,
                         E0283,
                         "type annotations needed: cannot satisfy `{}`",
-                        self.tcx.short_string(predicate, &mut long_ty_path),
+                        self.tcx.short_string(predicate),
                     )
-                    .with_long_ty_path(long_ty_path)
                 };
 
                 if let Some(ambiguities) = self.applicable_impls_to_mention(obligation, trait_pred)
@@ -351,13 +349,10 @@ impl<'a, 'tcx> TypeErrCtxt<'a, 'tcx> {
                     if let Some(clause) = predicate.as_trait_clause()
                         && let ty::Infer(_) = clause.self_ty().skip_binder().kind()
                     {
-                        let tr = self.tcx.short_string(
-                            clause.print_modifiers_and_trait_path(),
-                            &mut err.long_ty_path(),
-                        );
+                        let tr = self.tcx.short_string(clause.print_modifiers_and_trait_path());
                         err.note(format!("the type must implement `{tr}`"));
                     } else {
-                        let pred = self.tcx.short_string(predicate, &mut err.long_ty_path());
+                        let pred = self.tcx.short_string(predicate);
                         err.note(format!("cannot satisfy `{pred}`"));
                     }
                     let clause = predicate.as_trait_clause().unwrap();
@@ -592,7 +587,7 @@ impl<'a, 'tcx> TypeErrCtxt<'a, 'tcx> {
                     return guar;
                 }
                 let term = self.ambiguity_term(predicate);
-                let predicate = self.tcx.short_string(predicate, &mut long_ty_path);
+                let predicate = self.tcx.short_string(predicate);
                 if let Some(term) = term {
                     self.emit_inference_failure_err(
                         obligation.cause.body_def_id,
@@ -602,7 +597,6 @@ impl<'a, 'tcx> TypeErrCtxt<'a, 'tcx> {
                         true,
                     )
                     .with_note(format!("cannot satisfy `{predicate}`"))
-                    .with_long_ty_path(long_ty_path)
                 } else {
                     // If we can't find a generic parameter, just print a generic error
                     struct_span_code_err!(
@@ -612,7 +606,6 @@ impl<'a, 'tcx> TypeErrCtxt<'a, 'tcx> {
                         "type annotations needed: cannot satisfy `{predicate}`",
                     )
                     .with_span_label(span, format!("cannot satisfy `{predicate}`"))
-                    .with_long_ty_path(long_ty_path)
                 }
             }
 
@@ -633,7 +626,7 @@ impl<'a, 'tcx> TypeErrCtxt<'a, 'tcx> {
                     )
                 } else {
                     // If we can't find a generic parameter, just print a generic error
-                    let predicate = self.tcx.short_string(predicate, &mut long_ty_path);
+                    let predicate = self.tcx.short_string(predicate);
                     struct_span_code_err!(
                         self.dcx(),
                         span,
@@ -641,7 +634,6 @@ impl<'a, 'tcx> TypeErrCtxt<'a, 'tcx> {
                         "type annotations needed: cannot satisfy `{predicate}`",
                     )
                     .with_span_label(span, format!("cannot satisfy `{predicate}`"))
-                    .with_long_ty_path(long_ty_path)
                 }
             }
 
@@ -660,7 +652,7 @@ impl<'a, 'tcx> TypeErrCtxt<'a, 'tcx> {
                 if let Some(e) = self.tainted_by_errors() {
                     return e;
                 }
-                let alias = self.tcx.short_string(alias, &mut long_ty_path);
+                let alias = self.tcx.short_string(alias);
                 struct_span_code_err!(
                     self.dcx(),
                     span,
@@ -668,7 +660,6 @@ impl<'a, 'tcx> TypeErrCtxt<'a, 'tcx> {
                     "type annotations needed: cannot normalize `{alias}`",
                 )
                 .with_span_label(span, format!("cannot normalize `{alias}`"))
-                .with_long_ty_path(long_ty_path)
             }
 
             ty::PredicateKind::Clause(ty::ClauseKind::UnstableFeature(sym)) => {
@@ -695,7 +686,7 @@ impl<'a, 'tcx> TypeErrCtxt<'a, 'tcx> {
                 if let Some(e) = self.tainted_by_errors() {
                     return e;
                 }
-                let predicate = self.tcx.short_string(predicate, &mut long_ty_path);
+                let predicate = self.tcx.short_string(predicate);
                 struct_span_code_err!(
                     self.dcx(),
                     span,
@@ -703,7 +694,6 @@ impl<'a, 'tcx> TypeErrCtxt<'a, 'tcx> {
                     "type annotations needed: cannot satisfy `{predicate}`",
                 )
                 .with_span_label(span, format!("cannot satisfy `{predicate}`"))
-                .with_long_ty_path(long_ty_path)
             }
         };
 
@@ -727,13 +717,10 @@ impl<'a, 'tcx> TypeErrCtxt<'a, 'tcx> {
                 {
                     let clause = related_pred.kind().rebind(data);
                     if let ty::Infer(_) = clause.self_ty().skip_binder().kind() {
-                        let tr = self.tcx.short_string(
-                            clause.print_modifiers_and_trait_path(),
-                            &mut err.long_ty_path(),
-                        );
+                        let tr = self.tcx.short_string(clause.print_modifiers_and_trait_path());
                         format!("the type must also implement `{tr}`")
                     } else {
-                        let pred = self.tcx.short_string(related_pred, &mut err.long_ty_path());
+                        let pred = self.tcx.short_string(related_pred);
                         let note = format!("cannot satisfy `{pred}`");
                         // The self type is known, so the `impl`s that could have applied to it are
                         // few and worth pointing at, like the blamed bound does. When it is still
@@ -756,7 +743,7 @@ impl<'a, 'tcx> TypeErrCtxt<'a, 'tcx> {
                     }
                 }
                 ty::PredicateKind::Clause(ty::ClauseKind::Projection(_)) => {
-                    let pred = self.tcx.short_string(related_pred, &mut err.long_ty_path());
+                    let pred = self.tcx.short_string(related_pred);
                     format!("cannot satisfy `{pred}`")
                 }
                 _ => {

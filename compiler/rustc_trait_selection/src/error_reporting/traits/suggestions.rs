@@ -1,7 +1,6 @@
 // ignore-tidy-file-filelength
 
 use std::borrow::Cow;
-use std::path::PathBuf;
 use std::{debug_assert_matches, iter};
 
 use itertools::{EitherOrBoth, Itertools};
@@ -1285,8 +1284,8 @@ impl<'a, 'tcx> TypeErrCtxt<'a, 'tcx> {
             vec![(span.shrink_to_hi(), format!(" as {}", candidate.self_ty()))]
         };
 
-        let trait_ = self.tcx.short_string(candidate.print_trait_sugared(), err.long_ty_path());
-        let self_ty = self.tcx.short_string(candidate.self_ty(), err.long_ty_path());
+        let trait_ = self.tcx.short_string(candidate.print_trait_sugared());
+        let self_ty = self.tcx.short_string(candidate.self_ty());
         err.multipart_suggestion(
             format!(
                 "the trait `{trait_}` is implemented for fn pointer \
@@ -1972,12 +1971,10 @@ impl<'a, 'tcx> TypeErrCtxt<'a, 'tcx> {
 
                 let msg = format!(
                     "the trait bound `{}` is not satisfied",
-                    self.tcx.short_string(old_pred, err.long_ty_path()),
+                    self.tcx.short_string(old_pred),
                 );
-                let self_ty_str = self.tcx.short_string(old_pred.self_ty(), err.long_ty_path());
-                let trait_path = self
-                    .tcx
-                    .short_string(old_pred.print_modifiers_and_trait_path(), err.long_ty_path());
+                let self_ty_str = self.tcx.short_string(old_pred.self_ty());
+                let trait_path = self.tcx.short_string(old_pred.print_modifiers_and_trait_path());
 
                 if has_custom_message {
                     let msg = if is_sized {
@@ -4159,10 +4156,8 @@ impl<'a, 'tcx> TypeErrCtxt<'a, 'tcx> {
                 }
             }
             ObligationCauseCode::Coercion { source, target } => {
-                let source = tcx
-                    .short_string(self.deeply_resolve_ignoring_regions(source), err.long_ty_path());
-                let target = tcx
-                    .short_string(self.deeply_resolve_ignoring_regions(target), err.long_ty_path());
+                let source = tcx.short_string(self.deeply_resolve_ignoring_regions(source));
+                let target = tcx.short_string(self.deeply_resolve_ignoring_regions(target));
                 err.note(with_forced_trimmed_paths!(format!(
                     "required for the cast from `{source}` to `{target}`",
                 )));
@@ -4474,8 +4469,8 @@ impl<'a, 'tcx> TypeErrCtxt<'a, 'tcx> {
                     tcx.async_fn_trait_kind_from_def_id(data.parent_trait_pred.def_id()).is_some();
 
                 if !is_upvar_tys_infer_tuple && !is_builtin_async_fn_trait {
-                    let mut msg = || {
-                        let ty_str = tcx.short_string(ty, err.long_ty_path());
+                    let msg = || {
+                        let ty_str = tcx.short_string(ty);
                         format!("required because it appears within the type `{ty_str}`")
                     };
                     match *ty.kind() {
@@ -4648,12 +4643,9 @@ impl<'a, 'tcx> TypeErrCtxt<'a, 'tcx> {
                     );
                     return;
                 }
-                let self_ty_str =
-                    tcx.short_string(parent_trait_pred.skip_binder().self_ty(), err.long_ty_path());
-                let trait_name = tcx.short_string(
-                    parent_trait_pred.print_modifiers_and_trait_path(),
-                    err.long_ty_path(),
-                );
+                let self_ty_str = tcx.short_string(parent_trait_pred.skip_binder().self_ty());
+                let trait_name =
+                    tcx.short_string(parent_trait_pred.print_modifiers_and_trait_path());
                 let msg = format!("required for `{self_ty_str}` to implement `{trait_name}`");
                 let mut is_auto_trait = false;
                 match tcx.hir_get_if_local(data.impl_or_alias_def_id) {
@@ -4791,14 +4783,9 @@ impl<'a, 'tcx> TypeErrCtxt<'a, 'tcx> {
                         count,
                         pluralize!(count)
                     ));
-                    let self_ty = tcx.short_string(
-                        parent_trait_pred.skip_binder().self_ty(),
-                        err.long_ty_path(),
-                    );
-                    let trait_path = tcx.short_string(
-                        parent_trait_pred.print_modifiers_and_trait_path(),
-                        err.long_ty_path(),
-                    );
+                    let self_ty = tcx.short_string(parent_trait_pred.skip_binder().self_ty());
+                    let trait_path =
+                        tcx.short_string(parent_trait_pred.print_modifiers_and_trait_path());
                     err.note(format!("required for `{self_ty}` to implement `{trait_path}`"));
                 }
                 *closure_capture_ty = Some(parent_trait_pred.skip_binder().self_ty());
@@ -4816,14 +4803,12 @@ impl<'a, 'tcx> TypeErrCtxt<'a, 'tcx> {
             ObligationCauseCode::ImplDerivedHost(ref data) => {
                 let self_ty = tcx.short_string(
                     self.deeply_resolve_ignoring_regions(data.derived.parent_host_clause.self_ty()),
-                    err.long_ty_path(),
                 );
                 let trait_path = tcx.short_string(
                     data.derived
                         .parent_host_clause
                         .map_bound(|clause| clause.trait_ref)
                         .print_only_trait_path(),
-                    err.long_ty_path(),
                 );
                 let msg = format!(
                     "required for `{self_ty}` to implement `{} {trait_path}`",
@@ -5001,7 +4986,7 @@ impl<'a, 'tcx> TypeErrCtxt<'a, 'tcx> {
                 } else {
                     return;
                 };
-                let expr_ty_string = tcx.short_string(expr_ty, err.long_ty_path());
+                let expr_ty_string = tcx.short_string(expr_ty);
                 if expr_ty.is_never()
                     && let span = expr.span.source_callsite()
                     && let Ok(snippet) = tcx.sess.source_map().span_to_snippet(span)
@@ -7043,7 +7028,6 @@ pub(super) fn get_explanation_based_on_obligation<'tcx>(
     obligation: &PredicateObligation<'tcx>,
     trait_predicate: ty::PolyTraitClause<'tcx>,
     pre_message: String,
-    long_ty_path: &mut Option<PathBuf>,
 ) -> String {
     if let ObligationCauseCode::MainFunctionType = obligation.cause.code() {
         "consider using `()`, or a `Result`".to_owned()
@@ -7071,7 +7055,7 @@ pub(super) fn get_explanation_based_on_obligation<'tcx>(
             format!(
                 "{pre_message}the {unstable}trait `{}` is not implemented for{desc} `{}`",
                 trait_predicate.print_modifiers_and_trait_path(),
-                tcx.short_string(trait_predicate.self_ty().skip_binder(), long_ty_path),
+                tcx.short_string(trait_predicate.self_ty().skip_binder()),
             )
         } else {
             // "the trait bound `T: !Send` is not satisfied" reads better than "`!Send` is

@@ -33,8 +33,8 @@ pub struct AttrPath {
 }
 
 impl IntoDiagArg for AttrPath {
-    fn into_diag_arg(self, path: &mut Option<std::path::PathBuf>) -> DiagArgValue {
-        self.to_string().into_diag_arg(path)
+    fn into_diag_arg(self) -> DiagArgValue {
+        self.to_string().into_diag_arg()
     }
 }
 

@@ -1,6 +1,5 @@
 use std::borrow::Cow;
 use std::iter;
-use std::path::PathBuf;
 
 use rustc_errors::codes::*;
 use rustc_errors::{Diag, IntoDiagArg};
@@ -152,7 +151,7 @@ impl InferenceDiagnosticsParentData {
 }
 
 impl IntoDiagArg for UnderspecifiedArgKind {
-    fn into_diag_arg(self, _: &mut Option<std::path::PathBuf>) -> rustc_errors::DiagArgValue {
+    fn into_diag_arg(self) -> rustc_errors::DiagArgValue {
         let kind = match self {
             Self::Type { .. } => "type",
             Self::Const { is_parameter: true } => "const_with_param",
@@ -553,7 +552,7 @@ impl<'a, 'tcx> TypeErrCtxt<'a, 'tcx> {
             return err;
         };
 
-        let (source_kind, name, long_ty_path) = kind.ty_localized_msg(self);
+        let (source_kind, name) = kind.ty_localized_msg(self);
         let failure_span = if should_label_span && !failure_span.overlaps(span) {
             Some(failure_span)
         } else {
@@ -614,7 +613,6 @@ impl<'a, 'tcx> TypeErrCtxt<'a, 'tcx> {
                 bad_label: None,
             }),
         };
-        *err.long_ty_path() = long_ty_path;
         if delay_as_bug {
             // We have already emitted an earlier more relevant error.
             err.downgrade_to_delayed_bug();
@@ -684,14 +682,13 @@ impl<'tcx> InferSource<'tcx> {
 }
 
 impl<'tcx> InferSourceKind<'tcx> {
-    fn ty_localized_msg(&self, infcx: &InferCtxt<'tcx>) -> (&'static str, String, Option<PathBuf>) {
-        let mut long_ty_path = None;
+    fn ty_localized_msg(&self, infcx: &InferCtxt<'tcx>) -> (&'static str, String) {
         match *self {
             InferSourceKind::LetBinding { ty, .. }
             | InferSourceKind::ClosureArg { ty, .. }
             | InferSourceKind::ClosureReturn { ty, .. } => {
                 if ty.is_closure() {
-                    ("closure", closure_as_fn_str(infcx, ty), long_ty_path)
+                    ("closure", closure_as_fn_str(infcx, ty))
                 } else if ty.is_ty_or_numeric_infer()
                     || ty.is_primitive()
                     || matches!(
@@ -703,16 +700,14 @@ impl<'tcx> InferSourceKind<'tcx> {
                     // `ty` is either `_`, a primitive type like `u32` or a type with no type or
                     // const parameters. We will not mention the type in the main inference error
                     // message.
-                    ("other", String::new(), long_ty_path)
+                    ("other", String::new())
                 } else {
-                    ("normal", infcx.tcx.short_string(ty, &mut long_ty_path), long_ty_path)
+                    ("normal", infcx.tcx.short_string(ty))
                 }
             }
             // FIXME: We should be able to add some additional info here.
             InferSourceKind::GenericArg { .. }
-            | InferSourceKind::FullyQualifiedMethodCall { .. } => {
-                ("other", String::new(), long_ty_path)
-            }
+            | InferSourceKind::FullyQualifiedMethodCall { .. } => ("other", String::new()),
         }
     }
 

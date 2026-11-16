@@ -453,6 +453,14 @@ impl<'a> DiagCtxtHandle<'a> {
         self.dcx.inner.borrow().flags.can_emit_warnings
     }
 
+    pub fn set_long_type_path(&self, path: PathBuf) {
+        self.dcx.inner.borrow_mut().long_type = path
+    }
+
+    pub fn long_type_path(&self, path: PathBuf) {
+        self.dcx.inner.borrow().long_type
+    }
+
     /// Resets the diagnostic error count as well as the cached emitted diagnostics.
     ///
     /// NOTE: *do not* call this function from rustc. It is only meant to be called from external
@@ -1586,7 +1594,7 @@ impl Level {
 }
 
 impl IntoDiagArg for Level {
-    fn into_diag_arg(self, _: &mut Option<std::path::PathBuf>) -> DiagArgValue {
+    fn into_diag_arg(self) -> DiagArgValue {
         DiagArgValue::Str(Cow::from(self.to_string()))
     }
 }

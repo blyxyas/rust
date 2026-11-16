@@ -107,43 +107,43 @@ mod into_diag_arg_impls {
     use super::*;
 
     impl<I: Interner> IntoDiagArg for TraitRef<I> {
-        fn into_diag_arg(self, path: &mut Option<std::path::PathBuf>) -> DiagArgValue {
-            self.to_string().into_diag_arg(path)
+        fn into_diag_arg(self) -> DiagArgValue {
+            self.to_string().into_diag_arg()
         }
     }
 
     impl<I: Interner> IntoDiagArg for ExistentialTraitRef<I> {
-        fn into_diag_arg(self, path: &mut Option<std::path::PathBuf>) -> DiagArgValue {
-            self.to_string().into_diag_arg(path)
+        fn into_diag_arg(self) -> DiagArgValue {
+            self.to_string().into_diag_arg()
         }
     }
 
     impl<I: Interner + IrPrint<Region<I>>> IntoDiagArg for Region<I> {
-        fn into_diag_arg(self, path: &mut Option<std::path::PathBuf>) -> DiagArgValue {
-            self.to_string().into_diag_arg(path)
+        fn into_diag_arg(self) -> DiagArgValue {
+            self.to_string().into_diag_arg()
         }
     }
 
     impl<I: Interner> IntoDiagArg for AliasConst<I> {
-        fn into_diag_arg(self, path: &mut Option<std::path::PathBuf>) -> DiagArgValue {
-            format!("{self:?}").into_diag_arg(path)
+        fn into_diag_arg(self) -> DiagArgValue {
+            format!("{self:?}").into_diag_arg()
         }
     }
 
     impl<I: Interner> IntoDiagArg for FnSig<I> {
-        fn into_diag_arg(self, path: &mut Option<std::path::PathBuf>) -> DiagArgValue {
-            format!("{self:?}").into_diag_arg(path)
+        fn into_diag_arg(self) -> DiagArgValue {
+            format!("{self:?}").into_diag_arg()
         }
     }
 
     impl<I: Interner, T: IntoDiagArg> IntoDiagArg for Binder<I, T> {
-        fn into_diag_arg(self, path: &mut Option<std::path::PathBuf>) -> DiagArgValue {
-            self.skip_binder().into_diag_arg(path)
+        fn into_diag_arg(self) -> DiagArgValue {
+            self.skip_binder().into_diag_arg()
         }
     }
 
     impl IntoDiagArg for ClosureKind {
-        fn into_diag_arg(self, _: &mut Option<std::path::PathBuf>) -> DiagArgValue {
+        fn into_diag_arg(self) -> DiagArgValue {
             DiagArgValue::Str(self.as_str().into())
         }
     }

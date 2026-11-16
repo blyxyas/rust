@@ -59,10 +59,7 @@ impl Mul<usize> for Limit {
 
 #[cfg(feature = "nightly")]
 impl rustc_error_messages::IntoDiagArg for Limit {
-    fn into_diag_arg(
-        self,
-        _: &mut Option<std::path::PathBuf>,
-    ) -> rustc_error_messages::DiagArgValue {
-        self.0.into_diag_arg(&mut None)
+    fn into_diag_arg(self) -> rustc_error_messages::DiagArgValue {
+        self.0.into_diag_arg()
     }
 }

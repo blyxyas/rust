@@ -860,7 +860,7 @@ crate::target_spec_enum! {
 }
 
 impl IntoDiagArg for PanicStrategy {
-    fn into_diag_arg(self, _: &mut Option<std::path::PathBuf>) -> DiagArgValue {
+    fn into_diag_arg(self) -> DiagArgValue {
         DiagArgValue::Str(Cow::Owned(self.desc().to_string()))
     }
 }

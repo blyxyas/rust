@@ -19,18 +19,18 @@ use crate::ty::{
 };
 
 impl IntoDiagArg for Ty<'_> {
-    fn into_diag_arg(self, path: &mut Option<std::path::PathBuf>) -> rustc_errors::DiagArgValue {
+    fn into_diag_arg(self) -> rustc_errors::DiagArgValue {
         ty::tls::with(|tcx| {
-            let ty = tcx.short_string(tcx.lift(self), path);
+            let ty = tcx.short_string(tcx.lift(self));
             DiagArgValue::Str(std::borrow::Cow::Owned(ty))
         })
     }
 }
 
 impl IntoDiagArg for Instance<'_> {
-    fn into_diag_arg(self, path: &mut Option<std::path::PathBuf>) -> rustc_errors::DiagArgValue {
+    fn into_diag_arg(self) -> rustc_errors::DiagArgValue {
         ty::tls::with(|tcx| {
-            let instance = tcx.short_string_namespace(tcx.lift(self), path, Namespace::ValueNS);
+            let instance = tcx.short_string_namespace(tcx.lift(self), Namespace::ValueNS);
             DiagArgValue::Str(std::borrow::Cow::Owned(instance))
         })
     }
